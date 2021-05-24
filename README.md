@@ -43,3 +43,4 @@ Celtic for the TI-84 Plus CE (finally).
 - EditWord - det(38,start_byte,replace_with_this_word)
 - BitOperate - det(39,value1,value2,logic)
 - GetProgList - det(40,"SEARCHSTRING",[type])
+- GetCalcVer - det(41) Returns calcversion
