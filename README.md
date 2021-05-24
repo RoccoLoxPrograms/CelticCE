@@ -15,7 +15,7 @@ Celtic for the TI-84 Plus CE (finally).
 - BufSpriteSelect - det(10,width,X,Y,start,length), Str9=sprite data
 - ExecArcPrgm - det(11,FN,NUMBER)
 - DispColor - det(12,FG_LO,FG_HI,BG_LO,BG_HI)
-- ( det(13) )
+- [det(13) This might be what det(41) is.]
 - ExecHex - det(14), Ans=Hex code to execute
 - TextRect - det(15,FG_LO,FG_HI,ROW,COL,HEIGHT,WIDTH)
 - ToggleSet - det(16,"FN",f#) 0=Arc;1=Lk;2=PA;3=Hid;4=Del;5=Crt;6=PS;7=Stat
@@ -43,4 +43,4 @@ Celtic for the TI-84 Plus CE (finally).
 - EditWord - det(38,start_byte,replace_with_this_word)
 - BitOperate - det(39,value1,value2,logic)
 - GetProgList - det(40,"SEARCHSTRING",[type])
-- GetCalcVer - det(41) Returns calcversion
+- GetCalcVer - det(41) Returns calcversion (This might be changed to det(13) )
