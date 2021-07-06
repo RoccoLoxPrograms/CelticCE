@@ -14,8 +14,8 @@ Celtic for the TI-84 Plus CE (finally).
 - BufSprite - `det(9,width,X,Y), Str9=sprite data`
 - BufSpriteSelect - `det(10,width,X,Y,start,length), Str9=sprite data`
 - ExecArcPrgm - `det(11,FN,NUMBER)`
-- DispColor - `det(12,FG_LO,FG_HI,BG_LO,BG_HI)`
-- [`det(13) This might be what det(41) is.`]
+- DispHomeColor - `det(12,FG_LO,FG_HI,BG_LO,BG_HI)`
+- DispGraphColor - `det(13,FG_LO,FG_HI,BG_LO,BG_HI)`
 - ExecHex - `det(14), Ans=Hex code to execute`
 - TextRect - `det(15,FG_LO,FG_HI,ROW,COL,HEIGHT,WIDTH)`
 - ToggleSet - `det(16,"FN",f#) 0=Arc;1=Lk;2=PA;3=Hid;4=Del;5=Crt;6=PS;7=Stat`
@@ -30,7 +30,7 @@ Celtic for the TI-84 Plus CE (finally).
 - BinRead - `det(25,"FN",bytestart,#ofbytes)`
 - BinWrite - `det(26,"HEX","FN",bytestart)`
 - BinDelete - `det(27,"FN",bytestart,del#ofbytes)`
-- HexToBin - `det(28,"484558")`
+- HexToBin - `det(28,"HEXSTRING")`
 - BinToHex - `det(29,"BIN")`
 - FastCopy - `det(30)`
 - Edit1Byte - `det(31,Str?,StartByte,ReplaceWithThisByte)`
@@ -43,4 +43,4 @@ Celtic for the TI-84 Plus CE (finally).
 - EditWord - `det(38,start_byte,replace_with_this_word)`
 - BitOperate - `det(39,value1,value2,logic)`
 - GetProgList - `det(40,"SEARCHSTRING",[type])`
-- GetCalcVer - `det(41) Returns calcversion (This might be changed to det(13) )`
+- GetCalcVer - `det(41) Returns calcversion`
