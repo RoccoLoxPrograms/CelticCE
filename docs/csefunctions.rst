@@ -25,7 +25,7 @@ ReadLine: ``det(0)``, ``Str0`` = **variable name**, ``Ans`` = **line number**
     Errors:
      * ``..NULLSTR`` if the line is empty.
 
-ReplaceLine: ``det(1)``, ``Str0`` = **variable name**, ``Ans``= **line number**, ``Str9`` = **replacement**\
+ReplaceLine: ``det(1)``, ``Str0`` = **variable name**, ``Ans`` = **line number**, ``Str9`` = **replacement**
     Replaces (overwrites) a line in a program or AppVar. ``Ans`` refers to the line to replace.
 
     Parameters:
@@ -52,4 +52,65 @@ InsertLine: ``det(2)``, ``Str0`` = **variable name**, ``Ans`` = **line number**,
 
     Errors:
      * ``..PGM:ARC`` if the file is archived.
-     * ``..S:FLASH`` if the input string is archived.
+
+SpecialChars: ``det(3)``
+    Stores the ``->`` and ``"`` characters into ``Str9``.
+
+    Returns:
+     * ``Str9``: ``->`` and ``"``, respectively. You can use substrings to extract them. There are also 7 more characters in ``Str9``, which are junk.
+
+CreateVar: ``det(4)``, ``Str0`` = **variable name**
+    Create a program or AppVar given a name.
+
+    Parameters:
+     * ``Str0``: Name of program or AppVar to create.
+
+    Returns:
+     * ``Str9``: Intact if no error occured; otherwise, contains an error code.
+     * ``Str0``: Intact with program's name to be created.
+
+    Errors:
+     * ``..P:IS:FN`` if the program already exists.
+
+ArcUnarcVar: ``det(5)``, ``Str0`` = **variable name**
+    Archive/unarchive a program or AppVar given a name.
+
+    Parameters:
+     * ``Str0``: Name of program or AppVar to move between Archive and RAM.
+
+    Returns:
+     * Moves a program or AppVar into RAM if it was in Archive, or into Archive if it was in RAM.
+
+DeleteVar: ``det(6)``, ``Str0`` = **variable name**
+    Delete a program variable or an AppVar given a name.
+
+    Parameters:
+     * ``Str0``: Name of program or AppVar to delete.
+
+    Returns:
+     * The indicated program or AppVar is deleted.
+
+DeleteLine: ``det(7)``, ``Str0`` = **variable name**, ``Ans`` = **line number**
+    Deletes a line from a program or AppVar. ``Ans`` is the line to delete.
+
+    Parameters:
+     * ``Str0``: Name of program or AppVar to delete from.
+     * ``Ans``: Line number to delete from, begins at 1.
+
+    Returns:
+     * ``Str9``: Intact if no error occured; otherwise, contains an error code.
+
+VarStatus: ``det(8)``, ``Str0`` = **variable name**
+    Output status string describing a program or AppVar's current state, including size, visibility, and more.
+
+    Parameters:
+     * ``Str0``: Name of program or AppVar to examine.
+
+    Returns:
+     * ``Str9``: Contains a 9 byte output code.
+         * 1st character: ``A`` = Archived, ``R`` = RAM
+         * 2nd character: ``V`` = Visible, ``H`` = Hidden
+         * 3rd character: ``L`` = Locked, ``W`` = Writable
+         * 4th character: ``_`` (Space character)
+         * 5th - 9th character: Size, in bytes
+     * Example: ``AVL 01337`` = Archived, visible, locked, 1337 bytes.

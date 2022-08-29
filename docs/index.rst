@@ -25,5 +25,6 @@ The function syntax section contains detailed syntax for each function, along wi
 
 .. toctree::
    :caption: Function Syntax
+   :maxdepth: 1
 
    csefunctions
