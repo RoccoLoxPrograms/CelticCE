@@ -22,6 +22,7 @@ The function syntax section contains detailed syntax for each function, along wi
    installation
    gensyntax
    errorcodes
+   colors
 
 .. toctree::
    :caption: Function Syntax

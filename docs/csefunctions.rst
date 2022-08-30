@@ -114,3 +114,101 @@ VarStatus: ``det(8)``, ``Str0`` = **variable name**
          * 4th character: ``_`` (Space character)
          * 5th - 9th character: Size, in bytes
      * Example: ``AVL 01337`` = Archived, visible, locked, 1337 bytes.
+
+BufSprite: ``det(9, width, X, Y)``, ``Str9`` = **sprite data**
+    Draws indexed (palette-based) sprite onto the LCD and into the graph buffer. Copies the contents of the graph buffer under the sprite back into Str9, so that you can "erase" the sprite back to the original background. Good for moving player characters, cursors, and the like. Interacts politely with Pic variables and OS drawing commands like ``Line(``, ``Circle(``, ``Text(``, and so on. If you want to draw a lot of different sprites to the screen and won't need to erase them back to the background, then use BufSpriteSelect instead.
+
+    Parameters:
+     * ``Str9`` = Sprite data as ASCII hex, one nibble per byte. The digits 1-F are valid colors (1 = blue, 2 = red, 3 = black, etc), while G will cause the routine to skip to the next line. 0 is normal transparency, and lets the background show through. H is a special kind of transparency that erases back to transparency instead of leaving the background color intact.
+     * ``X`` = X coordinate to the top-left corner of the sprite.
+     * ``Y`` = Y coordinate to the top-left corner of the sprite.
+     *  ``width`` = Sprite width (height is computed).
+
+    Returns:
+     * ``Str9``: Same length as input, contains the previous contents of the graph buffer where the sprite was drawn. You can call ``det(9...)`` again without changing Str9 to effectively undo the first sprite draw.
+
+    Errors:
+     * ``..INVAL:S`` if the string contains invalid characters.
+
+BufSpriteSelect: ``det(10, width, X, Y, start, length)``, ``Str9`` = **sprite data**
+    Draws indexed (palette-based) sprite onto the LCD and into the graph buffer. Good for drawing tilemaps, backgrounds, and other sprites that you won't want to individually erase. If you want to be able to erase the sprite drawn and restore the background, you should consider BufSprite instead. This routine takes an offset into Str9 and a sprite length as arguments, so that you can pack multiple sprites of different lengths into Str9.
+
+    Parameters:
+     * ``Str9`` = Sprite data as ASCII hex, one nibble per byte. The digits 1-F are valid colors (1 = blue, 2 = red, 3 = black, etc), while G will cause the routine to skip to the next line. 0 is normal transparency, and lets the background show through. H is a special kind of transparency that erases back to transparency instead of leaving the background color intact.
+     * ``X`` = X coordinate to the top-left corner of the sprite.
+     * ``Y`` = Y coordinate to the top-left corner of the sprite.
+     *  ``width`` = Sprite width (height is computed).
+     *  ``start`` = Offset into ``Str9`` of the start of pixel data, begins at 0.
+     *  ``length`` = Length of sprite data in characters.
+
+    Returns:
+     * Sprite drawn to LCD and stored to graph buffer.
+
+    Errors:
+     * ``..INVAL:S`` if the string contains invalid characters.
+
+ExecArcPrgm: ``det(11, function, temp_prog_number)``, ``Ans`` = **program name**
+    ``Ans`` contains the name of the program you want to use in a string, then you use the ``function``, then you run the generated temporary program file according to ``temp_prog_number``. But, you'll need to know the function codes to further explain how this works:
+
+         * 0: Copy file to a file numbered by ``temp_prog_number``.
+         * 1: Delete a temporary file numbered by ``temp_prog_number``.
+         * 2: Delete all temporary files.
+
+    For example, say you wanted to copy an archived program ``FOO`` to ``prgmXTEMP002``, do the following::
+
+        "FOO":det(11,0,2):prgmXTEMP002
+    
+    If you wanted to do this to an ASM program ``BAR`` and have it copied to the 12th temporary file, do the following::
+
+        "BAR":det(11,0,12):Asm(prgmXTEMP012)
+    
+    If you decided you are done with the copy of ``FOO`` from the first example and you wanted to delete it, do this::
+
+        det(11,1,2)
+    
+    That will delete ``prgmXTEMP002`` but will not touch the original file.
+
+    If you want to clean up (get rid of all temp files), you can do the following::
+
+        det(11,2
+    
+    Files will not be overwritten if you attempt to copy to a preexisting temp file.
+
+    Parameters:
+     * ``function`` = action to complete.
+     * ``temp_prog_number`` = number of temporary program to use.
+
+    You can run the resultant temporary program via one of the following, depending on format::
+    
+        prgmXTEMP0XX  or  :Asm(prgmXTEMP0XX)
+
+    Note that only prgmXTEMP000 to prgmXTEMP015 are valid; anything above prgmXTEMP015 will return Undefined.
+
+    Returns:
+     * See description.
+
+    Errors:
+     * ``..NO:MEM`` if there is not enough memory to complete the action.
+
+DispColor: ``det(12, FG_LO, FG_HI, BG_LO, BG_HI)``
+    Changes the foreground and background color for ``Output(``, ``Disp``, and ``Pause`` to arbitrary 16-bit colors, or disables this feature. Due to technical limitations, the foreground and background for ``Text()`` cannot be changed to arbitrary colors.
+
+    Parameters:
+     * ``FG_LO`` = low byte of foreground color.
+     * ``FG_HI`` = high byte of foreground color.
+     * ``BG_LO`` = low byte of background color.
+     * ``BG_HI`` = high byte of background color.
+
+    Because of TI-OS argument-parsing limitations, foreground and background colors must be provided as a sequence of two numbers in the range 0-255. Sample low and high bytes are below.
+    Alternative method: ``det(12,FG_OS,BG_OS``
+    
+     * ``FG_OS``: Foreground color from TI-OS Colors menu, like RED or BLUE or NAVY.
+     * ``BG_OS``: Background color from TI-OS Colors menu, like RED or BLUE or NAVY.
+
+    To disable this mode, you should call ``det(12,300)`` before exiting your program.
+
+    Colors:
+    A list of colors can be found `here <colors.html>`__.
+
+    Returns:
+     * See description.
