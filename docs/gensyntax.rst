@@ -12,6 +12,21 @@ If you have entered a valid argument, Celtic will tell you what function the arg
 .. note::
     In the event that you pass invalid arguments to Celtic, it will return an error. See the `Error Codes <errorcodes.html>`__ page for more information.
 
+Check if Celtic is Installed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If your program uses Celtic, it is recommended that it makes sure Celtic is installed when ran. To check if Celtic is installed, it is recommended you put something like this at the beginning of your program::
+
+    ::DCS
+    :"Icon data...
+    :If 90>det([[20
+    :Then
+    :Disp "Get Celtic CE to run:","bit.ly/celticce
+    :Return
+    :End
+
+``det([[20]])`` will equal 90 if Celtic CE is installed. If the program aims to be compatible with Celtic 2 CSE, you may wish to refer to the `list of version codes <https://dcs.cemetech.net/index.php?title=Third-Party_BASIC_Libraries_(Color)>`__ on the DCS Wiki as well.
+
 Argument Types
 ~~~~~~~~~~~~~~
 
