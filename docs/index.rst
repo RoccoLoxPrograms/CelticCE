@@ -11,7 +11,7 @@ The function syntax section contains detailed syntax for each function, along wi
 
 .. toctree::
    :caption: Overview
-   :hidden:
+   :maxdepth: 2
 
    self
 
@@ -21,7 +21,7 @@ The function syntax section contains detailed syntax for each function, along wi
 
 .. toctree::
    :caption: Documentation
-   :hidden:
+   :maxdepth: 2
 
    installation
    gensyntax
@@ -34,7 +34,7 @@ The function syntax section contains detailed syntax for each function, along wi
 
 .. toctree::
    :caption: Function Syntax
-   :hidden:
+   :maxdepth: 2
 
    csefunctions
    dcefunctions
