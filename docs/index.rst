@@ -11,21 +11,30 @@ The function syntax section contains detailed syntax for each function, along wi
 
 .. toctree::
    :caption: Overview
-   :maxdepth: 1
+   :hidden:
 
    self
-    
+
+.. raw:: latex
+
+   \chapter{Documentation}
+
 .. toctree::
    :caption: Documentation
-   :maxdepth: 1
+   :hidden:
 
    installation
    gensyntax
    errorcodes
    colors
 
+.. raw:: latex
+
+   \chapter{Function Syntax}
+
 .. toctree::
    :caption: Function Syntax
-   :maxdepth: 1
+   :hidden:
 
    csefunctions
+   dcefunctions

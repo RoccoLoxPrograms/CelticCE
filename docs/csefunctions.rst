@@ -148,44 +148,23 @@ BufSpriteSelect: ``det(10, width, X, Y, start, length)``, ``Str9`` = **sprite da
      * ``..INVAL:S`` if the string contains invalid characters.
 
 ExecArcPrgm: ``det(11, function, temp_prog_number)``, ``Ans`` = **program name**
-    ``Ans`` contains the name of the program you want to use in a string, then you use the ``function``, then you run the generated temporary program file according to ``temp_prog_number``. But, you'll need to know the function codes to further explain how this works:
+    Copies a program to the ``XTEMP`` program of the specified ``temp_prog_number``. ``Ans`` is the name of the program to copy. ``function`` refers to the behavior of the ``ExecArcPrgm`` command, as seen in the table below:
 
-         * 0: Copy file to a file numbered by ``temp_prog_number``.
-         * 1: Delete a temporary file numbered by ``temp_prog_number``.
-         * 2: Delete all temporary files.
-
-    For example, say you wanted to copy an archived program ``FOO`` to ``prgmXTEMP002``, do the following::
-
-        "FOO":det(11,0,2):prgmXTEMP002
-    
-    If you wanted to do this to an ASM program ``BAR`` and have it copied to the 12th temporary file, do the following::
-
-        "BAR":det(11,0,12):Asm(prgmXTEMP012)
-    
-    If you decided you are done with the copy of ``FOO`` from the first example and you wanted to delete it, do this::
-
-        det(11,1,2)
-    
-    That will delete ``prgmXTEMP002`` but will not touch the original file.
-
-    If you want to clean up (get rid of all temp files), you can do the following::
-
-        det(11,2
-    
-    Files will not be overwritten if you attempt to copy to a preexisting temp file.
+    ==== ================================================================
+    Code Function
+    ==== ================================================================
+    0    Copies the program in ``Ans`` to the ``XTEMP`` program specified.
+    1    Deletes the ``XTEMP`` program with the specified number.
+    2    Deletes all ``XTEMP`` programs.
+    ==== ================================================================
 
     Parameters:
-     * ``function`` = action to complete.
-     * ``temp_prog_number`` = number of temporary program to use.
-
-    You can run the resultant temporary program via one of the following, depending on format::
-    
-        prgmXTEMP0XX  or  :Asm(prgmXTEMP0XX)
-
-    Note that only prgmXTEMP000 to prgmXTEMP015 are valid; anything above prgmXTEMP015 will return Undefined.
+     * ``function`` = The requested behavior of the function. Can be 0, 1, or 2.
+     * ``temp_prog_number`` = The number of the ``XTEMP`` program to create/delete.
+     * ``Ans`` = Name of program to copy from.
 
     Returns:
-     * See description.
+     * Completes the specified function.
 
     Errors:
      * ``..NO:MEM`` if there is not enough memory to complete the action.
@@ -199,16 +178,15 @@ DispColor: ``det(12, FG_LO, FG_HI, BG_LO, BG_HI)``
      * ``BG_LO`` = low byte of background color.
      * ``BG_HI`` = high byte of background color.
 
-    Because of TI-OS argument-parsing limitations, foreground and background colors must be provided as a sequence of two numbers in the range 0-255. Sample low and high bytes are below.
-    Alternative method: ``det(12,FG_OS,BG_OS``
+    Alternative method: ``det(12, FG_OS, BG_OS)``
     
      * ``FG_OS``: Foreground color from TI-OS Colors menu, like RED or BLUE or NAVY.
      * ``BG_OS``: Background color from TI-OS Colors menu, like RED or BLUE or NAVY.
 
-    To disable this mode, you should call ``det(12,300)`` before exiting your program.
+    To disable this mode, you should call ``det(12, 300)`` before exiting your program.
 
     Colors:
-    A list of colors can be found `here <colors.html>`__.
+     * A list of colors can be found `here <colors.html>`__.
 
     Returns:
      * See description.

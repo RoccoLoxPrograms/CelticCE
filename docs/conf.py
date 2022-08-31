@@ -120,13 +120,7 @@ latex_elements = {
     #
     'pointsize': '10pt',
 
-    # Additional stuff for the LaTeX preamble.
-    #
-    'preamble': r'''
-        \usepackage{charter}
-        \usepackage[defaultsans]{lato}
-        \usepackage{inconsolata}
-    ''',
+    'tableofcontents': '\\sphinxtableofcontents',
 
     # Latex figure (float) alignment
     #

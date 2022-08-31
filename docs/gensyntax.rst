@@ -21,7 +21,7 @@ If your program uses Celtic, it is recommended that it makes sure Celtic is inst
     :"Icon data...
     :If 90>det([[20
     :Then
-    :Disp "Get Celtic CE to run:","bit.ly/celticce
+    :Disp "Get Celtic CE to run this:","bit.ly/CelticCE
     :Return
     :End
 
