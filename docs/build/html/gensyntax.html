@@ -1,0 +1,268 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>General Syntax &mdash; Celtic CE Beta 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Error Codes" href="errorcodes.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Celtic CE
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to the Celtic CE docs!</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">General Syntax</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#check-if-celtic-is-installed">Check if Celtic is Installed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#argument-types">Argument Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#returns">Returns</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="errorcodes.html">Error Codes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="colors.html">Colors</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Function Syntax</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="csefunctions.html">Celtic 2 CSE Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcefunctions.html">Doors CE 9 Functions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Celtic CE</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>General Syntax</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/gensyntax.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="general-syntax">
+<h1>General Syntax<a class="headerlink" href="#general-syntax" title="Permalink to this heading">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h2>
+<p>Celtic uses a parser hook to search for a token in your program and run its ASM code if it finds it.
+When it encounters the <code class="docutils literal notranslate"><span class="pre">det(</span></code> token, Celtic will detect which function you are calling and any arguments with it.
+The first argument after the <code class="docutils literal notranslate"><span class="pre">det(</span></code> token tells Celtic which function you wish to call.
+If you have entered a valid argument, Celtic will tell you what function the argument is referencing in the status bar of the program editor when your cursor is over it.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the event that you pass invalid arguments to Celtic, it will return an error. See the <a class="reference external" href="errorcodes.html">Error Codes</a> page for more information.</p>
+</div>
+</div>
+<div class="section" id="check-if-celtic-is-installed">
+<h2>Check if Celtic is Installed<a class="headerlink" href="#check-if-celtic-is-installed" title="Permalink to this heading">¶</a></h2>
+<p>If your program uses Celtic, it is recommended that it makes sure Celtic is installed when ran. To check if Celtic is installed, it is recommended you put something like this at the beginning of your program:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">::</span><span class="n">DCS</span>
+<span class="p">:</span><span class="s2">&quot;Icon data...</span>
+<span class="p">:</span><span class="n">If</span> <span class="mi">90</span><span class="o">&gt;</span><span class="n">det</span><span class="p">([[</span><span class="mi">20</span>
+<span class="p">:</span><span class="n">Then</span>
+<span class="p">:</span><span class="n">Disp</span> <span class="s2">&quot;Get Celtic CE to run this:&quot;</span><span class="p">,</span><span class="s2">&quot;bit.ly/CelticCE</span>
+<span class="p">:</span><span class="n">Return</span>
+<span class="p">:</span><span class="n">End</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">det([[20]])</span></code> will equal 90 if Celtic CE is installed. If the program aims to be compatible with Celtic 2 CSE, you may wish to refer to the <a class="reference external" href="https://dcs.cemetech.net/index.php?title=Third-Party_BASIC_Libraries_(Color)">list of version codes</a> on the DCS Wiki as well.</p>
+</div>
+<div class="section" id="argument-types">
+<h2>Argument Types<a class="headerlink" href="#argument-types" title="Permalink to this heading">¶</a></h2>
+<p>Arguments are passed to Celtic in three different ways. They can be passed in the <code class="docutils literal notranslate"><span class="pre">det(</span></code> function, in the <code class="docutils literal notranslate"><span class="pre">Ans</span></code> variable, or in a string.
+The method of passing arguments will differ, depending on the function and the type of argument that is being passed.
+The specific syntax for each function is listed in the documentation.</p>
+<p>Most often, numerical arguments are passed in the <code class="docutils literal notranslate"><span class="pre">det(</span></code> function. Variable names are put in <code class="docutils literal notranslate"><span class="pre">Str0</span></code>, and strings arguments are put in <code class="docutils literal notranslate"><span class="pre">Str9</span></code>. The exact usage will vary depending on the function.
+Celtic only accepts positive real integers as arguments. If a decimal number is passed, Celtic will only take the integer part of it.</p>
+<p>When using <code class="docutils literal notranslate"><span class="pre">Str0</span></code> as a program name, simply store the name of the program into <code class="docutils literal notranslate"><span class="pre">Str0</span></code>. When storing an AppVar, begin the string with the <code class="docutils literal notranslate"><span class="pre">rowSwap(</span></code> token. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">:</span><span class="s2">&quot;FOO&quot;</span> <span class="o">-&gt;</span> <span class="n">Str0</span>              <span class="o">//</span><span class="n">program</span> <span class="n">FOO</span>
+<span class="p">:</span><span class="s2">&quot;rowSwap(FOO&quot;</span> <span class="o">-&gt;</span> <span class="n">Str0</span>      <span class="o">//</span><span class="n">AppVar</span> <span class="n">FOO</span>
+</pre></div>
+</div>
+<p>If a string is used, it must be in the RAM when the function is called.</p>
+</div>
+<div class="section" id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Permalink to this heading">¶</a></h2>
+<p>Depending on the function, Celtic will return a value after it runs. For example, the <code class="docutils literal notranslate"><span class="pre">SpecialChars</span></code> function fills <code class="docutils literal notranslate"><span class="pre">Str9</span></code> with certain special characters.</p>
+<p>String returns are most often in <code class="docutils literal notranslate"><span class="pre">Str9</span></code>, while numerical returns are in the theta variable. All functions will return the initial contents of <code class="docutils literal notranslate"><span class="pre">Ans</span></code> (in order to preserve it).</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="errorcodes.html" class="btn btn-neutral float-right" title="Error Codes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, RoccoLox Programs, TIny_Hacker
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
