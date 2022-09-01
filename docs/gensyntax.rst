@@ -9,6 +9,12 @@ When it encounters the ``det(`` token, Celtic will detect which function you are
 The first argument after the ``det(`` token tells Celtic which function you wish to call.
 If you have entered a valid argument, Celtic will tell you what function the argument is referencing in the status bar of the program editor when your cursor is over it.
 
+.. figure:: images/functionPreview.png
+    :alt: Celtic's function preview feature
+    :align: center
+
+    Celtic's function preview feature.
+
 .. note::
     In the event that you pass invalid arguments to Celtic, it will return an error. See the `Error Codes <errorcodes.html>`__ page for more information.
 
