@@ -19,7 +19,7 @@ Error Code Description
 ..S:NT:FN  The specified string was not found.
 ..S:FLASH  The specified string is archived.
 ..S:NT:ST  The input is not a string, but Celtic expects a string.
-..NO:MEM   There is not enough memory to complete the requested action.
+..NT:EN:M  There is not enough memory to complete the requested action.
 ..P:NT:FN  The specified program or appvar was not found.
 ..PGM:ARC  The specified program or appvar is archived, so it cannot be modified.
 ..NULLSTR  The specified line exists, but is empty.

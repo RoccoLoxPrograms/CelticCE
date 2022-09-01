@@ -52,6 +52,7 @@ InsertLine: ``det(2)``, ``Str0`` = **variable name**, ``Ans`` = **line number**,
 
     Errors:
      * ``..PGM:ARC`` if the file is archived.
+     * ``..NT:EN:M`` if there is not enough memory to complete the action.
 
 SpecialChars: ``det(3)``
     Stores the ``->`` and ``"`` characters into ``Str9``.
@@ -167,7 +168,7 @@ ExecArcPrgm: ``det(11, function, temp_prog_number)``, ``Ans`` = **program name**
      * Completes the specified function.
 
     Errors:
-     * ``..NO:MEM`` if there is not enough memory to complete the action.
+     * ``..NT:EN:M`` if there is not enough memory to complete the action.
 
 DispColor: ``det(12, FG_LO, FG_HI, BG_LO, BG_HI)``
     Changes the foreground and background color for ``Output(``, ``Disp``, and ``Pause`` to arbitrary 16-bit colors, or disables this feature. Due to technical limitations, the foreground and background for ``Text()`` cannot be changed to arbitrary colors.
