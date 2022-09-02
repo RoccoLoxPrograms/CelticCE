@@ -15,6 +15,8 @@ If you have entered a valid argument, Celtic will tell you what function the arg
 
     Celtic's function preview feature.
 
+The function preview follows a general syntax: "``CommandName(Arguments)``: ``Input Vars`` (if any): ``Output Vars`` (if any)". As you can see in the example above, ReadLine is listed with no arguments, ``Str0`` and ``Ans`` as the input variables, and ``Str9`` or ``theta`` as the output variables. 
+
 .. note::
     In the event that you pass invalid arguments to Celtic, it will return an error. See the `Error Codes <errorcodes.html>`__ page for more information.
 
