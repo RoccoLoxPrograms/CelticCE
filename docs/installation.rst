@@ -32,6 +32,5 @@ Installing the App
     The Celtic app.
 
 .. note::
-    Depending on the other programs you have installed on your calculator, you may only see an "Uninstall" option.
-    To install Celtic CE, you'll need to first press [1] to uninstall the exisiting program, and then press [1] again to install Celtic CE.
-    Note that this will override any pre-exisitng libraries/hooks conflicting with Celtic CE.
+    If you install Celtic CE when another parser hook (ASMHOOK, for example) is installed, it will chain with it in order preserve it.
+    This means that both hooks will be able to run in tandem. However, if Celtic gets uninstalled, you will need to re-install the second hook again.
