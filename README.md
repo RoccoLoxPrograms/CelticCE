@@ -1,4 +1,4 @@
-# CelticCE
+# CelticCE [![Discord Chat Link](https://img.shields.io/discord/1012426214226530424?logo=discord)](https://discord.gg/RDTtu258fW)
 Celtic for the TI-84 Plus CE (finally).
 You can view the online documentation [here](https://roccoloxprograms.github.io/CelticCE).
 
