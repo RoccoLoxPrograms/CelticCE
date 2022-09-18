@@ -26,5 +26,6 @@ Error Code Description
 ..NT:REAL  The input was not a real number, but Celtic expects a real number.
 ..INVAL:A  An invalid argument was entered. This error code could refer to various issues.
 ..INVAL:S  An invalid string was entered.
+..2:M:ARG  More arguments were entered than Celtic is able to handle.
 ..SUPPORT  Whatever happened was not supported by Celtic.
 ========== ================================================================================================
