@@ -32,5 +32,5 @@ Installing the App
     The Celtic app.
 
 .. note::
-    If you install Celtic CE when another parser hook (ASMHOOK, for example) is installed, it will chain with it in order preserve it.
+    If you install Celtic CE when another parser hook (ASMHOOK, for example) is installed, it will chain with it in order to preserve it.
     This means that both hooks will be able to run in tandem. However, if Celtic gets uninstalled, you will need to re-install the second hook again.
