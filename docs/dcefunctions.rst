@@ -13,7 +13,7 @@ DispText: ``det(13, LargeFont, FG_LO, FG_HI, BG_LO, BG_HI, X, Y)``, ``Str9`` = *
     Displays colored text from ``Str9`` at ``X`` and ``Y`` on the screen, using the OS large or small font.
 
     .. warning::
-        You can only use a maximum of 128 characters in ``Str9`` at a time with this command. However, this should be pleanty, since the text does not wrap.
+        You can only use a maximum of 128 characters in ``Str9`` at a time with this command. However, this should be plenty, since the text does not wrap.
 
     Parameters:
      * ``LargeFont`` = whether to use OS large or small font. 0 means to use the OS small font, and 1 means to use the large font.
