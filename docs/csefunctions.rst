@@ -25,6 +25,7 @@ ReadLine: ``det(0)``, ``Str0`` = **variable name**, ``Ans`` = **line number**
     Errors:
      * ``..NULLSTR`` if the line is empty.
 
+
 ReplaceLine: ``det(1)``, ``Str0`` = **variable name**, ``Ans`` = **line number**, ``Str9`` = **replacement**
     Replaces (overwrites) a line in a program or AppVar. ``Ans`` refers to the line to replace.
 
@@ -38,6 +39,7 @@ ReplaceLine: ``det(1)``, ``Str0`` = **variable name**, ``Ans`` = **line number**
 
     Errors:
      * ``..PGM:ARC`` if the file is archived.
+
 
 InsertLine: ``det(2)``, ``Str0`` = **variable name**, ``Ans`` = **line number**, ``Str9`` = **contents**
     Insets a line into a program or AppVar. ``Ans`` refers to the line number to write to.
@@ -54,11 +56,16 @@ InsertLine: ``det(2)``, ``Str0`` = **variable name**, ``Ans`` = **line number**,
      * ``..PGM:ARC`` if the file is archived.
      * ``..NT:EN:M`` if there is not enough memory to complete the action.
 
+.. note::
+    If your usage of InsertLine results in the program exceeding 65535 bytes (the maximum size of a file), it will result in loss of memory. Celtic does not check if you exceed this filesize, as there should be no reason anyone would do this in the first place.
+
+
 SpecialChars: ``det(3)``
     Stores the ``->`` and ``"`` characters into ``Str9``.
 
     Returns:
      * ``Str9``: ``->`` and ``"``, respectively. You can use substrings to extract them. There are also 7 more characters in ``Str9``, which are junk.
+
 
 CreateVar: ``det(4)``, ``Str0`` = **variable name**
     Create a program or AppVar given a name.
@@ -73,6 +80,7 @@ CreateVar: ``det(4)``, ``Str0`` = **variable name**
     Errors:
      * ``..P:IS:FN`` if the program already exists.
 
+
 ArcUnarcVar: ``det(5)``, ``Str0`` = **variable name**
     Archive/unarchive a program or AppVar given a name.
 
@@ -81,6 +89,7 @@ ArcUnarcVar: ``det(5)``, ``Str0`` = **variable name**
 
     Returns:
      * Moves a program or AppVar into RAM if it was in Archive, or into Archive if it was in RAM.
+
 
 DeleteVar: ``det(6)``, ``Str0`` = **variable name**
     Delete a program variable or an AppVar given a name.
@@ -91,6 +100,7 @@ DeleteVar: ``det(6)``, ``Str0`` = **variable name**
     Returns:
      * The indicated program or AppVar is deleted.
 
+
 DeleteLine: ``det(7)``, ``Str0`` = **variable name**, ``Ans`` = **line number**
     Deletes a line from a program or AppVar. ``Ans`` is the line to delete.
 
@@ -100,6 +110,7 @@ DeleteLine: ``det(7)``, ``Str0`` = **variable name**, ``Ans`` = **line number**
 
     Returns:
      * ``Str9``: Intact if no error occured; otherwise, contains an error code.
+
 
 VarStatus: ``det(8)``, ``Str0`` = **variable name**
     Output status string describing a program or AppVar's current state, including size, visibility, and more.
@@ -116,6 +127,7 @@ VarStatus: ``det(8)``, ``Str0`` = **variable name**
          * 5th - 9th character: Size, in bytes
      * Example: ``AVL 01337`` = Archived, visible, locked, 1337 bytes.
 
+
 BufSprite: ``det(9, width, X, Y)``, ``Str9`` = **sprite data**
     Draws indexed (palette-based) sprite onto the LCD and into the graph buffer. Copies the contents of the graph buffer under the sprite back into Str9, so that you can "erase" the sprite back to the original background. Good for moving player characters, cursors, and the like. Interacts politely with Pic variables and OS drawing commands like ``Line(``, ``Circle(``, ``Text(``, and so on. If you want to draw a lot of different sprites to the screen and won't need to erase them back to the background, then use BufSpriteSelect instead.
 
@@ -130,6 +142,7 @@ BufSprite: ``det(9, width, X, Y)``, ``Str9`` = **sprite data**
 
     Errors:
      * ``..INVAL:S`` if the string contains invalid characters.
+
 
 BufSpriteSelect: ``det(10, width, X, Y, start, length)``, ``Str9`` = **sprite data**
     Draws indexed (palette-based) sprite onto the LCD and into the graph buffer. Good for drawing tilemaps, backgrounds, and other sprites that you won't want to individually erase. If you want to be able to erase the sprite drawn and restore the background, you should consider BufSprite instead. This routine takes an offset into Str9 and a sprite length as arguments, so that you can pack multiple sprites of different lengths into Str9.
@@ -147,6 +160,7 @@ BufSpriteSelect: ``det(10, width, X, Y, start, length)``, ``Str9`` = **sprite da
 
     Errors:
      * ``..INVAL:S`` if the string contains invalid characters.
+
 
 ExecArcPrgm: ``det(11, function, temp_prog_number)``, ``Ans`` = **program name**
     Copies a program to the ``XTEMP`` program of the specified ``temp_prog_number``. ``Ans`` is the name of the program to copy. ``function`` refers to the behavior of the ``ExecArcPrgm`` command, as seen in the table below:
@@ -169,6 +183,7 @@ ExecArcPrgm: ``det(11, function, temp_prog_number)``, ``Ans`` = **program name**
 
     Errors:
      * ``..NT:EN:M`` if there is not enough memory to complete the action.
+
 
 DispColor: ``det(12, FG_LO, FG_HI, BG_LO, BG_HI)``
     Changes the foreground and background color for ``Output(``, ``Disp``, and ``Pause`` to arbitrary 16-bit colors, or disables this feature. Due to technical limitations, the foreground and background for ``Text()`` cannot be changed to arbitrary colors.

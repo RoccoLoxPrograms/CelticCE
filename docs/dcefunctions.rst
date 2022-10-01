@@ -36,6 +36,7 @@ DispText: ``det(13, LargeFont, FG_LO, FG_HI, BG_LO, BG_HI, X, Y)``, ``Str9`` = *
     Returns:
      * Displays the specified text.
 
+
 ExecHex: ``det(14)``, ``Ans`` = **hex code**
     Executes the string of ASCII-encoded hexadecimal in Ans. Although a C9 (ret) at the end of your hex string is highly encouraged, Celtic will automatically put one at the end for safety regardless.
 
@@ -50,6 +51,7 @@ ExecHex: ``det(14)``, ``Ans`` = **hex code**
 
     Errors:
      * ``..INVAL:S`` if there is an invalid hex digit or an odd number of characters in the string.
+
 
 TextRect: ``det(15, LOW, HIGH, X, Y, WIDTH, HEIGHT)``
     Draw a filled, colored rectangle on the screen. This command can also be used to draw an individual pixel by setting the width and height to 1, or a line by setting either the width or height to 1.

@@ -18,7 +18,7 @@ If you have entered a valid argument, Celtic will tell you what function the arg
 The function preview follows a general syntax: "``CommandName(Arguments)``: ``Input Vars`` (if any): ``Output Vars`` (if any)". As you can see in the example above, ReadLine is listed with no arguments, ``Str0`` and ``Ans`` as the input variables, and ``Str9`` or ``theta`` as the output variables. 
 
 .. note::
-    In the event that you pass invalid arguments to Celtic, it will return an error. See the `Error Codes <errorcodes.html>`__ page for more information.
+    In the event that you pass invalid arguments to Celtic, it will return an error. All errors are returned in ``Str9``. See the `Error Codes <errorcodes.html>`__ page for more information.
 
 Check if Celtic is Installed
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,4 +56,4 @@ Returns
 ~~~~~~~
 Depending on the function, Celtic will return a value after it runs. For example, the ``SpecialChars`` function fills ``Str9`` with certain special characters.
 
-String returns are most often in ``Str9``, while numerical returns are in the theta variable. All functions will return the initial contents of ``Ans`` (in order to preserve it).
+String returns (including errors) are most often in ``Str9``, while numerical returns are in the theta variable. All functions will return the initial contents of ``Ans`` (in order to preserve it).
