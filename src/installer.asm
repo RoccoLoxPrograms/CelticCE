@@ -4,47 +4,47 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022
 ; License: BSD 3-Clause License
-; Last Built: September 17, 2022
+; Last Built: November 29, 2022
 ;
 ;--------------------------------------
 
-	jp	installApp
-	db	$01
+    jp  installApp
+    db	$01
 ___icon:
-	db	$10, $10
-	db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-	db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-	db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-	db	$FF, $FF, $FF, $FF, $FF, $FF, $07, $25, $25, $07, $FF, $FF, $FF, $FF, $FF, $FF
-	db	$FF, $FF, $FF, $FF, $FF, $07, $25, $8F, $8F, $25, $07, $FF, $FF, $FF, $FF, $FF
-	db	$FF, $FF, $FF, $FF, $FF, $25, $8F, $07, $25, $8F, $25, $FF, $FF, $FF, $FF, $FF
-	db	$FF, $FF, $FF, $FF, $FF, $25, $8F, $25, $8F, $8F, $25, $FF, $FF, $FF, $FF, $FF
-	db	$FF, $FF, $FF, $FF, $8F, $8F, $25, $8F, $25, $25, $07, $07, $FF, $FF, $FF, $FF
-	db	$FF, $FF, $FF, $8F, $25, $07, $25, $25, $25, $25, $25, $25, $8F, $FF, $FF, $FF
-	db	$FF, $FF, $07, $25, $8F, $25, $8F, $25, $25, $8F, $8F, $8F, $25, $07, $FF, $FF
-	db	$FF, $FF, $07, $25, $07, $25, $8F, $25, $25, $8F, $25, $07, $25, $07, $FF, $FF
-	db	$FF, $FF, $07, $25, $8F, $8F, $8F, $25, $8F, $8F, $25, $8F, $25, $07, $FF, $FF
-	db	$FF, $FF, $FF, $8F, $25, $25, $25, $8F, $FF, $8F, $07, $25, $8F, $FF, $FF, $FF
-	db	$FF, $FF, $FF, $FF, $07, $07, $07, $FF, $FF, $FF, $8F, $8F, $FF, $FF, $FF, $FF
-	db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-	db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+    db	$10, $10
+    db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+    db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+    db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+    db	$FF, $FF, $FF, $FF, $FF, $FF, $07, $25, $25, $07, $FF, $FF, $FF, $FF, $FF, $FF
+    db	$FF, $FF, $FF, $FF, $FF, $07, $25, $8F, $8F, $25, $07, $FF, $FF, $FF, $FF, $FF
+    db	$FF, $FF, $FF, $FF, $FF, $25, $8F, $07, $25, $8F, $25, $FF, $FF, $FF, $FF, $FF
+    db	$FF, $FF, $FF, $FF, $FF, $25, $8F, $25, $8F, $8F, $25, $FF, $FF, $FF, $FF, $FF
+    db	$FF, $FF, $FF, $FF, $8F, $8F, $25, $8F, $25, $25, $07, $07, $FF, $FF, $FF, $FF
+    db	$FF, $FF, $FF, $8F, $25, $07, $25, $25, $25, $25, $25, $25, $8F, $FF, $FF, $FF
+    db	$FF, $FF, $07, $25, $8F, $25, $8F, $25, $25, $8F, $8F, $8F, $25, $07, $FF, $FF
+    db	$FF, $FF, $07, $25, $07, $25, $8F, $25, $25, $8F, $25, $07, $25, $07, $FF, $FF
+    db	$FF, $FF, $07, $25, $8F, $8F, $8F, $25, $8F, $8F, $25, $8F, $25, $07, $FF, $FF
+    db	$FF, $FF, $FF, $8F, $25, $25, $25, $8F, $FF, $8F, $07, $25, $8F, $FF, $FF, $FF
+    db	$FF, $FF, $FF, $FF, $07, $07, $07, $FF, $FF, $FF, $8F, $8F, $FF, $FF, $FF, $FF
+    db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+    db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 ___description:
-	db "Celtic CE Installer - BETA v1.0", 0
+    db "Celtic CE Installer - BETA v1.1", 0
 
 installApp:
-	call .clearScreen
+    call .clearScreen
+    
+    installer_ports.copy
 
-	installer_ports.copy
-
-	call installer.port_setup
-	or a, a
-	ld hl, osInvalidStr
-	jq nz, .printMessage
-
-	app_create
-
-	jr z, appInstalled
-	ld hl, celticAppAlreadyExists
+    call installer.port_setup
+    or a, a
+    ld hl, osInvalidStr
+    jp nz, .printMessage
+    
+    app_create
+    
+    jr z, appInstalled
+    ld hl, celticAppAlreadyExists
     call ti.PutS
     call ti.NewLine
     call ti.PutS
@@ -56,18 +56,18 @@ installApp:
     call ti.GetCSC
     cp a, ti.skEnter
     jr nz, .getKey
-	jp appInstalled.exit
+    jp appInstalled.exit
 
 .printMessage:
-	call ti.PutS
-	call ti.GetKey
+    call ti.PutS
+    call ti.GetKey
 
 .clearScreen:
-	call ti.ClrScrn
-	jp ti.HomeUp
+    call ti.ClrScrn
+    jp ti.HomeUp
 
 appInstalled:
-	call ti.ClrScrn
+    call ti.ClrScrn
     call ti.HomeUp
     ld hl, celticInstalledStr
     call ti.PutS
@@ -122,7 +122,7 @@ appInstalled:
 
 .exit:
     call ti.ClrScrn
-	jp ti.HomeUp
+    jp ti.HomeUp
 
 .leftPress:
     ld a, (ti.curCol)
@@ -155,6 +155,7 @@ appInstalled:
     ld a, 6
     ld (ti.curCol), a
     ld hl, optionYes
+    set ti.textEraseBelow, (iy + ti.textFlags)
     call ti.PutS
     ld hl, $000000
     ld de, $00FFFF
@@ -174,16 +175,17 @@ appInstalled:
     ld a, 16
     ld (ti.curCol), a
     ld hl, optionNo
+    set ti.textEraseBelow, (iy + ti.textFlags)
     call ti.PutS
     ld hl, $000000
     ld de, $00FFFF
     call ti.SetTextFGBGcolors_
     ld a, 16
     ld (ti.curCol), a
-	ret
+    ret
 
 osInvalidStr:
-	db  "Cannot use this OS.", 0
+    db  "Cannot use this OS.", 0
 
 celticInstalledStr:
     db " Celtic CE app installed.", 0
@@ -203,11 +205,11 @@ optionNo:
     db " No ", 0
 
 celticName:
-	db ti.ProgObj, "CELTICCE", 0
+    db ti.ProgObj, "CELTICCE", 0
 
-relocate installer_ports, ti.saveSScreen
+relocate installer_ports, ti.pixelShadow
 define installer
 namespace installer
-	include 'ports.asm'
+    include 'ports.asm'
 end namespace
 end relocate

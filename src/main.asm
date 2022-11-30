@@ -4,28 +4,29 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022
 ; License: BSD 3-Clause License
-; Last Built: September 17, 2022
+; Last Built: November 29, 2022
 ;
 ;--------------------------------------
 
-var0            equ ti.pixelShadow + 00 ; arguments from first to last (first argument is command number)
-var1            equ ti.pixelShadow + 03 ; 
-var2            equ ti.pixelShadow + 06 ; 
-var3            equ ti.pixelShadow + 09 ; 
-var4            equ ti.pixelShadow + 12 ; 
-var5            equ ti.pixelShadow + 15 ; 
-var6            equ ti.pixelShadow + 18 ; 
-var7            equ ti.pixelShadow + 21 ; max of 8 arguments can be passed
-noArgs          equ ti.pixelShadow + 24 ; number of arguments
-ans             equ ti.pixelShadow + 27 ; temp storage for Ans
-EOF             equ ti.pixelShadow + 30 ; end of file address
-bufSpriteX      equ ti.pixelShadow + 33 ; reserved for BufSprite and BufSpriteSelect
-bufSpriteY      equ ti.pixelShadow + 36 ; ""
-bufSpriteXStart equ ti.pixelShadow + 37 ; ""
-currentWidth    equ ti.pixelShadow + 40 ; ""
-xtempName       equ ti.pixelShadow + 43 ; XTEMP000 name
-prgmName        equ ti.pixelShadow + 53 ; Used to store a variable name
-execHexLoc      equ ti.pixelShadow + 64 ; Location for storing ExecHex code (could be any size)
+var0            equ ti.pixelShadow2 + 100 ; arguments from first to last (first argument is command number)
+var1            equ ti.pixelShadow2 + 103 ; 
+var2            equ ti.pixelShadow2 + 106 ; 
+var3            equ ti.pixelShadow2 + 109 ; 
+var4            equ ti.pixelShadow2 + 112 ; 
+var5            equ ti.pixelShadow2 + 115 ; 
+var6            equ ti.pixelShadow2 + 118 ; 
+var7            equ ti.pixelShadow2 + 121 ; max of 8 arguments can be passed
+noArgs          equ ti.pixelShadow2 + 124 ; number of arguments
+ans             equ ti.pixelShadow2 + 127 ; temp storage for Ans
+EOF             equ ti.pixelShadow2 + 130 ; end of file address
+bufSpriteX      equ ti.pixelShadow2 + 133 ; reserved for BufSprite and BufSpriteSelect
+bufSpriteY      equ ti.pixelShadow2 + 136 ; ""
+bufSpriteXStart equ ti.pixelShadow2 + 137 ; ""
+currentWidth    equ ti.pixelShadow2 + 140 ; ""
+xtempName       equ ti.pixelShadow2 + 143 ; XTEMP000 name
+prgmName        equ ti.pixelShadow2 + 153 ; Used to store a variable name
+stackPtr        equ ti.pixelShadow2 + 164 ; used to preserve the stack pointer
+execHexLoc      equ ti.pixelShadow2 + 167 ; Location for storing ExecHex code (max size of 4096 bytes) (used for undefined temp storage size in various commands)
 
 ;------------------------------------------------------------------------------------
 
@@ -35,6 +36,10 @@ invalidArg      := 2
 keyPressed      := 3
 insertLastLine  := 4
 replaceLineRun  := 5
+invertPixel     := 6
+imaginaryList   := 7
+randFlag        := 7 ; just so there's a flag without a specific purpose
+
 tempNameNum     := xtempName + 7
 
 ;------------------------------------------------------------------------------------
@@ -42,18 +47,15 @@ tempNameNum     := xtempName + 7
 if flag_prerelease
 
 installPage:
-    ld b, 255
     call ti.ClrScrn
     call ti.HomeUp
     ld hl, warningMsg
     call ti.PutS
     call ti.NewLine
-    call ti.PutS
     call ti.NewLine
     call ti.PutS
     call ti.NewLine
     call ti.PutS
-    call ti.NewLine
     call ti.NewLine
     call ti.PutS
     call waitAnyKey
@@ -68,14 +70,11 @@ end if
 
     set ti.fracDrawLFont, (iy + ti.fontFlags)
     call ti.RunIndicOff
+    call ti.DisableAPD
     ld hl, $4249
-    ld (ti.fillRectColor), hl
-    ld hl, 0 ; top left x coord
-    ld de, 319 ; bottom right x coord
-    ld b, 0 ; top left y coord
-    ld c, 239 ; bottom right y coord
-    call ti.FillRect
-    ld hl, $4249 ; dark grey
+    push hl
+    call FillScreen
+    pop hl
     ld (ti.drawBGColor), hl
     ld hl, $FFFF ; white
     ld (ti.drawFGColor), hl
@@ -118,6 +117,8 @@ selectOption:
     jr z, testOption
     cp a, ti.sk3
     jr z, testOption
+    cp a, ti.skChs
+    jr z, testOption
     cp a, ti.skClear
     jr z, exitCelticApp
     jr selectOption
@@ -127,6 +128,8 @@ testOption:
     jp z, installHook
     cp a, ti.sk2
     jr z, aboutScrn
+    cp a, ti.skChs
+    jr z, testNumberHit
 
 exitCelticApp:
     res ti.fracDrawLFont, (iy + ti.fontFlags)
@@ -135,7 +138,44 @@ exitCelticApp:
     call ti.ClrScrn
     call ti.DrawStatusBar
     call ti.HomeUp
-    jp ti.JForceCmdNoChar
+    call ti.ApdSetup
+    call ti.EnableAPD
+    ld a, ti.kClear
+    jp ti.JForceCmd
+
+testNumberHit:
+    call ti.GetCSC
+    or a, a
+    jr z, testNumberHit
+    cp a, ti.sk0
+    jr z, secret
+    cp a, ti.sk1
+    jr z, testOption
+    cp a, ti.sk2
+    jr z, testOption
+    cp a, ti.sk3
+    jr z, testOption
+    cp a, ti.skClear
+    jr z, exitCelticApp
+    jr selectOption
+
+secret: ;)
+    ld bc, (ti.lcdWidth * ti.lcdHeight) * 2
+
+if flag_prerelease
+
+    ld hl, installPageSkipWarn
+
+else
+
+    ld hl, installPage
+
+end if
+
+    ld de, ti.vRam
+    ldir
+    call waitAnyKey
+    jp drawFullCredits
 
 loadInstallOption:
     ld hl, installScrnOption1
@@ -151,11 +191,8 @@ loadInstallOption:
     ret
 
 aboutScrn:
-    ld hl, 0
-    ld de, 319
-    ld b, 0
-    ld c, 239
-    call ti.FillRect
+    ld hl, $4249
+    call FillScreen
     ld hl, 107
     ld (ti.penCol), hl
     ld a, 5
@@ -202,11 +239,8 @@ end if
 
 installHook:
     call ti.HomeUp
-    ld hl, 0
-    ld de, 319
-    ld b, 0
-    ld c, 239
-    call ti.FillRect
+    ld hl, $4249
+    call FillScreen
     ld hl, $FFFF
     ld de, $4249
     call ti.SetTextFGBGcolors_
@@ -260,7 +294,6 @@ uninstallHook:
     call ti.ClrParserHook
     call uninstallChain
     call ti.ClrCursorHook
-    call ti.ClrGetKeyHook
     call ti.ClrRawKeyHook
     ld hl, celticUninstalledMsg
     jq displayInstallmsg
@@ -271,9 +304,120 @@ uninstallChain:
     res ti.helpHookActive, (iy + ti.hookflags4)
     ret
 
+drawFullCredits:
+    ld hl, 0
+    ld (ti.fillRectColor), hl
+    ld hl, 80
+    ld de, 239
+    ld b, 0
+    ld c, 239
+    call ti.FillRect
+    ld hl, 0
+    ld (ti.drawBGColor), hl
+    ld hl, $FFFF
+    ld (ti.drawFGColor), hl
+    ld hl, 107
+    ld (ti.penCol), hl
+    ld a, 5
+    ld (ti.penRow), a
+    ld hl, aboutScrnLine1
+    call ti.VPutS
+    ld hl, 84
+    ld (ti.penCol), hl
+    ld a, 45
+    ld (ti.penRow), a
+    ld hl, creditsStr1
+    call ti.VPutS
+    ld hl, 119
+    ld (ti.penCol), hl
+    ld a, 75
+    ld (ti.penRow), a
+    ld hl, creditsStr2
+    call ti.VPutS
+    ld hl, 143
+    ld (ti.penCol), hl
+    ld a, 95
+    ld (ti.penRow), a
+    ld hl, creditsStr3
+    call ti.VPutS
+    ld hl, 89
+    ld (ti.penCol), hl
+    ld a, 115
+    ld (ti.penRow), a
+    ld hl, creditsStr4
+    call ti.VPutS
+    ld hl, 125
+    ld (ti.penCol), hl
+    ld a, 135
+    ld (ti.penRow), a
+    ld hl, creditsStr5
+    call ti.VPutS
+    ld hl, 119
+    ld (ti.penCol), hl
+    ld a, 155
+    ld (ti.penRow), a
+    ld hl, creditsStr6
+    call ti.VPutS
+    ld hl, 131
+    ld (ti.penCol), hl
+    ld a, 175
+    ld (ti.penRow), a
+    ld hl, creditsStr7
+    call ti.VPutS
+    ld hl, 125
+    ld (ti.penCol), hl
+    ld a, 195
+    ld (ti.penRow), a
+    ld hl, creditsStr8
+    call ti.VPutS
+    ld hl, appName
+    push hl
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVarArc
+    pop hl
+    call ti.Mov9ToOP1
+    ld hl, easterEggLen - 1
+    call ti.CreateAppVar
+    ld bc, easterEggLen - 1
+    inc de
+    inc de
+    ld hl, easterEgg
+    ldir
+    call waitAnyKey
+    cp a, ti.skClear
+    jp z, exitCelticApp
+
+if flag_prerelease
+
+    jp installPageSkipWarn
+
+else
+
+    jp installPage
+
+end if
+
+FillScreen:
+    ld a, l
+    ld b, h
+    ld hl, ti.vRam
+    ld (hl), a
+    inc hl
+    ld (hl), b
+    ld bc, ((ti.lcdWidth * ti.lcdHeight) * 2) - 2
+    push hl
+    pop de
+    inc de
+    dec hl
+    ldir
+    ret
+
 matrixType:
     push hl
     push bc
+    bit ti.progExecuting, (iy + ti.newDispF)
+    jr z, popReturnOS
     call ti.FindSym
     ex de, hl
     ld a, (hl)
@@ -295,12 +439,16 @@ matrixType:
     call ti.OP2ToOP1
     pop bc
     pop hl
-    jp return + 4
+    or a, 1
+    ret
 
 popReturnOS:
     pop bc
     pop hl
     jp returnOS
+
+hookCheckStr: ; this might be used at a later date
+    db "[CelticCE]", 0
 
 celticStart:
     db $83
@@ -313,7 +461,7 @@ celticStart:
 
 chain:
     ld a, (ti.helpHookPtr + 2)
-    cp a, 0
+    or a, a
     jr z, noChain
     ld ix, (ti.helpHookPtr)
     ld a, (ix - 1)
@@ -330,24 +478,26 @@ noChain:
 hookTriggered:
     pop af
     ld (noArgs), hl
+    push hl
     ld de, 8
     ex de, hl
     or a, a
     sbc hl, de
+    pop hl
     jp c, PrgmErr.2MARG
     ld a, (ti.OP1)
     cp a, $02 ; matrix type
     jq z, matrixType
     ld a, l
-    cp a, 0
+    or a, a
     jp z, returnOS ; check if there are zero args
     di
     call ti.PushRealO1 ; push so all args are on FPS
     ld b, 2 ; for the djnz loop later
     ld a, (noArgs)
-    sub a, 1
+    dec a
     ld h, a
-    cp a, 0
+    or a, a
     jr z, skipLoop ; skip if there is only one arg
 
 mltLoop:
@@ -355,7 +505,7 @@ mltLoop:
     djnz mltLoop
 
 skipLoop:
-    ld hl, $000000
+    ld hl, 0
     ld l, a
     ex de, hl
     ld hl, var0
@@ -369,7 +519,7 @@ popArgs: ; loopy thingy
     push hl
     call ti.PopRealO1
     ld a, (ti.OP1)
-    cp a, $00
+    or a, a
     call nz, invalid
     call ti.TRunc
     call ti.ConvOP1
@@ -384,16 +534,15 @@ popArgs: ; loopy thingy
 hookTriggeredCont:
     bit invalidArg, (iy + ti.asm_Flag2)
     jp nz, PrgmErr.INVALA
-    ld a, (var0)
+    ld hl, (var0)
     cp a, (celticTableEnd - celticTableBegin) / 4
     jp nc, PrgmErr.SUPPORT
-    add a, a
-    add a, a
-    ld hl, celticTableBegin
-    ld de, $000000
-    ld e, a
+    add hl, hl
+    add hl, hl
+    ld de, celticTableBegin
     add hl, de
     res replaceLineRun, (iy + ti.asm_Flag2)
+    ld (stackPtr), sp
     jp (hl)
 
 invalid:
@@ -417,6 +566,24 @@ celticTableBegin:
     jp dispText
     jp execHex
     jp textRect ; det(15)
+    jp fillScreen
+    jp drawLine
+    jp setPixel
+    jp getPixel
+    jp pixelTestColor
+    jp putSprite
+    jp getMode
+    jp renameVar
+    jp lockPrgm
+    jp hidePrgm
+    jp prgmToStr
+    jp getPrgmType
+    jp getBatteyStatus
+    jp setBrightness
+    jp getListElem
+    jp getArgType
+    jp chkStats
+    jp findProg ; det(33)
 celticTableEnd:
 
 returnOS: ; return and let the OS handle the function
@@ -426,11 +593,12 @@ returnOS: ; return and let the OS handle the function
 
 return:
     call ti.RclAns
+    ld sp, (stackPtr)
     ei
     or a, 1
     ret
 
-readLine:
+readLine: ; det(0)
     ld hl, Str0
     call ti.Mov9ToOP1
     call ti.ChkFindSym
@@ -458,7 +626,7 @@ readLine:
     ld hl, 10
     add hl, de
     ld a, c
-    ld bc, $000000
+    ld bc, 0
     ld c, a
     add hl, bc
     ex de, hl
@@ -467,7 +635,7 @@ readLine:
     push de
     call ti.OP1ToOP6
     pop de
-    ld hl, $000000
+    ld hl, 0
     ld a, (de)
     ld l, a
     inc de
@@ -478,8 +646,8 @@ readLine:
     push de ; beginning of data
     call ti.RclAns
     ld a, (ti.OP1)
-    cp a, $00
-    jq nz, .errorNTREAL
+    or a, a
+    jp nz, PrgmErr.NTREAL
     call ti.ConvOP1
     ld (ans), de
     ld hl, 0
@@ -496,7 +664,7 @@ readLine:
     push de
     pop bc
     ld de, 1
-    ld ix, readLine.errorLNTFN
+    ld ix, PrgmErr.LNTFN
     call _searchLine
     ld de, 0
     push bc
@@ -512,7 +680,7 @@ readLine:
     push hl
     call ti.Mov9ToOP1
     call ti.ChkFindSym
-    call nc, ti.DelVar
+    call nc, ti.DelVarArc
     pop hl
     call ti.Mov9ToOP1
     pop hl
@@ -556,7 +724,7 @@ readLine:
     ld de, 0
     or a, a
     sbc hl, de
-    jr z, .errorNULL
+    jp z, PrgmErr.NULLSTR
     push bc
     pop hl
     call _getNextLine
@@ -576,22 +744,6 @@ readLine:
     jp z, PrgmErr.NULLSTR
     ldi
     jp return
-
-.errorLNTFN:
-    pop hl
-    pop hl
-    pop hl
-    jp PrgmErr.LNTFN
-
-.errorNTREAL:
-    pop hl
-    pop hl
-    pop hl
-    jp PrgmErr.NTREAL
-
-.errorNULL:
-    pop hl
-    jp PrgmErr.NULLSTR
 
 .getNumOfLines:
     pop bc
@@ -638,14 +790,14 @@ readLine:
     pop hl
     jp PrgmErr.NUMSTNG
 
-replaceLine:
+replaceLine: ; det(1)
     ld hl, Str9
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     jp c, PrgmErr.SNTFN
     call ti.ChkInRam
     jp nz, PrgmErr.SFLASH
-    ld hl, $000000
+    ld hl, 0
     ld a, (de)
     ld l, a
     inc de
@@ -656,7 +808,7 @@ replaceLine:
     set replaceLineRun, (iy + ti.asm_Flag2)
     jp deleteLine
 
-insertLine:
+insertLine: ; det(2)
     res insertLastLine, (iy + ti.asm_Flag2)
     ld hl, Str9
     call ti.Mov9ToOP1
@@ -664,7 +816,7 @@ insertLine:
     jp c, PrgmErr.SNTFN
     call ti.ChkInRam
     jp nz, PrgmErr.SFLASH
-    ld hl, $000000
+    ld hl, 0
     ld a, (de)
     ld l, a
     inc de
@@ -673,14 +825,15 @@ insertLine:
     inc de
     push hl ; size of string
     push de ; start of string
+    inc hl
     call ti.EnoughMem
-    jq c, .errorNOMEM
+    jp c, PrgmErr.NOMEM
     ld hl, Str0
     call ti.Mov9ToOP1
     call ti.ChkFindSym
-    jq c, .errorSNTFN
+    jp c, PrgmErr.SNTFN
     call ti.ChkInRam
-    jq nz, .errorSFLASH
+    jp nz, PrgmErr.SFLASH
     call _getProgNameLen
     ex de, hl
     call _convertChars.varName
@@ -695,10 +848,10 @@ insertLine:
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     call c, _checkHidden
-    jq c, .errorPNTFN
+    jp c, PrgmErr.PNTFN
     call ti.ChkInRam
-    jq nz, .errorPGMARC
-    ld hl, $000000
+    jp nz, PrgmErr.PGMARC
+    ld hl, 0
     ld a, (de)
     ld l, a
     inc de
@@ -709,14 +862,14 @@ insertLine:
     push de ; start of program
     call ti.RclAns
     ld a, (ti.OP1)
-    cp a, $00
-    jq nz, .errorNTREAL
+    or a, a
+    jp nz, PrgmErr.NTREAL
     call ti.ConvOP1
     ld (ans), de
     ld hl, 0
     or a, a
     sbc hl, de
-    jq z, .errorLNTFN
+    jp z, PrgmErr.LNTFN
     pop bc
     push bc
     ld hl, 1
@@ -746,7 +899,7 @@ insertLine:
     pop hl
     dec hl
     dec hl
-    ld bc, $000000
+    ld bc, 0
     ld c, (hl)
     inc hl
     ld b, (hl)
@@ -814,44 +967,7 @@ insertLine:
     sbc hl, de
     ret z
     pop hl
-    jq .errorLNTFN
-
-.errorNOMEM:
-    pop hl
-    pop hl
-    jp PrgmErr.NOMEM
-
-.errorPNTFN:
-    pop hl
-    pop hl
-    jp PrgmErr.PNTFN
-
-.errorNTREAL:
-    pop hl
-    pop hl
-    pop hl
-    jp PrgmErr.NTREAL
-
-.errorLNTFN:
-    pop hl
-    pop hl
-    pop hl
     jp PrgmErr.LNTFN
-
-.errorPGMARC:
-    pop hl
-    pop hl
-    jp PrgmErr.PGMARC
-
-.errorSFLASH:
-    pop hl
-    pop hl
-    jp PrgmErr.SFLASH
-
-.errorSNTFN:
-    pop hl
-    pop hl
-    jp PrgmErr.SNTFN
 
 _decBCretNZ:
     pop hl
@@ -859,7 +975,7 @@ _decBCretNZ:
     or a, 1
     ret
 
-specialChars:
+specialChars: ; det(3)
     ld hl, Str9
     push hl
     call ti.Mov9ToOP1
@@ -877,7 +993,7 @@ specialChars:
     ld (hl), $2A
     jp return
 
-createVar:
+createVar: ; det(4)
     ld hl, Str0
     call ti.Mov9ToOP1
     call ti.ChkFindSym
@@ -890,9 +1006,7 @@ createVar:
     ld hl, prgmName + 1
     ld a, (hl)
     cp a, $15
-    jr z, _createAppvar
-
-_createProgram:
+    jr z, .createAppvar
     dec hl
     ld (hl), $05
     call ti.Mov9ToOP1
@@ -902,7 +1016,33 @@ _createProgram:
     call ti.CreateProg
     jp return
 
-_createAppvar:
+.createAppvar:
+    ld a, (noArgs)
+    cp a, 1
+    jr z, .createNormal
+    ld a, (var1)
+    or a, a
+    jr z, .createNormal
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp nc, PrgmErr.PISFN
+    ld hl, 5
+    call ti.CreateAppVar
+    inc de
+    inc de
+    ex de, hl
+    ld (hl), $3E
+    inc hl
+    ld (hl), $43
+    inc hl
+    ld (hl), $45
+    inc hl
+    ld (hl), $4C
+    inc hl
+    ld (hl), $3F
+    jp return
+
+.createNormal:
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     jp nc, PrgmErr.PISFN
@@ -916,7 +1056,7 @@ _getProgNameLen:
     inc de
     ret
 
-arcUnarcVar:
+arcUnarcVar: ; det(5)
     ld hl, Str0
     call ti.Mov9ToOP1
     call ti.ChkFindSym
@@ -941,7 +1081,7 @@ arcUnarcVar:
     call ti.Arc_Unarc
     jp return
 
-deleteVar:
+deleteVar: ; det(6)
     ld hl, Str0
     call ti.Mov9ToOP1
     call ti.ChkFindSym
@@ -966,7 +1106,7 @@ deleteVar:
     call ti.DelVarArc
     jp return
 
-deleteLine:
+deleteLine: ; det(7)
     ld hl, Str0
     call ti.Mov9ToOP1
     call ti.ChkFindSym
@@ -991,7 +1131,7 @@ deleteLine:
     call ti.ChkInRam
     jp nz, PrgmErr.PGMARC
     push de
-    ld hl, $000000
+    ld hl, 0
     ld a, (de)
     ld l, a
     inc de
@@ -1005,21 +1145,21 @@ deleteLine:
     push de
     call ti.RclAns
     ld a, (ti.OP1)
-    cp a, $00
-    jr nz, .errorNTREAL
+    or a, a
+    jp nz, PrgmErr.NTREAL
     call ti.ConvOP1
     ld (ans), de
     or a, a
     ld hl, 0
     sbc hl, de
-    jr z, .errorLNTFN2
+    jp z, PrgmErr.LNTFN
     or a, a
     ld hl, 1
     sbc hl, de
     jr z, .delLineOne
     pop bc
     ld de, 1
-    ld ix, deleteLine.errorLNTFN
+    ld ix, PrgmErr.LNTFN
     call _searchLine
     ld de, 0
     push bc
@@ -1049,21 +1189,6 @@ deleteLine:
     call _getNextLine
     call z, _decDEretZ
     jr .delete
-
-.errorLNTFN:
-    pop hl
-
-.errorLNTFN2:
-    pop hl
-    pop hl
-    pop hl
-    jp PrgmErr.LNTFN
-
-.errorNTREAL:
-    pop hl
-    pop hl
-    pop hl
-    jp PrgmErr.NTREAL
 
 _searchLine: ; bc = address being read; de = line counter; ix = where to jump at EOF; hl is destroyed
     call _checkEOF
@@ -1140,7 +1265,9 @@ _getNextLine: ; bc = address being read; de = byte counter; preserves hl (starti
     or a, 1 ; return nz
     ret
 
-varStatus:
+varStatus: ; det(8)
+    xor a, a
+    ld (prgmName), a
     ld hl, Str0
     call ti.Mov9ToOP1
     call ti.ChkFindSym
@@ -1176,7 +1303,7 @@ varStatus:
     push hl
     call ti.Mov9ToOP1
     call ti.ChkFindSym
-    call nc, ti.DelVar
+    call nc, ti.DelVarArc
     pop hl
     call ti.Mov9ToOP1
     ld hl, 9
@@ -1206,13 +1333,13 @@ varStatus:
     bit hidden, (iy + ti.asm_Flag2)
     call nz, .hidden
     push hl
-    ld hl, prgmName + 1
+    ld hl, prgmName
     ld a, (hl)
-    cp a, $15
-    jr z, .appvar
-    dec hl
+    cp a, $05
+    jr z, .notAppvar
+    inc hl
 
-.appvar:
+.notAppvar:
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     ld a, (hl)
@@ -1226,7 +1353,7 @@ varStatus:
     push hl
     bit archived, (iy + ti.asm_Flag2)
     call nz, .isArchived
-    ld hl, $000000
+    ld hl, 0
     ld a, (de)
     ld l, a
     inc de
@@ -1283,7 +1410,7 @@ varStatus:
     ld hl, 10
     add hl, de
     ld a, c
-    ld bc, $000000
+    ld bc, 0
     ld c, a
     add hl, bc
     ex de, hl
@@ -1308,7 +1435,7 @@ _checkHidden:
     set hidden, (iy + ti.asm_Flag2)
     ret
 
-bufSprite:
+bufSprite: ; det(9)
     ld a, (noArgs)
     cp a, 5
     jp nc, PrgmErr.INVALA
@@ -1319,13 +1446,14 @@ bufSprite:
     call ti.ChkInRam
     jp nz, PrgmErr.SFLASH
     ex de, hl
-    ld de, $000000
+    ld de, 0
     ld e, (hl)
     inc hl
     ld d, (hl)
     inc hl
     push hl
     push de
+    res ti.fullScrnDraw, (iy + ti.apiFlg4)
     res ti.graphDraw, (iy + ti.graphFlags)
     res ti.plotLoc, (iy + ti.plotFlags)
     ld hl, (var2)
@@ -1350,7 +1478,7 @@ bufSprite:
 .loopSprite: ;  hl = size of string; de = address of string; ix = width counter
     ld a, (de)
     call _convertTokenToColor
-    cp a, 0
+    or a, a
     jr z, .checkLoop
     cp a, $11
     jq z, .restoreColor
@@ -1421,7 +1549,7 @@ bufSprite:
     ld de, (bufSpriteX)
     ld a, (bufSpriteY)
     ld c, a
-    ld a, 0
+    xor a, a
     call ti.IPoint
     ld a, 4
     call ti.IPoint
@@ -1489,7 +1617,7 @@ _storeColorToStr9:
     ld (de), a
     ret
 
-bufSpriteSelect:
+bufSpriteSelect: ; det(10)
     ld a, (noArgs)
     cp a, 7
     jp nc, PrgmErr.INVALA
@@ -1507,6 +1635,7 @@ bufSpriteSelect:
     push hl
     ld de, (var5)
     push de
+    res ti.fullScrnDraw, (iy + ti.apiFlg4)
     res ti.graphDraw, (iy + ti.graphFlags)
     res ti.plotLoc, (iy + ti.plotFlags)
     ld hl, (var2)
@@ -1531,7 +1660,7 @@ bufSpriteSelect:
 .loopSprite: ; hl = size; de = address of string; ix = width counter
     ld a, (de)
     call _convertTokenToColor
-    cp a, 0
+    or a, a
     jr z, .checkLoop
     cp a, $11
     jq z, .restoreColor
@@ -1588,7 +1717,7 @@ bufSpriteSelect:
     ld de, (bufSpriteX)
     ld a, (bufSpriteY)
     ld c, a
-    ld a, 0
+    xor a, a
     call ti.IPoint
     ld a, 4
     call ti.IPoint
@@ -1601,7 +1730,7 @@ _popReturn:
     pop hl
     jp PrgmErr.INVALA
 
-execArcPrgm:
+execArcPrgm: ; det(11)
     ld hl, tempPrgmName
     ld de, xtempName
     ld bc, 10
@@ -1710,7 +1839,7 @@ execArcPrgm:
     ld hl, 10
     add hl, de
     ld a, c
-    ld bc, $000000
+    ld bc, 0
     ld c, a
     add hl, bc
     ex de, hl
@@ -1719,7 +1848,7 @@ execArcPrgm:
     push de
     call ti.OP1ToOP6
     pop de
-    ld hl, $000000
+    ld hl, 0
     ld a, (de)
     ld l, a
     inc de
@@ -1745,7 +1874,7 @@ execArcPrgm:
     ld hl, 10
     add hl, de
     ld a, c
-    ld bc, $000000
+    ld bc, 0
     ld c, a
     add hl, bc
     ex de, hl
@@ -1775,7 +1904,7 @@ execArcPrgm:
     ldi
     jp return
 
-dispColor:
+dispColor: ; det(12)
     ld a, (noArgs)
     cp a, 5
     jr z, .fiveArgs
@@ -1789,21 +1918,22 @@ dispColor:
     jp c, PrgmErr.INVALA
     sub a, 9
     call ti.GetColorValue
-    push de
     ld a, (var2)
     cp a, 25
     jp nc, PrgmErr.INVALA
     cp a, 10
     jp c, PrgmErr.INVALA
     sub a, 9
+    push de
     call ti.GetColorValue
     pop hl
     call ti.SetTextFGBGcolors_
+    set ti.textEraseBelow, (iy + ti.textFlags)
     jp return
 
 .fiveArgs:
-    ld hl, $000000
-    ld de, $000000
+    ld hl, 0
+    ld de, 0
     ld a, (var1) ; low byte color
     ld l, a
     ld a, (var2) ; high byte of color
@@ -1814,6 +1944,7 @@ dispColor:
     ld a, (var4)
     ld d, a
     call ti.SetTextFGBGcolors_
+    set ti.textEraseBelow, (iy + ti.textFlags)
     jp return
 
 .twoArgs:
@@ -1826,7 +1957,7 @@ dispColor:
     res ti.putMapUseColor, (iy + ti.putMapFlags)
     jp return
 
-dispText:
+dispText: ; det(13)
     ld a, (noArgs)
     cp a, 8
     jr z, .eightArgs
@@ -1876,7 +2007,7 @@ dispText:
 
 .drawText:
     ld a, (var1)
-    cp a, 0
+    or a, a
     call nz, .setLargeFont
     ld hl, Str9
     call ti.Mov9ToOP1
@@ -1991,7 +2122,7 @@ _convertChars: ; a = token value
     pop bc
     ret
 
-execHex:
+execHex: ; det(14)
     call ti.AnsName
     call ti.ChkFindSym
     push de
@@ -2000,11 +2131,20 @@ execHex:
     ld a, (ti.OP1)
     cp a, $04
     jp nz, PrgmErr.SNTST
+    ld bc, 0
+    ld c, (hl)
+    inc hl
     ld b, (hl)
-    srl b
+    inc hl
+    push hl
+    ld hl, $2000
+    or a, a
+    sbc hl, bc
+    pop hl
     jp c, PrgmErr.INVALS
-    inc hl
-    inc hl
+    srl b
+    rr c
+    jp c, PrgmErr.INVALS
     ld de, execHexLoc
     push de
 
@@ -2044,7 +2184,9 @@ execHex:
     push hl
     inc de
     ex de, hl
-    djnz .loop
+    dec bc
+    call ti.ChkBCIs0
+    jr nz, .loop
     pop hl
     ld a, $C9
     ld (hl), a
@@ -2074,16 +2216,16 @@ _checkValidHex:
     pop hl
     jp PrgmErr.INVALS
 
-textRect:
+textRect: ; det(15)
     ld a, (noArgs)
     cp a, 7
     jr z, .sevenArgs
-    cp a, 5
+    cp a, 6
     jp c, PrgmErr.INVALA
     ld a, (var1)
     cp a, 25
     jp nc, PrgmErr.INVALA
-    cp a, 0
+    or a, a
     jr z, .skipColor
     cp a, 10
     jp c, PrgmErr.INVALA
@@ -2109,7 +2251,7 @@ textRect:
     ld a, (var3)
     ld b, a
     ld a, (var1)
-    cp a, 0
+    or a, a
     jr nz, .fillRect
     call ti.InvertRect
     jp return
@@ -2139,9 +2281,1605 @@ textRect:
     call ti.FillRect
     jp return
 
+fillScreen: ; det(16)
+    ld a, (noArgs)
+    cp a, 2
+    jp c, PrgmErr.INVALA
+    cp a, 2
+    jr z, .osColor
+    ld a, (var1)
+    ld e, a
+    ld a, (var2)
+    ld d, a
+
+.fillScrn:
+    ld hl, ti.vRam
+    ld (hl), e
+    inc hl
+    ld (hl), d
+    push hl
+    pop de
+    dec hl
+    inc de
+    ld bc, ((ti.lcdWidth * ti.lcdHeight) * 2) - 2
+    ldir
+    jp return
+
+.osColor:
+    ld a, (var1)
+    cp a, 10
+    jp c, PrgmErr.INVALA
+    cp a, 25
+    jp nc, PrgmErr.INVALA
+    sub a, 9
+    call ti.GetColorValue
+    jr .fillScrn
+
+drawLine: ; det(17)
+    set ti.fullScrnDraw, (iy + ti.apiFlg4)
+    set ti.plotLoc, (iy + ti.plotFlags)
+    ld a, (noArgs)
+    cp a, 7
+    jr z, .sevenArgs
+    cp a, 6
+    jp c, PrgmErr.INVALA
+    ld a, (var1)
+    cp a, 25
+    jp nc, PrgmErr.INVALA
+    cp a, 10
+    jp c, PrgmErr.INVALA
+    sub a, 9
+    call ti.GetColorValue
+    ld (ti.drawFGColor), de
+    ld a, (var3)
+    ld c, a
+    ld a, 239
+    sub a, c
+    ld c, a
+    ld a, (var5)
+    ld b, a
+    ld a, 239
+    sub a, b
+    ld b, a
+    ld de, (var2)
+    ld hl, (var4)
+    jr .drawLine
+
+.sevenArgs:
+    ld a, (var1)
+    ld (ti.drawFGColor), a
+    ld a, (var2)
+    ld (ti.drawFGColor + 1), a
+    ld a, (var4)
+    ld c, a
+    ld a, 239
+    sub a, c
+    ld c, a
+    ld a, (var6)
+    ld b, a
+    ld a, 239
+    sub a, b
+    ld b, a
+    ld de, (var3)
+    ld hl, (var5)
+
+.drawLine:
+    ld a, 1
+    call ti.ILine
+    jp return
+
+setPixel: ; det(18)
+    res invertPixel, (iy + ti.asm_Flag2)
+    ld a, (noArgs)
+    cp a, 5
+    jr z, .fiveArgs
+    cp a, 4
+    jp c, PrgmErr.INVALA
+    ld a, (var1)
+    cp a, 25
+    jp nc, PrgmErr.INVALA
+    or a, a
+    jr z, .skipSub
+    cp a, 10
+    jp c, PrgmErr.INVALA
+    sub a, 9
+
+.skipSub:
+    call ti.GetColorValue
+    push de
+    ld ix, var2
+    ld a, (var1)
+    or a, a
+    jr nz, .getCoord
+    set invertPixel, (iy + ti.asm_Flag2)
+    jr .getCoord
+
+.fiveArgs:
+    ld a, (var1)
+    ld de, 0
+    ld e, a
+    ld a, (var2)
+    ld d, a
+    push de
+    ld ix, var3
+
+.getCoord:
+    ld a, (ix + 3)
+    ld hl, $D40000
+    ld de, 640
+    ld b, a
+    xor a, a
+    cp a, b
+    jr z, .foundCoord
+
+.loopCoord:
+    add hl, de
+    djnz .loopCoord
+
+.foundCoord:
+    ex de, hl
+    ld hl, (ix)
+    add hl, hl
+    add hl, de
+    bit invertPixel, (iy + ti.asm_Flag2)
+    push hl
+    call nz, .invertColor
+    pop hl
+    pop de
+    ld (hl), e
+    inc hl
+    ld (hl), d
+    jp return
+
+.invertColor:
+    pop bc
+    pop hl
+    pop de
+    ld a, (hl)
+    ld de, 0
+    ld e, a
+    ld a, 255
+    sub a, e
+    ld e, a
+    inc hl
+    ld a, (hl)
+    ld d, a
+    ld a, 255
+    sub a, d
+    ld d, a
+    dec hl
+    push de
+    push hl
+    push bc
+    ret
+
+getPixel: ; det(19)
+    ld a, (noArgs)
+    cp a, 3
+    jp c, PrgmErr.INVALA
+    ld a, (var2)
+    ld hl, $D40000
+    ld de, 640
+    ld b, a
+    xor a, a
+    cp a, b
+    jr z, .foundCoord
+
+.loopCoord:
+    add hl, de
+    djnz .loopCoord
+
+.foundCoord:
+    ex de, hl
+    ld hl, (var1)
+    add hl, hl
+    add hl, de
+    ld a, (hl)
+    ld de, 0
+    ld e, a
+    push de
+    inc hl
+    ld a, (hl)
+    ld de, 0
+    ld e, a
+    push de
+    ld hl, Theta
+    push hl
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVar
+    pop hl
+    call ti.CreateReal
+    pop hl
+    push de
+    call ti.SetxxxxOP2
+    pop de
+    ld hl, ti.OP2
+    ld bc, 9
+    ldir
+    pop hl
+    call ti.SetxxxxOP2
+    call ti.OP2ToOP1
+    call ti.StoAns
+    jp return
+
+pixelTestColor: ; det(20)
+    ld a, (noArgs)
+    cp a, 3
+    jp c, PrgmErr.INVALA
+    res ti.fullScrnDraw, (iy + ti.apiFlg4)
+    ld a, (var1)
+    cp a, 165
+    jp nc, PrgmErr.INVALA
+    ld c, a
+    ld a, 164
+    sub a, c
+    ld c, a
+    ld de, (var2)
+    ld hl, 264
+    or a, a
+    sbc hl, de
+    jp c, PrgmErr.INVALA
+    ld a, 3
+    call ti.IPoint
+    or a, a
+    jr z, .skipAdd
+    add a, 9
+
+.skipAdd:
+    ld hl, 0
+    ld l, a
+    push hl
+    ld hl, Theta
+    push hl
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVar
+    pop hl
+    call ti.CreateReal
+    pop hl
+    push de
+    call ti.SetxxxxOP2
+    pop de
+    ld hl, ti.OP2
+    ld bc, 9
+    ldir
+    jp return
+
+putSprite: ; det(21)
+    ld a, (noArgs)
+    cp a, 5
+    jp c, PrgmErr.INVALA
+    ld a, (var2)
+    ld hl, $D40000 ; ti.vRam
+    ld de, 640 ; ti.lcdWidth * 2
+    ld b, a
+    xor a, a
+    cp a, b
+    jr z, .foundCoord
+
+.loopCoord:
+    add hl, de
+    djnz .loopCoord
+
+.foundCoord:
+    ex de, hl
+    ld hl, (var1)
+    add hl, hl
+    add hl, de
+    push hl
+    ld hl, Str9
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp c, PrgmErr.SNTFN
+    call ti.ChkInRam
+    jp nz, PrgmErr.SFLASH
+    inc de
+    inc de
+    ex de, hl
+    ld bc, (var4)
+    call ti.ChkBCIs0
+    jp z, PrgmErr.INVALA
+    ld bc, 0
+    ld (currentWidth), bc
+    ld bc, (var3)
+    call ti.ChkBCIs0
+    jp z, PrgmErr.INVALA
+    pop de
+    ld (bufSpriteXStart), de
+    ld ix, 0
+
+.loopSprite: ; hl = string location; de = vram location; ix = height counter
+    push bc
+    ld a, (hl)
+    call .convertTokenToHex
+    sla a
+    sla a
+    sla a
+    sla a
+    ld b, a
+    inc hl
+    ld a, (hl)
+    call .convertTokenToHex
+    add a, b
+    ld (de), a
+    inc de
+    ld (de), a
+    inc de
+    inc hl
+    pop bc
+    push hl
+    ld hl, (currentWidth)
+    inc hl
+    push hl
+    or a, a
+    sbc hl, bc
+    pop hl
+    call z, .moveDown
+    ld (currentWidth), hl
+    pop hl
+    jr .loopSprite
+
+.moveDown:
+    inc ix
+    ld hl, (var4)
+    push bc
+    push ix
+    pop bc
+    or a, a
+    sbc hl, bc
+    jp z, return
+    pop bc
+    ld hl, (bufSpriteXStart)
+    ld de, 640
+    add hl, de
+    ld (bufSpriteXStart), hl
+    ex de, hl
+    ld hl, 0
+    ret
+
+.convertTokenToHex:
+    sub a, $30
+    cp a, 10
+    ret c
+    sub a, 7
+    ret
+
+getMode: ; det(22)
+    ld a, (noArgs)
+    cp a, 1
+    jp z, PrgmErr.INVALA
+    ld a, (var1)
+    cp a, (.modeListEnd - .modeListStart) / 4
+    jp nc, PrgmErr.INVALA
+    ld hl, (var1)
+    add hl, hl
+    add hl, hl
+    ld de, .storeTheta
+    push de
+    ld de, .modeListStart
+    add hl, de
+    xor a, a
+    jp (hl)
+
+.modeListStart:
+    jp .mathprint ; 0
+    jp .numMode
+    jp .trigMode
+    jp .graphMode
+    jp .graphSimul
+    jp .realMode
+    jp .graphWinMode
+    jp .graphCoord
+    jp .gridOn
+    jp .axesOn
+    jp .labelOn ; 10
+.modeListEnd:
+
+.mathprint: ; 0
+    bit ti.mathprintEnabled, (iy + ti.mathprintFlags)
+    ret z
+    inc a
+    ret
+
+.numMode: ; 1
+    ld a, 2
+    bit ti.fmtEng, (iy + ti.fmtFlags)
+    ret nz
+    dec a
+    bit ti.fmtExponent, (iy + ti.fmtFlags)
+    ret nz
+    dec a
+    ret
+
+.trigMode: ; 2
+    bit ti.trigDeg, (iy + ti.trigFlags)
+    ret z
+    inc a
+    ret
+
+.graphMode: ; 3
+    bit ti.grfFuncM, (iy + ti.grfModeFlags)
+    ret nz
+    inc a
+    bit ti.grfParamM, (iy + ti.grfModeFlags)
+    ret nz
+    inc a
+    bit ti.grfPolarM, (iy + ti.grfModeFlags)
+    ret nz
+    inc a
+    ret
+
+.graphSimul: ; 4
+    bit ti.grfSimul, (iy + ti.grfDBFlags)
+    ret z
+    inc a
+    ret
+
+.realMode: ; 5
+    ld a, 2
+    bit ti.polarMode, (iy + ti.numMode)
+    ret nz
+    dec a
+    bit ti.rectMode, (iy + ti.numMode)
+    ret nz
+    dec a
+    ret
+
+.graphWinMode: ; 6
+    ld a, 2
+    bit ti.vertSplit, (iy + ti.sGrFlags)
+    ret nz
+    dec a
+    bit ti.grfSplit, (iy + ti.sGrFlags)
+    ret nz
+    dec a
+    ret
+
+.graphCoord: ; 7
+    bit ti.grfPolar, (iy + ti.grfDBFlags)
+    ret z
+    inc a
+    ret
+
+.gridOn: ; 8
+    bit ti.grfGrid, (iy + ti.grfDBFlags)
+    ret z
+    inc a
+    ret
+
+.axesOn: ; 9
+    bit ti.grfNoAxis, (iy + ti.grfDBFlags)
+    ret nz
+    inc a
+    ret
+
+.labelOn:; 10
+    bit ti.grfLabel, (iy + ti.grfDBFlags)
+    ret z
+    inc a
+    ret
+
+.storeTheta:
+    ld hl, 0
+    ld l, a
+    push hl
+    ld hl, Theta
+    push hl
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVar
+    pop hl
+    call ti.CreateReal
+    pop hl
+    push de
+    call ti.SetxxxxOP2
+    pop de
+    ld hl, ti.OP2
+    ld bc, 9
+    ldir
+    jp return
+
+renameVar: ; det(23)
+    res archived, (iy + ti.asm_Flag2) ; use archived flag to remember file type
+    ld hl, Str0
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp c, PrgmErr.SNTFN
+    call ti.ChkInRam
+    jp nz, PrgmErr.SFLASH
+    call _getProgNameLen
+    ex de, hl
+    call _convertChars.varName
+    ld hl, prgmName + 1
+    ld a, (hl)
+    cp a, $15
+    jr z, .rename
+    set archived, (iy + ti.asm_Flag2)
+    dec hl
+    ld (hl), $05
+
+.rename:
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call c, _checkHidden
+    jp c, PrgmErr.PNTFN
+    call ti.ChkInRam
+    jr z, .inRam
+    ld hl, 10
+    add hl, de
+    ld a, c
+    ld bc, 0
+    ld c, a
+    add hl, bc
+    ex de, hl
+
+.inRam:
+    ld hl, 0
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    push hl
+    call ti.EnoughMem
+    jp c, PrgmErr.NOMEM
+    ld hl, Str9
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    pop hl
+    jp c, PrgmErr.SNTFN
+    call ti.ChkInRam
+    jp nz, PrgmErr.SFLASH
+    push hl
+    call _getProgNameLen
+    ex de, hl
+    call _convertChars.varName
+    ld hl, prgmName + 1
+    bit archived, (iy + ti.asm_Flag2)
+    jr z, .createAppvar
+    dec hl
+    ld (hl), $05
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    pop hl
+    jp nc, PrgmErr.PISFN
+    call ti.CreateProtProg
+    jr .copyData
+
+.createAppvar:
+    dec hl
+    ld (hl), $15
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    pop hl
+    jp nc, PrgmErr.PISFN
+    call ti.CreateAppVar
+
+.copyData:
+    push de
+    ld hl, Str0
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call _getProgNameLen
+    ex de, hl
+    call _convertChars.varName
+    ld hl, prgmName + 1
+    ld a, (hl)
+    cp a, $15
+    jr z, .rename2
+    dec hl
+    ld (hl), $05
+
+.rename2:
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call c, _checkHidden
+    pop ix
+    push hl
+    push de
+    push bc
+    push ix
+    call ti.ChkInRam
+    jr z, .inRam2
+    ld hl, 10
+    add hl, de
+    ld a, c
+    ld bc, 0
+    ld c, a
+    add hl, bc
+    ex de, hl
+
+.inRam2:
+    ex de, hl
+    pop de
+    ; hl = original program; de = new program
+    ld bc, 0
+    ld c, (hl)
+    inc hl
+    ld b, (hl)
+    inc hl
+    inc de
+    inc de
+    call ti.ChkBCIs0
+    jr z, .deleteProg
+
+.copyDataLoop:
+    ldi
+    call ti.ChkBCIs0
+    jr nz, .copyDataLoop
+
+.deleteProg:
+    pop bc
+    pop de
+    pop hl
+    call ti.DelVarArc
+    jp return
+
+lockPrgm: ; det(24)
+    res archived, (iy + ti.asm_Flag2)
+    ld hl, Str0
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp c, PrgmErr.SNTFN
+    call ti.ChkInRam
+    jp nz, PrgmErr.SFLASH
+    call _getProgNameLen
+    ex de, hl
+    call _convertChars.varName
+    ld hl, prgmName + 1
+    ld a, (hl)
+    cp a, $15
+    jp z, PrgmErr.INVALS
+    dec hl
+    ld (hl), $05
+    call ti.Mov9ToOP1
+    call ti.OP1ToOP6
+    call ti.ChkFindSym
+    call c, _checkHidden
+    jp c, PrgmErr.PNTFN
+    call ti.ChkInRam
+    call nz, _setArchivedFlag
+    inc de
+    inc de
+    push hl
+    ld hl, 0
+    ld a, (de)
+    ld h, a
+    inc de
+    ld a, (de)
+    ld l, a
+    ld de, $EF7B
+    or a, a
+    sbc hl, de
+    pop hl
+    jp z, PrgmErr.SUPPORT
+    ld a, (hl)
+    xor a, 00000011b
+    ld (hl), a
+    bit archived, (iy + ti.asm_Flag2)
+    call nz, _re_archive
+    jp return
+
+_setArchivedFlag:
+    set archived, (iy + ti.asm_Flag2)
+    call ti.Arc_Unarc
+    call ti.OP6ToOP1
+    call ti.ChkFindSym
+    ret
+
+_re_archive:
+    call ti.OP6ToOP1
+    call ti.Arc_Unarc
+    ret
+
+hidePrgm: ; det(25)
+    res archived, (iy + ti.asm_Flag2)
+    ld hl, Str0
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp c, PrgmErr.SNTFN
+    call ti.ChkInRam
+    jp nz, PrgmErr.SFLASH
+    call _getProgNameLen
+    ex de, hl
+    call _convertChars.varName
+    ld hl, prgmName + 1
+    ld a, (hl)
+    cp a, $15
+    jp z, PrgmErr.INVALS
+    dec hl
+    ld (hl), $05
+    call ti.Mov9ToOP1
+    call ti.OP1ToOP6
+    call ti.ChkFindSym
+    call c, _checkHidden
+    jp c, PrgmErr.PNTFN
+    call ti.ChkInRam
+    call nz, _setArchivedFlag
+    ld bc, -7
+    add hl, bc
+    ld a, (hl)
+    xor a, 01000000b
+    ld (hl), a
+    bit archived, (iy + ti.asm_Flag2)
+    call nz, _re_archive
+    jp return
+    
+prgmToStr: ; det(26)
+    ld a, (noArgs)
+    cp a, 1
+    jp z, PrgmErr.INVALA
+    ld hl, Str0
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp c, PrgmErr.SNTFN
+    call ti.ChkInRam
+    jp nz, PrgmErr.SFLASH
+    call _getProgNameLen
+    ex de, hl
+    call _convertChars.varName
+    ld hl, prgmName + 1
+    ld a, (hl)
+    cp a, $15
+    jr z, .continue
+    dec hl
+    ld (hl), $05
+
+.continue:
+    push hl
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call c, _checkHidden
+    pop hl
+    jp c, PrgmErr.PNTFN
+    push hl
+    call ti.ChkInRam
+    jr z, .inRam
+    ld hl, 10
+    add hl, de
+    ld a, c
+    ld bc, 0
+    ld c, a
+    add hl, bc
+    ex de, hl
+
+.inRam:
+    ld hl, 0
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    push hl
+    call ti.EnoughMem
+    jp c, PrgmErr.NOMEM
+    ld a, (var1)
+    cp a, 10
+    jp nc, PrgmErr.INVALA
+    or a, a
+    jr nz, .notStr0
+    ld a, 10
+
+.notStr0:
+    dec a 
+    push af
+    ld hl, Str0
+    call ti.Mov9ToOP1
+    pop af
+    push af
+    ld (ti.OP1 + 2), a
+    call ti.ChkFindSym
+    call nc, ti.DelVarArc
+    ld hl, Str0
+    call ti.Mov9ToOP1
+    pop af
+    ld (ti.OP1 + 2), a
+    pop hl
+    call ti.CreateStrng
+    inc de
+    inc de
+    pop hl
+    push de
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call c, _checkHidden
+    call ti.ChkInRam
+    jr z, .inRam2
+    ld hl, 10
+    add hl, de
+    ld a, c
+    ld bc, 0
+    ld c, a
+    add hl, bc
+    ex de, hl
+
+.inRam2:
+    ld bc, 0
+    ld a, (de)
+    ld c, a
+    inc de
+    ld a, (de)
+    ld b, a
+    inc de
+    ex de, hl
+    pop de
+    call ti.ChkBCIs0
+    jp z, return
+    dec bc
+    call ti.ChkBCIs0
+    jr z, .copyOneByte
+    inc bc
+    ldir
+    jp return
+
+.copyOneByte:
+    inc bc
+    ldi
+    jp return
+
+getPrgmType: ; det(27)
+    ld hl, Str0
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp c, PrgmErr.SNTFN
+    call ti.ChkInRam
+    jp nz, PrgmErr.SFLASH
+    call _getProgNameLen
+    ex de, hl
+    call _convertChars.varName
+    ld hl, prgmName + 1
+    ld a, (hl)
+    cp a, $15
+    jp z, PrgmErr.INVALS
+    dec hl
+    ld (hl), $05
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call c, _checkHidden
+    jp c, PrgmErr.PNTFN
+    call ti.ChkInRam
+    jr z, .inRam
+    ld hl, 10
+    add hl, de
+    ld a, c
+    ld bc, 0
+    ld c, a
+    add hl, bc
+    ex de, hl
+
+.inRam:
+    inc de
+    inc de
+    ld a, (de)
+    cp a, $2c
+    ld a, 4 ; ICE source
+    jr z, .storeTheta
+    ; check for ASM
+    ex de, hl
+    ld de, (hl)
+    ex de, hl
+    or a, a
+    ld bc, $007BEF ; check for C
+    sbc hl, bc
+    ld a, 1
+    jr z, .storeTheta
+    add hl, bc
+    ld bc, $7F7BEF ; check for ICE
+    or a, a
+    sbc hl, bc
+    ld a, 3
+    jr z, .storeTheta
+    ld a, (de)
+    ld hl, $00
+    ld h, a
+    inc de
+    ld a, (de)
+    ld l, a
+    ld bc, $EF7B ; check for plain ASM
+    or a, a
+    sbc hl, bc
+    ld a, 0
+    jr z, .storeTheta
+    ld a, 2
+
+.storeTheta:
+    ld hl, 0
+    ld l, a
+    push hl
+    ld hl, Theta
+    push hl
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVar
+    pop hl
+    call ti.CreateReal
+    pop hl
+    push de
+    call ti.SetxxxxOP2
+    pop de
+    ld hl, ti.OP2
+    ld bc, 9
+    ldir
+    jp return
+
+getBatteyStatus: ; det(28)
+    ld hl, 0
+    call ti.GetBatteryStatus
+    ld l, a
+    call ti.usb_IsBusPowered
+    or a, a
+    jr z, .notCharging
+    ld a, l
+    add a, 10
+    ld l, a
+
+.notCharging:
+    push hl
+    ld hl, Theta
+    push hl
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVar
+    pop hl
+    call ti.CreateReal
+    pop hl
+    push de
+    call ti.SetxxxxOP2
+    pop de
+    ld hl, ti.OP2
+    ld bc, 9
+    ldir
+    jp return
+
+setBrightness: ; det(29)
+    ld a, (noArgs)
+    cp a, 1
+    jp z, PrgmErr.INVALA
+    ld a, (var1)
+    or a, a
+    jr z, .getBrightness
+    ld ($F60024), a ; ti.mpBlLevel
+    jp return
+
+.getBrightness:
+    ld a, ($F60024)
+    ld hl, 0
+    ld l, a
+    push hl
+    ld hl, Theta
+    push hl
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVar
+    pop hl
+    call ti.CreateReal
+    pop hl
+    push de
+    call ti.SetxxxxOP2
+    pop de
+    ld hl, ti.OP2
+    ld bc, 9
+    ldir
+    jp return
+
+getListElem: ; det(30)
+    call ti.RclAns
+    ld a, (ti.OP1)
+    cp a, $04
+    jp nz, PrgmErr.SNTST
+    ld a, (noArgs)
+    cp a, 1
+    jp z, PrgmErr.INVALA
+    call ti.AnsName
+    call ti.ChkFindSym
+    ld hl, 0
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    inc de
+    ld bc, 1
+    or a, a
+    sbc hl, bc
+    jp z, PrgmErr.INVALS
+    add hl, bc
+    ld a, (de)
+    cp a, $EB
+    jr z, .isAlist
+    cp a, $5D
+    jr z, .isAlist
+    jp PrgmErr.NTALS
+
+.isAlist:
+    call .getListNameLen
+    ld bc, ti.OP1
+    ld a, ti.ListObj
+    ld (bc), a
+    inc bc
+    ld a, ti.tVarLst
+    ld (bc), a
+    inc de
+    inc bc
+    dec hl
+    push de
+    push bc
+    push hl
+    pop bc
+    pop de
+    pop hl
+
+.loopName:
+    ldi
+    call ti.ChkBCIs0
+    jr nz, .loopName
+    xor a, a
+    ld (de), a
+    call ti.ChkFindSym
+    jp c, PrgmErr.PNTFN
+    res imaginaryList, (iy + ti.asm_Flag2)
+    ld a, (hl)
+    cp a, $0D
+    jr nz, .chkLoc
+    set imaginaryList, (iy + ti.asm_Flag2)
+
+.chkLoc:
+    call ti.ChkInRam
+    jr z, .inRam
+    ld hl, 10
+    add hl, de
+    ld a, c
+    ld bc, 0
+    ld c, a
+    add hl, bc
+    ex de, hl
+
+.inRam:
+    ld hl, 0
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    inc de
+    ld a, (var1)
+    or a, a
+    jq z, .showDim
+    call ti.ChkHLIs0
+    jp z, PrgmErr.ENTFN
+    push de
+    ld de, (var1)
+    or a, a
+    sbc hl, de
+    pop hl
+    jp c, PrgmErr.ENTFN
+    ld de, 1
+    ld bc, 9
+    bit imaginaryList, (iy + ti.asm_Flag2)
+    jr z, .loopFindOffset
+    ld bc, 18
+
+.loopFindOffset:
+    push hl
+    ld hl, (var1)
+    or a, a
+    sbc hl, de
+    pop hl
+    jr z, .foundOffset
+    inc de
+    add hl, bc
+    jr .loopFindOffset
+
+.foundOffset:
+    push bc
+    ld de, execHexLoc
+    ldir
+    ld hl, Theta
+    push hl
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVar
+    pop hl
+    bit imaginaryList, (iy + ti.asm_Flag2)
+    jr z, .createReal
+    call ti.CreateCplx
+
+.storeValue:
+    ld hl, execHexLoc
+    pop bc
+    ldir
+    jp return
+
+.createReal:
+    call ti.CreateReal
+    jr .storeValue
+
+.getListNameLen:
+    ld bc, 7
+    or a, a
+    sbc hl, bc
+    add hl, bc
+    jr c, .validLen
+    ld hl, 6
+
+.validLen:
+    ld a, (de)
+    cp a, $5D
+    ret nz
+    ld bc, 2
+    or a, a
+    sbc hl, bc
+    add hl, bc
+    ret z
+    pop bc
+    jp PrgmErr.INVALS
+
+.showDim:
+    push hl
+    ld hl, Theta
+    push hl
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVar
+    pop hl
+    call ti.CreateReal
+    pop hl
+    push de
+    call ti.SetxxxxOP2
+    pop de
+    ld hl, ti.OP2
+    ld bc, 9
+    ldir
+    jp return
+
+getArgType: ; det(31)
+    call ti.RclAns
+    ld hl, 0
+    ld a, (ti.OP1)
+    ld l, a
+    push hl
+    ld hl, Theta
+    push hl
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVar
+    pop hl
+    call ti.CreateReal
+    pop hl
+    push de
+    call ti.SetxxxxOP2
+    pop de
+    ld hl, ti.OP2
+    ld bc, 9
+    ldir
+    jp return
+
+chkStats: ; det(32)
+    ld a, (noArgs)
+    cp a, 1
+    jp z, PrgmErr.INVALA
+    ld a, (var1)
+    cp a, 4
+    jp z, .checkCalcVer
+    ld hl, Str9
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVarArc
+    ld a, (var1)
+    ld hl, return
+    push hl
+    or a, a
+    jr z, .checkRAM
+    cp a, 1
+    jr z, .checkROM
+    cp a, 2
+    jp z, .checkBoot
+    cp a, 3
+    jp z, .checkOS
+    jp PrgmErr.INVALA
+
+.checkRAM:
+    ld hl, Str9
+    call ti.Mov9ToOP1
+    ld hl, 6
+    call ti.CreateStrng
+    inc de
+    inc de
+    ex de, hl
+    push hl
+    ld (ans), sp ; use to preserve sp
+    ld a, '0'
+    ld bc, 6
+    call ti.MemSet
+    ld hl, -9 ; do this because the toolchain does
+    call ti._frameset
+    call ti.MemChk
+	push hl ; copied from the toolchain
+	pea ix - 9
+	call ti.os.Int24ToReal
+	ld sp, (ans) ; just restore sp because it's easier
+    ld a, 6
+    call ti.FormEReal
+    ld hl, 6
+    or a, a
+    sbc hl, bc
+    ex de, hl
+    pop hl
+    add hl, de
+    ex de, hl
+    ld hl, ti.OP3
+
+.loadLoop:
+    call ti.ChkBCIs0
+    ret z
+    ldi
+    jr .loadLoop
+
+.checkROM:
+    ld hl, Str9
+    call ti.Mov9ToOP1
+    ld hl, 7
+    call ti.CreateStrng
+    inc de
+    inc de
+    ex de, hl
+    push hl
+    ld (ans), sp ; use to preserve sp
+    ld a, '0'
+    ld bc, 7
+    call ti.MemSet
+    call ti.ArcChk
+    ld hl, -9 ; do this because the toolchain does
+    call ti._frameset
+    ld hl, (ti.tempFreeArc)
+	push hl ; copied from the toolchain
+	pea ix - 9
+	call ti.os.Int24ToReal
+	ld sp, (ans) ; just restore sp because it's easier
+    ld a, 7
+    call ti.FormEReal
+    ld hl, 7
+    or a, a
+    sbc hl, bc
+    ex de, hl
+    pop hl
+    add hl, de
+    ex de, hl
+    ld hl, ti.OP3
+
+.loop:
+    call ti.ChkBCIs0
+    ret z
+    ldi
+    jr .loop
+
+.checkBoot:
+    ld hl, Str9
+    call ti.Mov9ToOP1
+    ld hl, 10
+    call ti.CreateStrng
+    inc de
+    inc de
+    ex de, hl
+    push hl
+    ld a, '0'
+    ld bc, 10
+    call ti.MemSet
+    pop hl
+    push hl
+    inc hl
+    ld (hl), $3A
+    inc hl
+    inc hl
+    ld (hl), $3A
+    inc hl
+    inc hl
+    ld (hl), $3A
+    call ti.os.GetSystemInfo
+    ld bc, 12
+    add hl, bc
+    ld de, execHexLoc
+    ld bc, 6
+    ldir ; store in a safe location
+
+.storeInfo:
+    ld a, (execHexLoc)
+    call ti.SetxxOP1
+    ld a, 6
+    call ti.FormEReal
+    pop de
+    ld hl, ti.OP3
+    ldi
+    inc de
+    push de
+    ld a, (execHexLoc + 1)
+    call ti.SetxxOP1
+    ld a, 6
+    call ti.FormEReal
+    pop de
+    ld hl, ti.OP3
+    ldi
+    inc de
+    push de
+    ld a, (execHexLoc + 2)
+    call ti.SetxxOP1
+    ld a, 6
+    call ti.FormEReal
+    pop de
+    ld hl, ti.OP3
+    ldi
+    inc de
+    push de
+    ld hl, (execHexLoc + 3)
+    call ti.SetxxxxOP2
+    call ti.OP2ToOP1
+    ld a, 6
+    call ti.FormEReal
+    ld hl, 4
+    or a, a
+    sbc hl, bc
+    ex de, hl
+    pop hl
+    add hl, de
+    ex de, hl
+    ld hl, ti.OP3
+
+.loop2:
+    call ti.ChkBCIs0
+    ret z
+    ldi
+    jr .loop2
+
+.checkOS:
+    ld hl, Str9
+    call ti.Mov9ToOP1
+    ld hl, 10
+    call ti.CreateStrng
+    inc de
+    inc de
+    ex de, hl
+    push hl
+    ld a, '0'
+    ld bc, 10
+    call ti.MemSet
+    pop hl
+    push hl
+    inc hl
+    ld (hl), $3A
+    inc hl
+    inc hl
+    ld (hl), $3A
+    inc hl
+    inc hl
+    ld (hl), $3A
+    call ti.os.GetSystemInfo
+    ld bc, 6
+    add hl, bc
+    ld de, execHexLoc
+    ld bc, 6
+    ldir ; store in a safe location
+    jp .storeInfo
+
+.checkCalcVer:
+    call ti.os.GetSystemInfo
+    ld bc, 4
+    add hl, bc
+    ld a, (hl)
+    push af
+    ld hl, Theta
+    push hl
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVar
+    pop hl
+    call ti.CreateReal
+    pop af
+    push de
+    call ti.SetxxOP2
+    pop de
+    ld hl, ti.OP2
+    ld bc, 9
+    ldir
+    jp return
+
+findProg: ; det(32)
+    ld a, (noArgs)
+    cp a, 1
+    jp z, PrgmErr.INVALA
+    ld a, (var1)
+    or a, a
+    jr z, .programs
+    cp a, 1
+    jr z, .appvars
+    jp PrgmErr.INVALA
+
+.programs:
+    res randFlag, (iy + ti.asm_Flag2) ; reset since we're searching for programs
+    call ti.RclAns
+    ld a, (ti.OP1)
+    cp a, 4
+    jp nz, .setupFindAll
+    call ti.AnsName
+    call ti.ChkFindSym
+    ld hl, 0
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    inc de
+    ld (ans), hl ; preserve the length of the string
+    push de
+    call ti.ZeroOP1
+    pop de
+    ld a, 5
+    ld (ti.OP1), a
+    ld ix, execHexLoc
+    ld bc, 0
+    jr .loopFindVars
+
+.appvars:
+    set randFlag, (iy + ti.asm_Flag2) ; set since we're searching for appvars
+    call ti.RclAns
+    ld a, (ti.OP1)
+    cp a, 4
+    jp nz, .setupFindAll
+    call ti.AnsName
+    call ti.ChkFindSym
+    ld hl, 0
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    inc de
+    ld (ans), hl ; preserve the length of the string
+    push de
+    call ti.ZeroOP1
+    pop de
+    ld a, $15
+    ld (ti.OP1), a
+    ld ix, execHexLoc
+    ld bc, 0
+
+.loopFindVars: ; name in OP1; bc = size of string; de = ptr to search string
+    push bc
+    push de
+    call ti.FindAlphaUp
+    jr c, .exitLoop
+    ld bc, -6
+    add hl, bc
+    ld a, (hl)
+    ld (bufSpriteY), a ; use to preserve name length
+    inc hl
+    ld a, (hl)
+    ld (ti.scrapMem + 2), a
+    ld de, (ti.scrapMem)
+    inc hl
+    ld d, (hl)
+    inc hl
+    ld e, (hl)
+    push de
+    pop hl
+    call ti.ChkInRam
+    jr z, .inRam
+    ld a, (bufSpriteY)
+    add a, 10
+    ld bc, 0
+    ld c, a
+    add hl, bc
+
+.inRam:
+    inc hl
+    inc hl
+    pop de
+    push de
+    call .checkString
+    pop de
+    pop bc
+    call z, .storeName
+    jr .loopFindVars
+
+.exitLoop:
+    pop de
+    pop bc
+    push bc
+    call ti.ChkBCIs0
+    jp z, PrgmErr.PNTFN
+    ld hl, Str9
+    push hl
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVarArc
+    pop hl
+    call ti.Mov9ToOP1
+    pop hl
+    push hl
+    call ti.CreateStrng
+    ld hl, execHexLoc
+    inc de
+    inc de
+    pop bc
+    ldir
+    jp return
+
+.setupFindAll:
+    call ti.ZeroOP1
+    ld a, 5
+    ld (ti.OP1), a
+    ld ix, execHexLoc
+    ld bc, 0
+    bit randFlag, (iy + ti.asm_Flag2)
+    jr z, .findAllLoop
+    ld a, $15
+    ld (ti.OP1), a
+
+.findAllLoop:
+    push bc
+    call ti.FindAlphaUp
+    jr c, .exitLoop + 1
+    ld bc, -6
+    add hl, bc
+    ld a, (hl)
+    ld (bufSpriteY), a ; use to preserve name length
+    pop bc
+    call .storeName
+    jr .findAllLoop
+
+.checkString:
+    ld bc, (ans)
+
+.loopStr:
+    ld a, (de)
+    cpi
+    inc de
+    ret nz
+    call ti.ChkBCIs0
+    ret z
+    jr .loopStr
+
+.storeName:
+    ld hl, ti.OP1 + 1
+    ld a, (bufSpriteY)
+    bit randFlag, (iy + ti.asm_Flag2)
+    jr z, .loopStoreName
+    inc a
+    dec hl
+
+.loopStoreName:
+    push af
+    ld a, (hl)
+    call .convertLetter
+    ld (ix), a
+    inc bc
+    inc ix
+    inc hl
+    pop af
+    dec a
+    jr nz, .loopStoreName
+    ld (ix), ti.tSpace
+    inc ix
+    inc bc
+    ret
+
+.convertLetter:
+    cp a, $61
+    ret c
+    cp a, $7B
+    ret nc
+    ld (ix), $BB
+    inc ix
+    inc bc
+    add a, $4F
+    cp a, $BB
+    ret c
+    inc a
+    ret
+
 waitAnyKey:
     call ti.GetCSC
-    cp a, 0
+    or a, a
     jr z, waitAnyKey
     ret
 
@@ -2179,7 +3917,7 @@ cursorHook:
 
 .getNum:
     ld bc, (ti.editBtm)
-    ld de, $000000
+    ld de, 0
     ld e, a
 
 .loop:
@@ -2201,7 +3939,7 @@ cursorHook:
     add hl, hl
     add hl, hl
     add hl, de
-    ld de, $000000
+    ld de, 0
     ld e, a
     add hl, de
     ex de, hl
@@ -2210,7 +3948,7 @@ cursorHook:
 
 .endLoop:
     ex de, hl
-    ld de, 16
+    ld de, (celticTableEnd - celticTableBegin) / 4
     ld bc, celticCommandsPtrs
     or a, a
     sbc hl, de
@@ -2262,7 +4000,7 @@ PrgmErr:
     push hl
     call ti.Mov9ToOP1
     call ti.ChkFindSym
-    call nc, ti.DelVar
+    call nc, ti.DelVarArc
     pop hl
     call ti.Mov9ToOP1
     ld hl, 9
@@ -2304,14 +4042,6 @@ PrgmErr:
     call PrgmErr
     db "::NT>EN>M", 0
 
-;.E2LNG:
-;    call PrgmErr
-;    db "::E>2>LNG", 0
-
-;.S2LNG:
-;    call PrgmErr
-;    db "::S>2>LNG", 0
-
 .PNTFN:
     call PrgmErr
     db "::P>NT>FN", 0
@@ -2339,6 +4069,14 @@ PrgmErr:
 .2MARG:
     call PrgmErr
     db "::2>M>ARG", 0
+
+.NTALS:
+    call PrgmErr
+    db "::NT>A>LS", 0
+
+.ENTFN:
+    call PrgmErr
+    db "::E>NT>FN", 0
 
 .SUPPORT:
     call PrgmErr
@@ -2381,19 +4119,31 @@ aboutScrnLine3:
     db "and TIny_Hacker", 0
 
 versionString:
-    db "Version BETA 1.0", 0
+    db "Version BETA 1.1", 0
 
 copyright:
     db "(c) 2022", 0
+
+creditsStr1:    db "Thank you to:", 0
+creditsStr2:    db "Iambian", 0
+creditsStr3:    db "PT_", 0
+creditsStr4:    db "Kerm Martian", 0
+creditsStr5:    db "MateoC", 0
+creditsStr6:    db "jacobly", 0
+creditsStr7:    db "NoahK", 0
+creditsStr8:    db "Oxiti8", 0
+
+easterEgg:
+    db "EASTER", ti.tSpace, "EGG", ti.tFact, 0
+easterEggLen := $ - easterEgg
 
 if flag_prerelease
 
 warningMsg:
     db "WARNING!", 0
     db "This program is still in", 0
-    db "development. Proceed with", 0
-    db "caution.", 0
-    db "Please do not distribute.", 0
+    db "development. Please", 0
+    db "proceed with caution.", 0
 
 end if
 
@@ -2402,7 +4152,7 @@ C00:    db "ReadLine() : Str0, Ans : Str9 or [", 0
 C01:    db "ReplaceLine() : Str0, Str9, Ans", 0
 C02:    db "InsertLine() : Str0, Str9, Ans", 0
 C03:    db "SpecialChars() : NONE : Str9", 0
-C04:    db "CreateVar() : Str0", 0
+C04:    db "CreateVar(AV_HEADER) : Str0", 0
 C05:    db "Arc/UnarcVar() : Str0", 0
 C06:    db "DeleteVar() : Str0", 0
 C07:    db "DeleteLine() : Str0, Ans", 0
@@ -2414,12 +4164,31 @@ C12:    db "DispColor(F_L,F_H,B_L,B_H)", 0
 C13:    db "DispText(LF,F_L,F_H,B_L,B_H,X,Y) : Str9", 0
 C14:    db "ExecHex() : Ans", 0
 C15:    db "TextRect(COLOR_L,COLOR_H,X,Y,WTH,HT)", 0
+C16:    db "FillScreen(COLOR_L,COLOR_H)", 0
+C17:    db "DrawLine(COLOR_L,COLOR_H,X1,Y1,X2,Y2)", 0
+C18:    db "SetPixel(COLOR_L,COLOR_H,X,Y)", 0
+C19:    db "GetPixel(X,Y) : NONE : Ans and [", 0
+C20:    db "PixelTestColor(ROW,COL) : NONE : [", 0
+C21:    db "PutSprite(X,Y,WIDTH,HEIGHT) : Str9", 0
+C22:    db "GetMode(MODE) : NONE : [", 0
+C23:    db "RenameVar() : Str0, Str9", 0
+C24:    db "LockPrgm() : Str0", 0
+C25:    db "HidePrgm() : Str0", 0
+C26:    db "PrgmToStr(STR_NUM) : Str0 : StrX", 0
+C27:    db "GetPrgmType() : Str0 : [", 0
+C28:    db "GetBatteryStatus() : NONE : [", 0
+C29:    db "SetBrightness(NUM) : NONE : NONE or [", 0
+C30:    db "GetListElem(ELEM) : Ans : [", 0
+C31:    db "GetArgType() : Ans : [", 0
+C32:    db "ChkStats(FN) : NONE : Str9 or [", 0
+C33:    db "FindProg(TYPE) : Ans : Str9", 0
 
 ; additional rodata
 
 celticCommandsPtrs:
     dl C00, C01, C02, C03, C04, C05, C06, C07, C08, C09, C10, C11, C12, C13, C14, C15
-    dl C15
+    dl C16, C17, C18, C19, C20, C21, C22, C23, C24, C25, C26, C27, C28, C29, C30, C31
+    dl C32, C33
 
 Str9:
     db ti.StrngObj, ti.tVarStrng, ti.tStr9, 0, 0
@@ -2432,3 +4201,6 @@ Theta:
 
 tempPrgmName:
     db ti.ProtProgObj, "XTEMP000", 0
+
+appName:
+    db ti.AppVarObj, "CelticCE", 0
