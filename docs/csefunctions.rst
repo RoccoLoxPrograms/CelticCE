@@ -8,7 +8,8 @@ These functions are the same as those included in Doors CSE 8 for the TI-84 Plus
 Documentation
 ~~~~~~~~~~~~~
 
-ReadLine: ``det(0)``, ``Str0`` = **variable name**, ``Ans`` = **line number**
+.. function:: ReadLine: det(0), Str0 = variable name, Ans = line number
+
     Reads a line from a program or AppVar. If ``Ans`` (line number) equals 0, then Theta will be overwritten with the number of lines in the program being read. Otherwise, ``Ans`` refers to the line being read.
 
     .. warning::
@@ -25,8 +26,10 @@ ReadLine: ``det(0)``, ``Str0`` = **variable name**, ``Ans`` = **line number**
     Errors:
      * ``..NULLSTR`` if the line is empty.
 
+------------
 
-ReplaceLine: ``det(1)``, ``Str0`` = **variable name**, ``Ans`` = **line number**, ``Str9`` = **replacement**
+.. function:: ReplaceLine: det(1), Str0 = variable name, Ans = line number, Str9 = replacement
+
     Replaces (overwrites) a line in a program or AppVar. ``Ans`` refers to the line to replace.
 
     Parameters:
@@ -40,8 +43,10 @@ ReplaceLine: ``det(1)``, ``Str0`` = **variable name**, ``Ans`` = **line number**
     Errors:
      * ``..PGM:ARC`` if the file is archived.
 
+------------
 
-InsertLine: ``det(2)``, ``Str0`` = **variable name**, ``Ans`` = **line number**, ``Str9`` = **contents**
+.. function:: InsertLine: det(2), Str0 = variable name, Ans = line number, Str9 = contents
+
     Insets a line into a program or AppVar. ``Ans`` refers to the line number to write to.
 
     Parameters:
@@ -59,19 +64,26 @@ InsertLine: ``det(2)``, ``Str0`` = **variable name**, ``Ans`` = **line number**,
 .. note::
     If your usage of InsertLine results in the program exceeding 65535 bytes (the maximum size of a file), it will result in loss of memory. Celtic does not check if you exceed this filesize, as there should be no reason anyone would do this in the first place.
 
+------------
 
-SpecialChars: ``det(3)``
+.. function:: SpecialChars: det(3)
+
     Stores the ``->`` and ``"`` characters into ``Str9``.
 
     Returns:
      * ``Str9``: ``->`` and ``"``, respectively. You can use substrings to extract them. There are also 7 more characters in ``Str9``, which are junk.
 
+------------
 
-CreateVar: ``det(4)``, ``Str0`` = **variable name**
+.. function:: CreateVar: det(4), Str0 = variable name
+
     Create a program or AppVar given a name.
 
     Parameters:
      * ``Str0``: Name of program or AppVar to create.
+
+    Alternative method for appvars: ``det(4, HEADER), Str0 = variable name``
+     * ``HEADER``: whether or not to include a header which allows `CEaShell <https://github.com/roccoloxprograms/shell>`__ to edit the appvar. This extra argument is optional. 1 to include the header, and 0 to not.
 
     Returns:
      * ``Str9``: Intact if no error occured; otherwise, contains an error code.
@@ -80,8 +92,10 @@ CreateVar: ``det(4)``, ``Str0`` = **variable name**
     Errors:
      * ``..P:IS:FN`` if the program already exists.
 
+------------
 
-ArcUnarcVar: ``det(5)``, ``Str0`` = **variable name**
+.. function:: ArcUnarcVar: det(5), Str0 = variable name
+
     Archive/unarchive a program or AppVar given a name.
 
     Parameters:
@@ -90,8 +104,10 @@ ArcUnarcVar: ``det(5)``, ``Str0`` = **variable name**
     Returns:
      * Moves a program or AppVar into RAM if it was in Archive, or into Archive if it was in RAM.
 
+------------
 
-DeleteVar: ``det(6)``, ``Str0`` = **variable name**
+.. function:: DeleteVar: det(6), Str0 = variable name
+
     Delete a program variable or an AppVar given a name.
 
     Parameters:
@@ -100,8 +116,10 @@ DeleteVar: ``det(6)``, ``Str0`` = **variable name**
     Returns:
      * The indicated program or AppVar is deleted.
 
+------------
 
-DeleteLine: ``det(7)``, ``Str0`` = **variable name**, ``Ans`` = **line number**
+.. function:: DeleteLine: det(7), Str0 = variable name, Ans = line number
+
     Deletes a line from a program or AppVar. ``Ans`` is the line to delete.
 
     Parameters:
@@ -111,8 +129,10 @@ DeleteLine: ``det(7)``, ``Str0`` = **variable name**, ``Ans`` = **line number**
     Returns:
      * ``Str9``: Intact if no error occured; otherwise, contains an error code.
 
+------------
 
-VarStatus: ``det(8)``, ``Str0`` = **variable name**
+.. function:: VarStatus: det(8), Str0 = variable name
+
     Output status string describing a program or AppVar's current state, including size, visibility, and more.
 
     Parameters:
@@ -127,15 +147,17 @@ VarStatus: ``det(8)``, ``Str0`` = **variable name**
          * 5th - 9th character: Size, in bytes
      * Example: ``AVL 01337`` = Archived, visible, locked, 1337 bytes.
 
+------------
 
-BufSprite: ``det(9, width, X, Y)``, ``Str9`` = **sprite data**
+.. function:: BufSprite: det(9, width, X, Y), Str9 = sprite data
+
     Draws indexed (palette-based) sprite onto the LCD and into the graph buffer. Copies the contents of the graph buffer under the sprite back into Str9, so that you can "erase" the sprite back to the original background. Good for moving player characters, cursors, and the like. Interacts politely with Pic variables and OS drawing commands like ``Line(``, ``Circle(``, ``Text(``, and so on. If you want to draw a lot of different sprites to the screen and won't need to erase them back to the background, then use BufSpriteSelect instead.
 
     Parameters:
-     * ``Str9`` = Sprite data as ASCII hex, one nibble per byte. The digits 1-F are valid colors (1 = blue, 2 = red, 3 = black, etc), while G will cause the routine to skip to the next line. 0 is normal transparency, and lets the background show through. H is a special kind of transparency that erases back to transparency instead of leaving the background color intact.
-     * ``X`` = X coordinate to the top-left corner of the sprite.
-     * ``Y`` = Y coordinate to the top-left corner of the sprite.
-     *  ``width`` = Sprite width (height is computed).
+     * ``Str9``: Sprite data as ASCII hex, one nibble per byte. The digits 1-F are valid colors (1 = blue, 2 = red, 3 = black, etc), while G will cause the routine to skip to the next line. 0 is normal transparency, and lets the background show through. H is a special kind of transparency that erases back to transparency instead of leaving the background color intact.
+     * ``X``: X coordinate to the top-left corner of the sprite.
+     * ``Y``: Y coordinate to the top-left corner of the sprite.
+     *  ``width``: Sprite width (height is computed).
 
     Returns:
      * ``Str9``: Same length as input, contains the previous contents of the graph buffer where the sprite was drawn. You can call ``det(9...)`` again without changing Str9 to effectively undo the first sprite draw.
@@ -143,17 +165,19 @@ BufSprite: ``det(9, width, X, Y)``, ``Str9`` = **sprite data**
     Errors:
      * ``..INVAL:S`` if the string contains invalid characters.
 
+------------
 
-BufSpriteSelect: ``det(10, width, X, Y, start, length)``, ``Str9`` = **sprite data**
+.. function:: BufSpriteSelect: det(10, width, X, Y, start, length), Str9 = sprite data
+
     Draws indexed (palette-based) sprite onto the LCD and into the graph buffer. Good for drawing tilemaps, backgrounds, and other sprites that you won't want to individually erase. If you want to be able to erase the sprite drawn and restore the background, you should consider BufSprite instead. This routine takes an offset into Str9 and a sprite length as arguments, so that you can pack multiple sprites of different lengths into Str9.
 
     Parameters:
-     * ``Str9`` = Sprite data as ASCII hex, one nibble per byte. The digits 1-F are valid colors (1 = blue, 2 = red, 3 = black, etc), while G will cause the routine to skip to the next line. 0 is normal transparency, and lets the background show through. H is a special kind of transparency that erases back to transparency instead of leaving the background color intact.
-     * ``X`` = X coordinate to the top-left corner of the sprite.
-     * ``Y`` = Y coordinate to the top-left corner of the sprite.
-     *  ``width`` = Sprite width (height is computed).
-     *  ``start`` = Offset into ``Str9`` of the start of pixel data, begins at 0.
-     *  ``length`` = Length of sprite data in characters.
+     * ``Str9``: Sprite data as ASCII hex, one nibble per byte. The digits 1-F are valid colors (1 = blue, 2 = red, 3 = black, etc), while G will cause the routine to skip to the next line. 0 is normal transparency, and lets the background show through. H is a special kind of transparency that erases back to transparency instead of leaving the background color intact.
+     * ``X``: X coordinate to the top-left corner of the sprite.
+     * ``Y``: Y coordinate to the top-left corner of the sprite.
+     *  ``width``: Sprite width (height is computed).
+     *  ``start``: Offset into ``Str9`` of the start of pixel data, begins at 0.
+     *  ``length``: Length of sprite data in characters.
 
     Returns:
      * Sprite drawn to LCD and stored to graph buffer.
@@ -161,8 +185,10 @@ BufSpriteSelect: ``det(10, width, X, Y, start, length)``, ``Str9`` = **sprite da
     Errors:
      * ``..INVAL:S`` if the string contains invalid characters.
 
+------------
 
-ExecArcPrgm: ``det(11, function, temp_prog_number)``, ``Ans`` = **program name**
+.. function:: ExecArcPrgm: det(11, function, temp_prog_number), Ans = program name
+
     Copies a program to the ``XTEMP`` program of the specified ``temp_prog_number``. ``Ans`` is the name of the program to copy. ``function`` refers to the behavior of the ``ExecArcPrgm`` command, as seen in the table below:
 
     ==== ================================================================
@@ -174,9 +200,9 @@ ExecArcPrgm: ``det(11, function, temp_prog_number)``, ``Ans`` = **program name**
     ==== ================================================================
 
     Parameters:
-     * ``function`` = The requested behavior of the function. Can be 0, 1, or 2.
-     * ``temp_prog_number`` = The number of the ``XTEMP`` program to create/delete.
-     * ``Ans`` = Name of program to copy from.
+     * ``function``: The requested behavior of the function. Can be 0, 1, or 2.
+     * ``temp_prog_number``: The number of the ``XTEMP`` program to create/delete.
+     * ``Ans``: Name of program to copy from.
 
     Returns:
      * Completes the specified function.
@@ -184,22 +210,21 @@ ExecArcPrgm: ``det(11, function, temp_prog_number)``, ``Ans`` = **program name**
     Errors:
      * ``..NT:EN:M`` if there is not enough memory to complete the action.
 
+------------
 
-DispColor: ``det(12, FG_LO, FG_HI, BG_LO, BG_HI)``
-    Changes the foreground and background color for ``Output(``, ``Disp``, and ``Pause`` to arbitrary 16-bit colors, or disables this feature. Due to technical limitations, the foreground and background for ``Text()`` cannot be changed to arbitrary colors.
+.. function:: DispColor: det(12, FG_LO, FG_HI, BG_LO, BG_HI)
+
+    Changes the foreground and background color for ``Output(``, ``Disp``, and ``Pause`` to arbitrary 16-bit colors, or disables this feature. Due to technical limitations, the foreground and background for ``Text()`` cannot be changed to arbitrary colors. To disable this mode, you should call ``det(12, 300)`` before exiting your program.
 
     Parameters:
-     * ``FG_LO`` = low byte of foreground color.
-     * ``FG_HI`` = high byte of foreground color.
-     * ``BG_LO`` = low byte of background color.
-     * ``BG_HI`` = high byte of background color.
+     * ``FG_LO``: low byte of foreground color.
+     * ``FG_HI``: high byte of foreground color.
+     * ``BG_LO``: low byte of background color.
+     * ``BG_HI``: high byte of background color.
 
     Alternative method: ``det(12, FG_OS, BG_OS)``
-    
      * ``FG_OS``: Foreground color from TI-OS Colors menu, like RED or BLUE or NAVY.
      * ``BG_OS``: Background color from TI-OS Colors menu, like RED or BLUE or NAVY.
-
-    To disable this mode, you should call ``det(12, 300)`` before exiting your program.
 
     Colors:
      * A list of colors can be found `here <colors.html>`__.

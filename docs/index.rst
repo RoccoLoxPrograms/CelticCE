@@ -28,6 +28,7 @@ A pdf form of the documentation can be downloaded :download:`here <../CelticCE.p
    installation
    gensyntax
    errorcodes
+   hexcodes
    colors
 
 .. raw:: latex
@@ -40,3 +41,6 @@ A pdf form of the documentation can be downloaded :download:`here <../CelticCE.p
 
    csefunctions
    dcefunctions
+   graphicsfunctions
+   osutilityfunctions
+   celticiiifunctions
