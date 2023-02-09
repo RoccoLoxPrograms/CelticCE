@@ -2,9 +2,9 @@
 ;
 ; Celtic CE Source Code - installer.asm
 ; By RoccoLox Programs and TIny_Hacker
-; Copyright 2022
+; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: November 29, 2022
+; Last Built: January 17, 2023
 ;
 ;--------------------------------------
 
@@ -29,7 +29,7 @@ ___icon:
     db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
     db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 ___description:
-    db "Celtic CE Installer - BETA v1.1", 0
+    db "Celtic CE Installer - BETA v1.2", 0
 
 installApp:
     call .clearScreen
@@ -56,7 +56,7 @@ installApp:
     call ti.GetCSC
     cp a, ti.skEnter
     jr nz, .getKey
-    jp appInstalled.exit
+    jr .clearScreen
 
 .printMessage:
     call ti.PutS
@@ -71,50 +71,47 @@ appInstalled:
     call ti.HomeUp
     ld hl, celticInstalledStr
     call ti.PutS
-
-.waitLoopEnter2:
-    call ti.GetCSC
-    cp a, ti.skEnter
-    jr nz, .waitLoopEnter2
+    call ti.GetKey
     call ti.NewLine
     call ti.NewLine
     ld hl, deleteInstallerStr
     call ti.PutS
-    ld a, 16
-    ld (ti.curCol), a
     ld a, 4
     ld (ti.curRow), a
+    ld hl, $FFFF
+    ld (ti.fillRectColor), hl
+    res ti.textInverse, (iy + ti.textFlags)
 
 .updateDisplay:
-    ld a, (ti.curCol)
-    ld b, a
-    cp a, 6
-    push bc
-    call z, .yesInBlack
-    pop bc
-    ld a, b
-    cp a, 6
-    call nz, .noInBlack
+    ld hl, 72
+    ld de, 241
+    ld b, 117
+    ld c, 134
+    call ti.FillRect
+    ld a, 6
+    ld (ti.curCol), a
+    ld hl, optionYes
+    call ti.PutS
+    ld a, 16
+    ld (ti.curCol), a
+    ld a, (iy + ti.textFlags)
+    xor a, 8
+    ld (iy + ti.textFlags), a
+    ld hl, optionNo
+    call ti.PutS
 
 .getKey:
     call ti.GetCSC
     cp a, ti.skRight
-    jr z, .getInput
+    jr z, .updateDisplay
+    cp a, ti.skLeft
+    jr z, .updateDisplay
     cp a, ti.skClear
     jr z, .exit
-    cp a, ti.skLeft
-    jr z, .getInput
     cp a, ti.skEnter
     jr nz, .getKey
-
-.getInput:
-    cp a, ti.skLeft
-    jr z, .leftPress
-    cp a, ti.skRight
-    jr z, .rightPress
-    ld a, (ti.curCol)
-    cp a, 16
-    jr z, .exit
+    bit ti.textInverse, (iy + ti.textFlags)
+    jr nz, .exit
     ld hl, celticName
     call ti.Mov9ToOP1
     call ti.ChkFindSym
@@ -124,68 +121,8 @@ appInstalled:
     call ti.ClrScrn
     jp ti.HomeUp
 
-.leftPress:
-    ld a, (ti.curCol)
-    sub a, 10
-    ld (ti.curCol), a
-    cp a, 6
-    jr z, .updateDisplay
-    ld a, 16
-    ld (ti.curCol), a
-    jr .updateDisplay
-
-.rightPress:
-    ld a, (ti.curCol)
-    add a, 10
-    ld (ti.curCol), a
-    cp a, 16
-    jr z, .updateDisplay
-    ld a, 6
-    ld (ti.curCol), a
-    jr .updateDisplay
-
-.yesInBlack:
-    ld a, 16
-    ld (ti.curCol), a
-    ld hl, optionNo
-    call ti.PutS
-    ld hl, $00FFFF
-    ld de, $000000
-    call ti.SetTextFGBGcolors_
-    ld a, 6
-    ld (ti.curCol), a
-    ld hl, optionYes
-    set ti.textEraseBelow, (iy + ti.textFlags)
-    call ti.PutS
-    ld hl, $000000
-    ld de, $00FFFF
-    call ti.SetTextFGBGcolors_
-    ld a, 6
-    ld (ti.curCol), a
-    ret
-
-.noInBlack:
-    ld a, 6
-    ld (ti.curCol), a
-    ld hl, optionYes
-    call ti.PutS
-    ld hl, $00FFFF
-    ld de, $000000
-    call ti.SetTextFGBGcolors_
-    ld a, 16
-    ld (ti.curCol), a
-    ld hl, optionNo
-    set ti.textEraseBelow, (iy + ti.textFlags)
-    call ti.PutS
-    ld hl, $000000
-    ld de, $00FFFF
-    call ti.SetTextFGBGcolors_
-    ld a, 16
-    ld (ti.curCol), a
-    ret
-
 osInvalidStr:
-    db  "Cannot use this OS.", 0
+    db "Cannot use this OS.", 0
 
 celticInstalledStr:
     db " Celtic CE app installed.", 0
@@ -207,7 +144,7 @@ optionNo:
 celticName:
     db ti.ProgObj, "CELTICCE", 0
 
-relocate installer_ports, ti.pixelShadow
+relocate installer_ports, ti.saveSScreen
 define installer
 namespace installer
     include 'ports.asm'

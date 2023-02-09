@@ -6,8 +6,8 @@ You can view the online documentation [here](https://roccoloxprograms.github.io/
 # Functions
 
 ## Completed
- * [Celtic 2 CSE](https://roccoloxprograms.github.io/CelticCE/csefunctions.html)
- * [Doors CE 9](https://roccoloxprograms.github.io/CelticCE/dcefunctions.html)
+ * [Celtic 2 CSE Functions](https://roccoloxprograms.github.io/CelticCE/csefunctions.html)
+ * [Doors CE 9 Functions](https://roccoloxprograms.github.io/CelticCE/dcefunctions.html)
  * [Graphics Functions](https://roccoloxprograms.github.io/CelticCE/graphicsfunctions.html)
  * [OS Utility Functions](https://roccoloxprograms.github.io/CelticCE/osutilityfunctions.html)
  * [Celtic III Functions](https://roccoloxprograms.github.io/CelticCE/celticiiifunctions.html)
