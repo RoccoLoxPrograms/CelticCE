@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: January 17, 2023
+; Last Built: February 15, 2023
 ;
 ;--------------------------------------
 
@@ -474,6 +474,7 @@ noChain:
     ret
 
 hookTriggered:
+    pop af
     di
     ld (stackPtr), sp
     ld (noArgs), hl
@@ -2052,6 +2053,8 @@ _convertChars: ; a = token value
     ld a, (hl)
     cp a, $15
     jr nz, .loop
+    cp a, $17
+    jr nz, .loop
     ld (de), a
     inc hl
     inc de
@@ -2644,7 +2647,7 @@ getMode: ; det(22)
     cp a, 1
     jp z, PrgmErr.INVALA
     ld a, (var1)
-    cp a, (.modeListEnd - .modeListStart) / 4
+    cp a, (.modeListEnd - .modeListStart) / 3
     jp nc, PrgmErr.INVALA
     ld l, a
     ld h, 3
@@ -3874,16 +3877,630 @@ findProg: ; det(33)
     ret
 
 ungroupFile: ; det(34)
-    jp return
+    ld a, (noArgs)
+    cp a, 3
+    jp nc, PrgmErr.INVALA
+    ld hl, Str0
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp c, PrgmErr.SNTFN
+    call ti.ChkInRam
+    jp nz, PrgmErr.SFLASH
+    call _getProgNameLen
+    ex de, hl
+    call _convertChars.varName
+    ld hl, prgmName + 1
+    ld a, (hl)
+    cp a, $17
+    jp nz, PrgmErr.NTAGP
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp c, PrgmErr.GNTFN
+    call ti.ChkInRam
+    jr z, .inRam
+    ld hl, 10
+    add hl, de
+    ld a, c
+    ld bc, 0
+    ld c, a
+    add hl, bc
+    ex de, hl
+
+.inRam:
+    ld hl, 0
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    inc de
+    call _getEOF
+
+.loop:
+    ld a, (de)
+    cp a, $05
+    jr z, .extract
+    cp a, $06
+    jr z, .extract
+    cp a, $15
+    jr nz, .advance
+
+.extract:
+    push af
+    push de
+    ld (ti.OP1), a
+    ld hl, 6
+    add hl, de
+    ld c, (hl)
+    inc hl
+    ld de, ti.OP1 + 1
+
+.load:
+    ldi
+    inc c
+    dec c
+    jr nz, .load
+    xor a, a
+    ld (de), a
+    push hl
+    call ti.ChkFindSym
+    jr c, .create
+    ld a, (var1)
+    or a, a
+    push hl
+    pop ix
+    pop hl
+    jr z, .writeEnd
+    push hl
+    push ix
+    pop hl ; get VAT pointer
+    call ti.DelVarArc
+
+.create:
+    pop hl
+    ld de, 0
+    ld e, (hl)
+    inc hl
+    ld d, (hl)
+    inc hl
+    push hl
+    ex de, hl
+    ld a, (ti.OP1)
+    push hl
+    inc hl
+    inc hl
+    call ti.EnoughMem
+    jp c, PrgmErr.NOMEM
+    pop hl
+    push hl
+    call ti.CreateVar
+    inc de
+    inc de
+    pop bc
+    pop hl
+
+.write:
+    ld a, b
+    or a, c
+    jr z, .writeEnd
+    ldi
+    jr .write
+
+.writeEnd:
+    pop de
+    pop af
+
+.advance:
+    ld hl, .next
+    push hl
+    ld hl, 6
+    add hl, de
+    ex de, hl
+    ld hl, 3
+    ld h, a
+    mlt hl
+    ld bc, _findNthItem.itemTypes
+    add hl, bc
+    ld hl, (hl)
+    jp (hl)
+
+.next:
+    push de
+    pop bc
+    ld ix, _decBCretZ
+    call _checkEOF
+    jp z, return
+    jp .loop
 
 getGroup: ; det(35)
+    ld hl, Str0
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp c, PrgmErr.SNTFN
+    call ti.ChkInRam
+    jp nz, PrgmErr.SFLASH
+    call _getProgNameLen
+    ex de, hl
+    call _convertChars.varName
+    ld hl, prgmName + 1
+    ld a, (hl)
+    cp a, $17
+    jp nz, PrgmErr.NTAGP
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp c, PrgmErr.GNTFN
+    call ti.ChkInRam
+    jr z, .inRam
+    ld hl, 10
+    add hl, de
+    ld a, c
+    ld bc, 0
+    ld c, a
+    add hl, bc
+    ex de, hl
+
+.inRam:
+    ld hl, 0
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    inc de
+    call _getEOF
+    ex de, hl
+    ld ix, execHexLoc
+    ld bc, 0
+
+.findAllLoop:
+    push bc
+    push hl
+    push hl
+    pop bc
+    push ix
+    ld ix, _decBCretZ
+    call _checkEOF
+    pop ix
+    pop hl
+    jr z, .exit
+    ld a, (hl)
+    cp a, $05
+    jr z, .isValid
+    cp a, $06
+    jr z, .isValid
+    cp a, $15
+    jr nz, .advance
+    pop bc
+    inc bc
+    push bc
+    ld (ix), a
+    inc ix
+
+.isValid:
+    ld bc, 6
+    add hl, bc
+    ld a, (hl)
+    ld (bufSpriteY), a ; preserve name length
+    pop bc
+    push hl
+    call .storeName
+    pop hl
+    push bc
+    ld bc, -6
+    add hl, bc
+
+.advance:
+    ex de, hl
+    ld a, (de)
+    ld hl, .next
+    push hl
+    ld hl, 6
+    add hl, de
+    ex de, hl
+    ld hl, 3
+    ld h, a
+    mlt hl
+    ld bc, _findNthItem.itemTypes
+    add hl, bc
+    ld hl, (hl)
+    jp (hl)
+
+.next:
+    ex de, hl
+    pop bc
+    jr .findAllLoop
+
+.exit:
+    pop bc
+    push bc
+    call ti.ChkBCIs0
+    jp z, PrgmErr.PNTFN
+    ld hl, Str9
+    push hl
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVarArc
+    pop hl
+    call ti.Mov9ToOP1
+    pop hl
+    push hl
+    call ti.CreateStrng
+    ld hl, execHexLoc
+    inc de
+    inc de
+    pop bc
+    ldir
     jp return
+
+.storeName:
+    ld a, (bufSpriteY)
+    inc hl
+
+.loopStoreName:
+    push af
+    ld a, (hl)
+    call findProg.convertLetter
+    ld (ix), a
+    inc bc
+    inc ix
+    inc hl
+    pop af
+    dec a
+    jr nz, .loopStoreName
+    ld (ix), ti.tSpace
+    inc ix
+    inc bc
+    ret
 
 extGroup: ; det(36)
-    jp return
+    ld a, (noArgs)
+    cp a, 3
+    jp nc, PrgmErr.INVALA
+    ld hl, Str0
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp c, PrgmErr.SNTFN
+    call ti.ChkInRam
+    jp nz, PrgmErr.SFLASH
+    call _getProgNameLen
+    ex de, hl
+    call _convertChars.varName
+    ld hl, prgmName + 1
+    ld a, (hl)
+    cp a, $17
+    jp nz, PrgmErr.NTAGP
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp c, PrgmErr.GNTFN
+    call ti.ChkInRam
+    jr z, .inRam
+    ld hl, 10
+    add hl, de
+    ld a, c
+    ld bc, 0
+    ld c, a
+    add hl, bc
+    ex de, hl
+
+.inRam:
+    ld hl, 0
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    inc de
+    call _getEOF
+    ld a, (var1)
+    ld ixl, a
+    call _findNthItem
+    jp z, PrgmErr.ENTFN
+    ld a, (de)
+    ld (ti.OP1), a
+    ld hl, 6
+    add hl, de
+    ld c, (hl)
+    inc hl
+    ld de, ti.OP1 + 1
+
+.load:
+    ldi
+    inc c
+    dec c
+    jr nz, .load
+    xor a, a
+    ld (de), a
+    ld de, 0
+    ld e, (hl)
+    inc hl
+    ld d, (hl)
+    inc hl
+    push hl
+    push de
+    call ti.ChkFindSym
+    jp nc, PrgmErr.PISFN
+    ld a, (ti.OP1)
+    pop hl
+    push hl
+    inc hl
+    inc hl
+    call ti.EnoughMem
+    jp c, PrgmErr.NOMEM
+    pop hl
+    push hl
+    call ti.CreateVar
+    inc de
+    inc de
+    pop bc
+    pop hl
+
+.write:
+    ld a, b
+    or a, c
+    jp z, return
+    ldi
+    jr .write
 
 groupMem: ; det(37)
+    ld a, (noArgs)
+    cp a, 3
+    jp nc, PrgmErr.INVALA
+    ld hl, Str0
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp c, PrgmErr.SNTFN
+    call ti.ChkInRam
+    jp nz, PrgmErr.SFLASH
+    call _getProgNameLen
+    ex de, hl
+    call _convertChars.varName
+    ld hl, prgmName + 1
+    ld a, (hl)
+    cp a, $17
+    jp nz, PrgmErr.NTAGP
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp c, PrgmErr.GNTFN
+    call ti.ChkInRam
+    jr z, .inRam
+    ld hl, 10
+    add hl, de
+    ld a, c
+    ld bc, 0
+    ld c, a
+    add hl, bc
+    ex de, hl
+
+.inRam:
+    ld hl, 0
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    inc de
+    call _getEOF
+    ld a, (var1)
+    ld ixl, a
+    call _findNthItem
+    jp z, PrgmErr.ENTFN
+    ld hl, 6
+    add hl, de
+    ld de, 0
+    ld e, (hl)
+    add hl, de
+    inc hl
+    ld e, (hl)
+    inc hl
+    ld d, (hl)
+    ex de, hl
+    push hl
+    ld hl, Theta
+    push hl
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVar
+    pop hl
+    call ti.CreateReal
+    pop hl
+    push de
+    call ti.SetxxxxOP2
+    pop de
+    ld hl, ti.OP2
+    ld bc, 9
+    ldir
     jp return
+
+_findNthItem: ; item number to find in ixl
+    ld a, (de)
+    cp a, $05
+    jr z, .isCounted
+    cp a, $06
+    jr z, .isCounted
+    cp a, $15
+    jr nz, .skip ; only count programs and appvars
+
+.isCounted:
+    dec ixl
+    jr nz, .skip
+    or a, 1
+    ret
+
+.skip:
+    ld hl, .next
+    push hl
+    ld hl, 6
+    add hl, de
+    ex de, hl
+    ld hl, 3
+    ld h, a
+    mlt hl
+    ld bc, .itemTypes
+    add hl, bc
+    ld hl, (hl)
+    jp (hl)
+
+.next:
+    push de
+    pop bc
+    push ix
+    ld ix, _decBCretZ
+    call _checkEOF
+    pop ix
+    ret z
+    jr _findNthItem
+
+.real:
+    ld hl, 12
+    add hl, de
+    ex de, hl
+
+.ret: ; use this for things that aren't listed
+    ret
+
+.list:
+    ld a, (de)
+    ld hl, 0
+    ld l, a
+    inc l
+    add hl, de ; skip name
+    ex de, hl
+    ld hl, 0
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    inc de
+    push de
+    push hl
+    pop de
+    add hl, hl
+    add hl, hl
+    add hl, hl
+    add hl, de ; multiply by nine
+    pop de
+    add hl, de
+    ex de, hl
+    ret
+
+.matrix:
+    inc de
+    inc de
+    inc de
+    ld hl, 0
+    ld a, (de)
+    ld h, a
+    inc de
+    ld a, (de)
+    ld l, a
+    mlt hl
+    inc de
+    push de
+    push hl
+    pop de
+    add hl, hl
+    add hl, hl
+    add hl, hl
+    add hl, de ; multiply by nine
+    pop de
+    add hl, de
+    ex de, hl
+    ret
+
+.equation:
+.string:
+.picture:
+.gdb:
+.window:
+.zsto:
+.tableRange:
+    inc de
+    inc de
+    inc de
+    ld hl, 0
+    ld a, (de)
+    ld l, a 
+    inc de
+    ld a, (de)
+    ld h, a
+    inc de
+    add hl, de
+    ex de, hl
+    ret
+
+.program:
+.appvar:
+    ld hl, 0
+    ld a, (de)
+    ld l, a
+    inc l
+    add hl, de
+    ld de, 0
+    ld e, (hl)
+    inc hl
+    ld d, (hl)
+    inc hl
+    add hl, de
+    ex de, hl
+    ret
+
+.complex:
+    ld hl, 21
+    add hl, de
+    ex de, hl
+    ret
+
+.complexList:
+    ld a, (de)
+    ld hl, 0
+    ld l, a
+    inc l
+    add hl, de ; skip name
+    ex de, hl
+    ld hl, 0
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    inc de
+    push de
+    add hl, hl
+    push hl
+    pop de
+    add hl, hl
+    add hl, hl
+    add hl, hl
+    add hl, de ; multiply by eighteen
+    pop de
+    add hl, de
+    ex de, hl
+    ret
+
+.itemTypes:
+    dl .real
+    dl .list
+    dl .matrix
+    dl .equation
+    dl .string
+    dl .program
+    dl .program
+    dl .picture
+    dl .gdb
+    dl .ret
+    dl .ret
+    dl .ret
+    dl .complex
+    dl .complexList
+    dl .ret
+    dl .window
+    dl .zsto
+    dl .tableRange
+    dl .ret
+    dl .ret
+    dl .ret
+    dl .appvar
 
 binRead: ; det(38)
     ld a, (noArgs)
