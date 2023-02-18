@@ -9,26 +9,26 @@ These functions are roughly based/related to some of the functions made for Door
 Documentation
 ~~~~~~~~~~~~~
 
-.. function:: DispText: det(13, LargeFont, FG_LO, FG_HI, BG_LO, BG_HI, X, Y), Str9 = text
+.. function:: DispText: det(13, large_font, fg_low, fg_high, bg_low, bg_high, x, y); Str9 = text
 
-    Displays colored text from ``Str9`` at ``X`` and ``Y`` on the screen, using the OS large or small font.
+    Displays colored text from ``Str9`` at ``x`` and ``y`` on the screen, using the OS large or small font.
 
     .. warning::
-        You can only use a maximum of 128 characters in ``Str9`` at a time with this command. However, this should be plenty, since the text does not wrap.
+        you can only use a maximum of 128 characters in ``Str9`` at a time with this command. However, this should be plenty, since the text does not wrap.
 
     Parameters:
-     * ``LargeFont`` = whether to use OS large or small font. 0 means to use the OS small font, and 1 means to use the large font.
-     * ``FG_LO``: low byte of foreground color.
-     * ``FG_HI``: high byte of foreground color.
-     * ``BG_LO``: low byte of background color.
-     * ``BG_HI``: high byte of background color.
-     * ``X``: X location to display the text, starting from the top-left corner.
-     * ``Y``: Y location to display the text, starting from the top-left corner.
+     * ``large_font`` = whether to use OS large or small font. 0 means to use the OS small font, and 1 means to use the large font.
+     * ``fg_low``: low byte of foreground color.
+     * ``fg_high``: high byte of foreground color.
+     * ``bg_low``: low byte of background color.
+     * ``bg_high``: high byte of background color.
+     * ``x``: x location to display the text, starting from the top-left corner.
+     * ``y``: y location to display the text, starting from the top-left corner.
      * ``Str9``: Text to display.
 
-    Alternative method: ``det(13, LargeFont, FG_OS, BG_OS, X, Y)``
-     * ``FG_OS``: Foreground color from TI-OS Colors menu, like RED or BLUE or NAVY.
-     * ``BG_OS``: Background color from TI-OS Colors menu, like RED or BLUE or NAVY.
+    Alternative method: ``det(13, large_font, fg_os, bg_os, x, y)``
+     * ``fg_os``: Foreground color from TI-OS Colors menu, like RED or BLUE or NAVy.
+     * ``bg_os``: Background color from TI-OS Colors menu, like RED or BLUE or NAVy.
 
     Colors:
      * A list of colors can be found `here <colors.html>`__.
@@ -38,7 +38,7 @@ Documentation
 
 ------------
 
-.. function:: ExecHex: det(14), Ans = hex code
+.. function:: ExecHex: det(14); Ans = hex code
 
     Executes the string of ASCII-encoded hexadecimal in Ans. Although a ``C9`` (ret) at the end of your hex string is highly encouraged, Celtic will automatically put one at the end for safety regardless. For a list of useful hex codes, refer to `this page <hexcodes.html>`__.
 
@@ -56,23 +56,23 @@ Documentation
 
 ------------
 
-.. function:: TextRect: det(15, LOW, HIGH, X, Y, WIDTH, HEIGHT)
+.. function:: TextRect: det(15, low, high, x, y, width, height)
 
     Draw a filled, colored rectangle on the screen. This command can also be used to draw an individual pixel by setting the width and height to 1, or a line by setting either the width or height to 1.
 
     Parameters:
-     * ``LOW``: low byte of color.
-     * ``HIGH``: high byte of color.
-     * ``X``: X location to draw the rectangle, beginning at the top-left corner.
-     * ``Y``: Y location to draw the rectangle, beginning at the top-left corner.
-     * ``WIDTH``: Width of rectangle.
-     * ``HEIGHT``: Height of rectangle.
+     * ``low``: low byte of color.
+     * ``high``: high byte of color.
+     * ``x``: x location to draw the rectangle, beginning at the top-left corner.
+     * ``y``: y location to draw the rectangle, beginning at the top-left corner.
+     * ``width``: Width of rectangle.
+     * ``height``: Height of rectangle.
 
-    Alternative method: ``det(15, OS_COLOR, X, Y, WIDTH, HEIGHT)``
-     * ``OS_COLOR``: Color from TI-OS Colors menu, like RED or BLUE or NAVY.
+    Alternative method: ``det(15, os_color, x, y, width, height)``
+     * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVy.
 
     .. note::
-        If you use the alternative method and use 0 for ``OS_COLOR``, it will invert the section of the screen covered by the rectangle instead of drawing a color. This can be useful for blinking cursors, etc.
+        If you use the alternative method and use 0 for ``os_color``, it will invert the section of the screen covered by the rectangle instead of drawing a color. This can be useful for blinking cursors, etc.
 
     Colors:
      * A list of colors can be found `here <colors.html>`__.

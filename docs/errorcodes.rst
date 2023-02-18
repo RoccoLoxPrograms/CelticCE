@@ -29,5 +29,7 @@ Error Code Description
 ..2:M:ARG  More arguments were entered than Celtic is able to handle.
 ..NT:A:LS  The argument was not a list, but Celtic expects a list.
 ..E:NT:FN  The entry was not found in the list specified.
+..G:NT:FN  The specified group was not found.
+..NT:A:GP  The file specified was not a group.
 ..SUPPORT  Whatever happened was not supported by Celtic.
 ========== ================================================================================================

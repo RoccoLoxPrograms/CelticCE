@@ -1473,7 +1473,7 @@ bufSprite: ; det(9)
     ld hl, 0
     or a, a
     sbc hl, bc
-    jp z, _popReturn
+    jp z, PrgmErr.INVALA
     pop hl
     pop de
     ld ix, 1
@@ -1655,7 +1655,7 @@ bufSpriteSelect: ; det(10)
     ld hl, 0
     or a, a
     sbc hl, bc
-    jp z, _popReturn
+    jp z, PrgmErr.INVALA
     pop hl
     pop de
     ld ix, 1
@@ -1727,11 +1727,6 @@ bufSpriteSelect: ; det(10)
     pop de
     pop hl
     jr .checkLoop
-
-_popReturn:
-    pop hl
-    pop hl
-    jp PrgmErr.INVALA
 
 execArcPrgm: ; det(11)
     ld hl, tempPrgmName

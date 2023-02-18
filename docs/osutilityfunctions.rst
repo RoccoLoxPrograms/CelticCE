@@ -8,7 +8,7 @@ These functions perform various actions related to the OS and its various featur
 Documentation
 ~~~~~~~~~~~~~
 
-.. function:: GetMode: det(22, MODE)
+.. function:: GetMode: det(22, mode)
 
     Checks a specified mode, from 0 to 10. A table containing the information on the modes and possible outcomes is below.
 
@@ -28,14 +28,14 @@ Documentation
     ===== =============== ===========================================================================
 
     Parameters:
-     * ``MODE``: Which mode to check. Refer to the table above. Must be between 0 and 10.
+     * ``mode``: Which mode to check. Refer to the table above. Must be between 0 and 10.
 
     Returns:
      * Varies based on the specified mode. See table above.
 
 ------------
 
-.. function:: RenameVar: det(23), Str0 = variable to rename, Str9 = new name
+.. function:: RenameVar: det(23); Str0 = variable to rename; Str9 = new name
 
     Renames the variable specified in ``Str0`` with a new name specified in ``Str9``. For appvars, the name in ``Str0`` must be preceeded with the ``rowSwap(`` token, however, the new name does not need the ``rowSwap(`` token. Renaming a program will result in the program being locked.
 
@@ -51,7 +51,7 @@ Documentation
     
 ------------
 
-.. function:: LockPrgm: det(24), Str0 = variable to lock.
+.. function:: LockPrgm: det(24); Str0 = variable to lock
 
     Toggles the locked attribute of the program referenced by ``Str0``.
 
@@ -69,7 +69,7 @@ Documentation
 
 ------------
 
-.. function:: HidePrgm: det(25), Str0 = variable to hide.
+.. function:: HidePrgm: det(25); Str0 = variable to hide
 
     Toggles the hidden attribute of the program referenced by ``Str0``.
 
@@ -87,23 +87,23 @@ Documentation
 
 ------------
 
-.. function:: PrgmToStr: det(26, STRING_NO), Str0 = variable to read
+.. function:: PrgmToStr: det(26, string_number); Str0 = variable to read
 
-    Copies the contents of a file specified in ``Str0`` to the string specified by ``STRING_NO``. If you wish to read the contents of an appvar, you must preceed the name with the ``rowSwap(`` token in ``Str0``.
+    Copies the contents of a file specified in ``Str0`` to the string specified by ``string_number``. If you wish to read the contents of an appvar, you must preceed the name with the ``rowSwap(`` token in ``Str0``.
 
     Parameters:
-     * ``STRING_NO``: The number of the string to copy to. Can be from 0 to 9. 0 means ``Str0``, 1 means ``Str1`` and so on.
+     * ``string_number``: The number of the string to copy to. Can be from 0 to 9. 0 means ``Str0``, 1 means ``Str1`` and so on.
      * ``Str0``: Name of the variable to copy. The name must be preceeded by the ``rowSwap(`` token if you wish to read an appvar.
 
     Returns:
-     * The contents of the specified variable in the string specified by ``STRING_NO``.
+     * The contents of the specified variable in the string specified by ``string_number``.
 
     Errors:
      * ``..NT:EN:M`` if there is not enough memory to create the string with the contents of the specified variable.
 
 ------------
 
-.. function:: GetPrgmType: det(27), Str0 = program to check
+.. function:: GetPrgmType: det(27); Str0 = program to check
 
     Gets the type of program specified in ``Str0``. This is not the OS type, it is the actual program type (C, ASM, etc). A table with the return codes and filetypes they signify is below.
 
@@ -136,16 +136,16 @@ Documentation
 
 ------------
 
-.. function:: SetBrightness: det(29, BRIGHTNESS)
+.. function:: SetBrightness: det(29, brightness)
 
-    Sets the LCD to the specified ``BRIGHTNESS``. The brightness can be between 1 and 255, with 1 being the brightest and 255 being the darkest. If the brightness is set to 0, it will instead return the current brightness of the screen.
+    Sets the LCD to the specified ``brightness``. The brightness can be between 1 and 255, with 1 being the brightest and 255 being the darkest. If the brightness is set to 0, it will instead return the current brightness of the screen.
     
     .. note::
         The brightness will not persist after the calculator is turned off. Instead, it will go back to what it was previously.
 
     Parameters:
-     * ``BRIGHTNESS``: The level of brightness to set the screen to, between 1 and 255. 0 will instead return the current level of brightness.
+     * ``brightness``: The level of brightness to set the screen to, between 1 and 255. 0 will instead return the current level of brightness.
 
     Returns:
      * ``Theta``: If you attempt to set the brightness to 0, ``Theta`` will contain the current brightness.
-     * If ``BRIGHTNESS`` is between 1 and 255 (Not 0), it will instead set the screen to the specified brightness, with 1 being the lightest and 255 the darkest.
+     * If ``brightness`` is between 1 and 255 (Not 0), it will instead set the screen to the specified brightness, with 1 being the lightest and 255 the darkest.

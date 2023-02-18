@@ -20,13 +20,13 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Celtic CE'
-copyright = '2022, RoccoLox Programs, TIny_Hacker'
+copyright = '2022 - 2023, RoccoLox Programs, TIny_Hacker'
 author = 'RoccoLox Programs, TIny_Hacker'
 
 # The short X.Y version
-version = 'b1.1'
+version = 'b1.2'
 # The full version, including alpha/beta/rc tags
-release = 'Beta 1.1'
+release = 'Beta 1.2'
 
 
 # -- General configuration ---------------------------------------------------

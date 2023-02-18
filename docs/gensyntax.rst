@@ -45,10 +45,11 @@ The specific syntax for each function is listed in the documentation.
 Most often, numerical arguments are passed in the ``det(`` function. Variable names are put in ``Str0``, and strings arguments are put in ``Str9``. The exact usage will vary depending on the function.
 Celtic only accepts positive real integers as arguments. If a decimal number is passed, Celtic will only take the integer part of it.
 
-When using ``Str0`` as a program name, simply store the name of the program into ``Str0``. When storing an AppVar, begin the string with the ``rowSwap(`` token. For example::
+When using ``Str0`` as a program name, simply store the name of the program into ``Str0``. When storing an AppVar, begin the string with the ``rowSwap(`` token. When storing a group, begin the string with the ``*row(`` For example::
     
     :"FOO" -> Str0              //program FOO
     :"rowSwap(FOO" -> Str0      //AppVar FOO
+    :"*row(FOO" ->              //group FOO
 
 If a string is used, it must be in the RAM when the function is called.
 
