@@ -223,8 +223,8 @@ Documentation
      * ``bg_high``: high byte of background color.
 
     Alternative method: ``det(12, fg_os, bg_os)``
-     * ``fg_os``: Foreground color from TI-OS Colors menu, like RED or BLUE or NAVy.
-     * ``bg_os``: Background color from TI-OS Colors menu, like RED or BLUE or NAVy.
+     * ``fg_os``: Foreground color from TI-OS Colors menu, like RED or BLUE or NAVY.
+     * ``bg_os``: Background color from TI-OS Colors menu, like RED or BLUE or NAVY.
 
     Colors:
      * A list of colors can be found `here <colors.html>`__.

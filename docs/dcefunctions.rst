@@ -27,8 +27,8 @@ Documentation
      * ``Str9``: Text to display.
 
     Alternative method: ``det(13, large_font, fg_os, bg_os, x, y)``
-     * ``fg_os``: Foreground color from TI-OS Colors menu, like RED or BLUE or NAVy.
-     * ``bg_os``: Background color from TI-OS Colors menu, like RED or BLUE or NAVy.
+     * ``fg_os``: Foreground color from TI-OS Colors menu, like RED or BLUE or NAVY.
+     * ``bg_os``: Background color from TI-OS Colors menu, like RED or BLUE or NAVY.
 
     Colors:
      * A list of colors can be found `here <colors.html>`__.
@@ -69,7 +69,7 @@ Documentation
      * ``height``: Height of rectangle.
 
     Alternative method: ``det(15, os_color, x, y, width, height)``
-     * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVy.
+     * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVY.
 
     .. note::
         If you use the alternative method and use 0 for ``os_color``, it will invert the section of the screen covered by the rectangle instead of drawing a color. This can be useful for blinking cursors, etc.

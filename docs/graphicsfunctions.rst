@@ -17,7 +17,7 @@ Documentation
      * ``high``: High byte of color.
 
     Alternative method: ``det(16, os_color)``
-     * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVy.
+     * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVY.
 
     Colors:
      * A list of colors can be found `here <colors.html>`__.
@@ -40,7 +40,7 @@ Documentation
      * ``y2``: y location to finish drawing the line at, beginning from the top-left corner of the screen.
 
     Alternative method: ``det(17, os_color, x1, y1, x2, y2)``
-     * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVy.
+     * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVY.
 
     Colors:
      * A list of colors can be found `here <colors.html>`__.
@@ -61,7 +61,7 @@ Documentation
      * ``y``: y location of the pixel to set, beginning from the top-left corner of the screen.
 
     Alternative method: ``det(17, os_color, x, y)``
-     * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVy.
+     * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVY.
 
     .. note::
         If you use the alternative method and use 0 for ``os_color``, it will invert the specified pixel instead of drawing a color.
