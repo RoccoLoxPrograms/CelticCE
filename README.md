@@ -13,19 +13,6 @@ You can view the online documentation [here](https://roccoloxprograms.github.io/
  * [Celtic III Functions](https://roccoloxprograms.github.io/CelticCE/celticiiifunctions.html)
 
 ## In Progress
- * UngroupFile - `det(34,"GFN")`
- * GetGroup - `det(35,"GFN")`
- * ExtGroup - `det(36,"GFN",item#)`
- * GroupMem - `det(37,"GFN",item#)`
- * BinRead - `det(38,"FN",bytestart,#ofbytes)`
- * BinWrite - `det(39,"HEX","FN",bytestart)`
- * BinDelete - `det(40,"FN",bytestart,del#ofbytes)`
- * HexToBin - `det(41,"HEXSTRING")`
- * BinToHex - `det(42,"BIN")`
- * FastCopy - `det(43)`
- * Edit1Byte - `det(44,Str?,StartByte,ReplaceWithThisByte)`
- * IndexFile - `det(45,"FILENAME","NEWINDEXNAME")`
- * LookupIndex - `det(46,"FILENAME","INDEXNAME",line#,[#oflines])`
  * ErrorHandle - `det(47,function,string)`
  * StringRead - `det(48,"binstring",start,readThisMany)`
  * HexToDec - `det(49,"HEXSTRING")`
