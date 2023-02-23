@@ -13,10 +13,13 @@ You can view the online documentation [here](https://roccoloxprograms.github.io/
  * [Celtic III Functions](https://roccoloxprograms.github.io/CelticCE/celticiiifunctions.html)
 
 ## In Progress
- * ErrorHandle - `det(47,function,string)`
- * StringRead - `det(48,"binstring",start,readThisMany)`
- * HexToDec - `det(49,"HEXSTRING")`
- * DecToHex - `det(50,SomeRealNumber,[autoOverride])`
- * EditWord - `det(51,start_byte,replace_with_this_word)`
- * BitOperate - `det(52,value1,value2,logic)`
- * GetProgList - `det(53,"SEARCHSTRING",[type])`
+ * ErrorHandle - `det(45,function,string)`
+ * StringRead - `det(46,"binstring",start,readThisMany)`
+ * HexToDec - `det(47,"HEXSTRING")`
+ * DecToHex - `det(48,SomeRealNumber,[autoOverride])`
+ * EditWord - `det(49,start_byte,replace_with_this_word)`
+ * BitOperate - `det(50,value1,value2,logic)`
+ * GetProgList - `det(51,"SEARCHSTRING",[type])`
+ * ScrollScreen - `det(52,direction,amount)`
+ * CheckGC - `det(53)`
+ * GetStringWidth - `det(54)`
