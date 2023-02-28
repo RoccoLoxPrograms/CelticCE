@@ -23,3 +23,6 @@ You can view the online documentation [here](https://roccoloxprograms.github.io/
  * ScrollScreen - `det(52,direction,amount)`
  * CheckGC - `det(53)`
  * GetStringWidth - `det(54)`
+ * PutTSprite - `det(55)`
+ * PutSCSprite - `det(56)`
+ * SearchFile - `det(57,return_type)`
