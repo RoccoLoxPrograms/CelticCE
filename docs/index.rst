@@ -9,7 +9,10 @@ This documentation aims to help users understand how to use Celtic in their prog
 The documentation section contains information about Celtic CE in general. It is advised to read this before using Celtic in your programs if you do not have experience with BASIC libraries.
 The function syntax section contains detailed syntax for each function, along with possible error codes that might not be obvious.
 
-A pdf form of the documentation can be downloaded :download:`here <../CelticCE.pdf>`.
+.. only:: html
+   
+   A pdf form of the documentation can be downloaded :download:`here <../CelticCE.pdf>`.
+
 
 .. toctree::
    :caption: Overview
@@ -30,6 +33,7 @@ A pdf form of the documentation can be downloaded :download:`here <../CelticCE.p
    errorcodes
    hexcodes
    colors
+   convertsprites
 
 .. raw:: latex
 

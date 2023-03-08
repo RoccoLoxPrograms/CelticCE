@@ -140,6 +140,7 @@ Documentation
             "FFFF00000000FFFFFF00E6E6E6E600FF00E600E6E600E60000E600E5E500E600
             00E5E5E5E5E5E50000E5E500FF00E5E5E5E500FFFFFF00000000FFFF" -> Str9
 
+    More detailed instructions on converting sprites can be found `here <convertsprites.html>`__.
 
     Parameters:
      * ``x``: x location to draw the sprite, beginning at the top-left corner of the screen.
