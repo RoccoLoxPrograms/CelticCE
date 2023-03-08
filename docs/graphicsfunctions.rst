@@ -127,13 +127,13 @@ Documentation
 
     Then, to make it a string, we'll take remove the newlines and commas, like this::
 
-.. only:: html
+    .. only:: html
 
         .. code-block::
     
             "FFFF00000000FFFFFF00E6E6E6E600FF00E600E6E600E60000E600E5E500E60000E5E5E5E5E5E50000E5E500FF00E5E5E5E500FFFFFF00000000FFFF" -> Str9
 
-.. only:: latex
+    .. only:: latex
 
         .. code-block:: txt
     
