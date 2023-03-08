@@ -125,7 +125,7 @@ Documentation
          FF, 00, E5, E5, E5, E5, 00, FF
          FF, FF, 00, 00, 00, 00, FF, FF]
 
-    Then, to make it a string, we'll take remove the newlines and commas, like this::
+    Then, to make it a string, we'll take remove the newlines and commas, like this:
 
     .. only:: html
 
