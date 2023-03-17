@@ -106,7 +106,7 @@ Documentation
 
 .. function:: PutSprite: det(21, x, y, width, height); Str9 = sprite data
 
-    This function draws a sprite at (x, y) with a width of width and a height of height. It is designed to be fast, and so it does not have as much error checking, meaning that it will display a sprite of the given width and height regardless of the length of the given sprite data. The sprite data is made up of hex values referring to xLIBC colors, which can be found `here <https://roccoloxprograms.github.io/xlibcColorPicker/>`__. The data is stored left to right and top to bottom. For example, take a sprite that looks like this:
+    This function draws a sprite at (x, y) with a width of width and a height of height. It is designed to be fast, and so it does not have as much error checking, meaning that it will display a sprite of the given width and height regardless of the length of the given sprite data. The sprite data is made up of hex values referring to xLIBC colors, which can be found `here <https://roccoloxprograms.github.io/XlibcColorPicker/>`__. The data is stored left to right and top to bottom. For example, take a sprite that looks like this:
 
     .. figure:: images/sampleSprite.png
         :alt: A sample sprite, being a basic face. Nobody knows what expression the face is making, since there weren't enough pixels in an 8x8 square to convey emotion.
@@ -150,7 +150,7 @@ Documentation
      * ``Str9``: Sprite data, as explained above.
 
     Colors:
-     * Uses hex codes referring to the xLIBC colors. A good resource for the xLIBC palette can be found `here <https://roccoloxprograms.github.io/xlibcColorPicker/>`__.
+     * Uses hex codes referring to the xLIBC colors. A good resource for the xLIBC palette can be found `here <https://roccoloxprograms.github.io/XlibcColorPicker/>`__.
     
     Returns:
      * Draws a sprite of the specified width and height at (x, y).

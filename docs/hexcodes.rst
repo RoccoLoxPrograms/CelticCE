@@ -20,12 +20,6 @@ Documentation
 
         "3E09321900E3C9"
 
-.. function:: Set LCD Brightness
-
-    Set the LCD brightness to a value between 0 and 255 stored in Ans, 255 is low, 0 is high::
-    
-        "CD500F02CD700F02322400F6C9"
-
 .. function:: Decrease Brightness
     
     Decrease the LCD brightness by 1::
@@ -109,12 +103,6 @@ Documentation
 
         "210000D43600E5D11301FF5702EDB0C9"
 
-.. function:: Fill Screen with xLIBC Color Value in Ans
-    
-    Fills the screen with an `xLIBC Color <https://roccoloxprograms.github.io/XlibcColorPicker/>`__ in ``Ans``::
-
-        "CD500F02CD700F02320000D4210000D4E5D11301FF5702EDB0C9"
-
 .. function:: Run Indicator Off
     
     Turns off the run indicator::
@@ -166,13 +154,3 @@ Documentation
     This is a strange function that draws the TI Logo. (Yes, there is a built in ASM call to do that) While there is no real reason you would probably want to do this, it's still interesting::
 
         "CD001B02C9"
-
-.. function:: Trigger Error
-    
-    This code will cause an error to be thrown, based on the value in Ans. The values correspond to the ones found `here <https://www.brandonw.net/calcstuff/ti84pce.inc>`__. Use your browser's search tool to look for "E_Overflow" which is Error 1. If you are using a Windows or Chromebook, pressing Control+F will bring up the search tool. On a Mac, pressing Command+F will bring up the search tool. By default, there is no Goto option unless you add 128 to the values. So for example, for a divide by zero error with a goto option, use 130 as the error code.
-
-    -- TI-BASIC Developer
-
-    .. code-block::
-
-        "CD500F02CD700F02CD900702C9"
