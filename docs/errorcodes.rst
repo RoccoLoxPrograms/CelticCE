@@ -15,6 +15,7 @@ Error Code Description
 ========== ================================================================================================
 ..P:IS:FN  A program already exists, and Celtic will not overwrite it.
 ..NUMSTNG  The specified line is past end of file. Used when getting the amount of lines in a program.
+..NULLVAR  The specified variable did not contain useful data.
 ..L:NT:FN  The specified line in the program does not exist.
 ..S:NT:FN  The specified string was not found.
 ..S:FLASH  The specified string is archived.

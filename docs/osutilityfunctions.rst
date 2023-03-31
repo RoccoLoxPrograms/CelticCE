@@ -100,6 +100,7 @@ Documentation
 
     Errors:
      * ``..NT:EN:M`` if there is not enough memory to create the string with the contents of the specified variable.
+     * ``..NULLVAR`` if the specified file contains no data.
 
 ------------
 

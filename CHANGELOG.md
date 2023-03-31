@@ -19,6 +19,14 @@ All notable changes to the Celtic CE library will be documented in this file.
     - GraphCopy
     - Edit1Byte
 
+### Changed
+
+- OS Utility Functions
+    - PrgmToStr now returns an error if the specified file contains no data
+- Jump table is now an LUT. Jumping code has also been reworked
+- Optimized app UI code
+- Zero out help hook pointer to be safe
+
 ### Fixed
 
 - Fixed HidePrgm function to work with archived programs
@@ -48,11 +56,13 @@ All notable changes to the Celtic CE library will be documented in this file.
     - GetArgType
     - ChkStats
     - FindProg
+- E̴͎̓ä̵̯̩̪́s̸͕̜͌̂t̴̹̹̩͑e̵͍̭͊̄̑ṙ̴̝ ̶̨͚̯̎͌e̷̢̯̣͗̈́̆g̶̬̹͇̀ĝ̸̤͛
 
 ### Changed
 
 - Temp storage now uses pixelShadow2 with an offset of 100 bytes instead of using pixelShadow
 - ExecHex function no longer has a restriction of 255 characters, instead it is limited to 8192
+- Preserve stack pointer when running a command and restore it when exiting to the OS
 
 ### Fixed
 
