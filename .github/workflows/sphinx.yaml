@@ -8,6 +8,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
+      - name: Install latexmk
+        run: |
+          sudo apt install latexmk
       - name: Install dependencies
         run: |
           pip install -r docs/requirements.txt
