@@ -10,7 +10,7 @@ jobs:
       - uses: actions/setup-python@v3
       - name: Install latexmk
         run: |
-          sudo apt install latexmk
+          sudo apt install latexmk texlive-latex-extra
       - name: Install dependencies
         run: |
           pip install -r docs/requirements.txt
