@@ -8,15 +8,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
-      - name: Enter directory
-        run: |
-          cd docs
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          pip install -r docs/requirements.txt
       - name: Sphinx build
         run: |
-          make latexpdf && mv _build/latex/CelticCE.pdf ../CelticCE.pdf && make html
+          cd docs && make latexpdf && mv _build/latex/CelticCE.pdf ../CelticCE.pdf && make html
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
