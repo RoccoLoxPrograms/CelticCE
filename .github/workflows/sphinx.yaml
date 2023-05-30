@@ -16,12 +16,12 @@ jobs:
           pip install -r docs/requirements.txt
       - name: Sphinx build
         run: |
-          cd docs && make latexpdf && mv _build/latex/CelticCE.pdf ../CelticCE.pdf && make html
+          cd docs && make latexpdf && mv build/latex/CelticCE.pdf ../CelticCE.pdf && make html
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         with:
           publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _build/html
+          publish_dir: build/html
           force_orphan: true
