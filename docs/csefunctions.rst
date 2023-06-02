@@ -10,7 +10,7 @@ Documentation
 
 .. function:: ReadLine: det(0); Str0 = variable name; Ans = line number
 
-    Reads a line from a program or AppVar. If ``Ans`` (line number) equals 0, then Theta will be overwritten with the number of lines in the program being read. Otherwise, ``Ans`` refers to the line being read.
+    Reads a line from a program or AppVar. If ``Ans`` (line number) equals 0, then Theta will be overwritten with the number of lines in the program being read, though it will still return the ``..NUMSTNG`` error, like the original Celtic 2 CSE. Otherwise, ``Ans`` refers to the line being read.
 
     .. warning::
         If you attempt to read the line of an assembly program, there is a risk of a reset. If Celtic passes an invalid token to ``Str9``, it could cause a RAM clear.

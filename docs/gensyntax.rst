@@ -15,7 +15,7 @@ If you have entered a valid argument, Celtic will tell you what function the arg
 
     Celtic's function preview feature.
 
-The function preview follows a general syntax: "``CommandName(Arguments)``: ``Input Vars`` (if any): ``Output Vars`` (if any)". As you can see in the example above, ReadLine is listed with no arguments, ``Str0`` and ``Ans`` as the input variables, and ``Str9`` or ``theta`` as the output variables. 
+The function preview follows a general syntax: "``CommandName(Arguments)``: ``Input Vars`` (if any): ``Output Vars`` (if any)". As you can see in the example above, ReadLine is listed with no arguments, ``Str0`` and ``Ans`` as the input variables, and ``Str9`` or ``theta`` as the output variables. If no input variables are necessary (though there are still output variables), it will say "NA" instead. Nothing will be listed of there are no input and output variables.
 
 .. note::
     In the event that you pass invalid arguments to Celtic, it will return an error. All errors are returned in ``Str9``. See the `Error Codes <errorcodes.html>`__ page for more information.
@@ -52,6 +52,8 @@ When using ``Str0`` as a program name, simply store the name of the program into
     :"*row(FOO" ->              //group FOO
 
 If a string is used, it must be in the RAM when the function is called.
+
+.. warning:: In almost all cases, Celtic will detect if you passed invalid arguments and return an error instead. However, in the (extremely) rare case that you tried to pass a string with the length of 0, it will not handle this. Don't worry, there shouldn't be any reason this would happen without you trying to make it happen.
 
 Returns
 ~~~~~~~

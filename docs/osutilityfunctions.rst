@@ -150,3 +150,36 @@ Documentation
     Returns:
      * ``Theta``: If you attempt to set the brightness to 0, ``Theta`` will contain the current brightness.
      * If ``brightness`` is between 1 and 255 (Not 0), it will instead set the screen to the specified brightness, with 1 being the lightest and 255 the darkest.
+
+------------
+
+.. function:: SearchFile: det(52, offset); Str0 = file name, Str9 = search string
+
+    Search a file specified by ``file name``, for a ``search string``, beginning at the user-specified (0-indexed) ``offset``.
+
+    Parameters:
+     * ``offset``: Byte offset in the program to start searching, with 0 being the first byte of the program
+     * ``Str0``: Name of the file to search in
+     * ``Str9``: String to search for
+
+    Returns:
+     * ``Theta``: The byte offset of the located string
+
+    Errors:
+     * ``..E:NT:FN`` if the string is not located
+     * ``..INVAL:S`` if the string is bigger than the program to search for
+
+------------
+
+.. function:: CheckGC: det(53); Str0 = variable name
+
+    Checks if the archiving of the file specified by ``variable name`` will trigger a Garbage Collect.
+
+    .. note::
+        If the file is already archived, the command will not say that archiving it will cause a Garbage Collect, regardless of size.
+
+    Parameters:
+     * ``Str0``: Name of variable to check for
+
+    Returns:
+     * ``Ans``: 0 if a Garbage Collect will not occur, and 1 if it will.

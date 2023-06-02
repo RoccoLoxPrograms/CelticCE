@@ -13,9 +13,6 @@ Documentation
 
     Displays colored text from ``Str9`` at ``x`` and ``y`` on the screen, using the OS large or small font.
 
-    .. warning::
-        you can only use a maximum of 128 characters in ``Str9`` at a time with this command. However, this should be plenty, since the text does not wrap.
-
     Parameters:
      * ``large_font`` = whether to use OS large or small font. 0 means to use the OS small font, and 1 means to use the large font.
      * ``fg_low``: low byte of foreground color.
@@ -56,7 +53,7 @@ Documentation
 
 ------------
 
-.. function:: TextRect: det(15, low, high, x, y, width, height)
+.. function:: FillRect: det(15, low, high, x, y, width, height)
 
     Draw a filled, colored rectangle on the screen. This command can also be used to draw an individual pixel by setting the width and height to 1, or a line by setting either the width or height to 1.
 

@@ -281,3 +281,149 @@ Documentation
     
     Errors:
      * ``..E:NT:FN`` if the target byte does not exist in the string.
+
+------------
+
+.. function:: ErrorHandle: det(45); Ans = program to run
+
+    Executes BASIC code with an error handler installed. That means the code you execute can do anything it wants including divide by zero, and it will simply end the execution but an obvious system error will not trigger. Instead, this command will return with a value that indicates the error condition. This command has two different modes. If ``Ans`` contains a program name (beginning with the ``prgm`` token), it will run that program. If ``Ans`` contains program code, it will execute that code instead. This will also work with programs beginning with the ``Asm84CEPrgm`` token.
+
+    A list of return values and their corresponding errors can be found in the `error codes <errorcodes.html#ti-os-errors>`__ section, under TI-OS Errors.
+
+    .. note:: When using ErrorHandle from the homescreen, it will not run BASIC programs, though it can still run programs beginning with the Asm84CEPrgm token.
+
+    Parameters:
+     * ``Ans``: The name of the program to run, or TI-BASIC code to be executed
+
+    Returns:
+     * ``Theta``: Contains the error code returned by the program, or 0 if no error occured.
+
+    Errors:
+     * ``..NULLVAR`` if the program is empty.
+     * ``..SUPPORT`` if the file is not a TI-BASIC program.
+
+------------
+
+.. function:: StringRead: det(46, string, start, bytes);
+
+    Works almost identically to BASIC's sub() command, except that the output will be in hexadecimal and two-byte tokens will read as two instead of one byte. It is particularly useful for extracting data from a string that may contain nonsensical data that simply needs to be manipulated. If you allow the start point to be zero, the size of the string in bytes is returned instead. For data manipulation, you should use the Edit1Byte command.
+
+    Parameters:
+     * ``string``: Which string variable to read from, where 0 = Str0, 9 = Str9, and so on
+     * ``start``: The byte of the string to begin reading at
+     * ``bytes``: How many bytes to read
+
+    Returns:
+     * ``Str9``: The extracted substring.
+     * ``Theta``: The size of the string in bytes, if ``start`` was 0.
+
+------------
+
+.. function:: HexToDec: det(47); Ans = hex
+
+    Converts up to 4 hex digits back to decimal. If you pass a string longer than 4 digits, only the first four are read.
+
+    Parameters:
+     * ``Ans``: Hex string to convert
+
+    Returns:
+     * ``Theta``: Decimal integer converted from hex string.
+
+    Errors:
+     * ``..INVAL:S`` if an invalid hex digit is passed.
+
+------------
+
+.. function:: DecToHex: det(48, number, override)
+
+    Converts a number between 0 and 65535 to its hexadecimal equivalent. The number of hexadecimal output to the string will have its leading zeroes stripped so inputting 15 will result in “F” and 16 will result in “10”. If override is 1, it will output all leading zeroes, which may be useful for routines that require four hex digits at all times but cannot spend the memory/time whipping up a BASIC solution to fill the missing zeroes.
+
+    Parameters:
+     * ``number``: Decimal integer to convert
+     * ``override``: 1 to output all leading zeroes, or 0 to not
+
+    Returns:
+     * ``Str9``: Hex string converted from decimal integer.
+
+------------
+
+.. function:: EditWord: det(49, string, start, word)
+
+    This command, otherwise, works just like Edit1Byte. Its documentation is rewritten here for convenience. Replaces a word in some string variable, Str0 to Str9, with a replacement value 0 through 65535 starting at some specified byte (start is at 0). The string supplied is edited directly so there's no output. See Edit1Byte for more details.
+
+    The replacement is written in little-endian form and if the number is between 0 and 255, the second byte is written in as a zero.
+
+    .. note:: Note: A “word” in this sense is two bytes. Useful for editing a binary string which entries are all two bytes in length, such as a special string tilemap. You’re required, however, to specify offset in bytes. Also know that all words are stored little-endian. That means that the least significant byte is stored before the most significant byte is.
+
+    Parameters:
+     * ``string``: Which string variable to read from, where 0 = Str0, 9 = Str9, and so on
+     * ``start``: The byte to start editing in the string
+     * ``word``: The two bytes to rewrite
+
+    Returns:
+     * Modifies the string with the specified word
+
+    Errors:
+     * ``..E:NT:FN`` If the offset is past the end of the string
+
+------------
+
+.. function:: BitOperate: det(50, value1, value2, function)
+
+    Performs a bitwise operation between value1 and value2 using a supplied function value. It will only work with up to 16-bit numbers.
+
+    The different functions are below:
+
+    ===== ===========
+    Value Operation
+    ===== ===========
+    0     NONE
+    1     AND
+    2     OR
+    3     XOR
+    4     Left Shift
+    5     Right Shift
+    ===== ===========
+
+    If the numbers are out of bounds, then the function will exit out with an error. This command really helps mask out hex digits but if you use strings to store those digits, you'll need to use the HexToDec command for each value you need.
+
+    Parameters:
+     * ``value1``: First value to perform bit operation with
+     * ``value2``: Second value to perform bit operation with
+     * ``function``: Which operation to perform, as seen in the table above
+
+    Returns:
+     * ``Theta``: Result of the bit operation.
+
+------------
+
+.. function:: GetProgList: det(51, type); Ans = search string
+
+    This function will return a space-delimited string consisting of the names of programs, appvars, or groups that match partial name of the search string. Which is to say::
+
+        "TEMP
+        det(51, 0) 
+
+    would return all program names that start with the characters “TEMP”, which may be something like “TEMP001 " or “TEMP001 TEMP002 TEMP003 “, etc.
+
+    ===== =========
+    Value File Type
+    ===== =========
+    0     Programs
+    1     AppVars
+    2     Groups
+    ===== =========
+
+    .. note:: 
+        This command is NOT to be confused with FindProg, which outputs a string consisting of files whose CONTENTS starts with the specified string. Also use the fact that the final name in the list is terminated with a space to make extracting names from the list easier. It also will not find hidden variables.
+
+    Parameters:
+     * ``type``: The type of file to search for, as seen above
+     * ``Ans``: String to find in file names
+
+    Returns:
+     * ``Str9``: Filtered list of files
+
+    Errors:
+     * ``..S:NT:FN`` if ``Ans`` is not a string
+     * ``..P:NT:FN`` if no files were found containing the search string
