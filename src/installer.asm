@@ -1,35 +1,37 @@
-;--------------------------------------
+;----------------------------------------
 ;
 ; Celtic CE Source Code - installer.asm
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: February 15, 2023
+; Last Built: June 1, 2023
 ;
-;--------------------------------------
+;----------------------------------------
 
-    jp  installApp
-    db	$01
-___icon:
-    db	$10, $10
-    db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-    db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-    db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-    db	$FF, $FF, $FF, $FF, $FF, $FF, $07, $25, $25, $07, $FF, $FF, $FF, $FF, $FF, $FF
-    db	$FF, $FF, $FF, $FF, $FF, $07, $25, $8F, $8F, $25, $07, $FF, $FF, $FF, $FF, $FF
-    db	$FF, $FF, $FF, $FF, $FF, $25, $8F, $07, $25, $8F, $25, $FF, $FF, $FF, $FF, $FF
-    db	$FF, $FF, $FF, $FF, $FF, $25, $8F, $25, $8F, $8F, $25, $FF, $FF, $FF, $FF, $FF
-    db	$FF, $FF, $FF, $FF, $8F, $8F, $25, $8F, $25, $25, $07, $07, $FF, $FF, $FF, $FF
-    db	$FF, $FF, $FF, $8F, $25, $07, $25, $25, $25, $25, $25, $25, $8F, $FF, $FF, $FF
-    db	$FF, $FF, $07, $25, $8F, $25, $8F, $25, $25, $8F, $8F, $8F, $25, $07, $FF, $FF
-    db	$FF, $FF, $07, $25, $07, $25, $8F, $25, $25, $8F, $25, $07, $25, $07, $FF, $FF
-    db	$FF, $FF, $07, $25, $8F, $8F, $8F, $25, $8F, $8F, $25, $8F, $25, $07, $FF, $FF
-    db	$FF, $FF, $FF, $8F, $25, $25, $25, $8F, $FF, $8F, $07, $25, $8F, $FF, $FF, $FF
-    db	$FF, $FF, $FF, $FF, $07, $07, $07, $FF, $FF, $FF, $8F, $8F, $FF, $FF, $FF, $FF
-    db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-    db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-___description:
-    db "Celtic CE Installer - BETA v1.2", 0
+    jp installApp
+    db $01
+
+_icon:
+    db $10, $10
+    db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $FF, $07, $25, $25, $07, $FF, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $07, $25, $8F, $8F, $25, $07, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $25, $8F, $07, $25, $8F, $25, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $25, $8F, $25, $8F, $8F, $25, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $8F, $8F, $25, $8F, $25, $25, $07, $07, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $8F, $25, $07, $25, $25, $25, $25, $25, $25, $8F, $FF, $FF, $FF
+    db $FF, $FF, $07, $25, $8F, $25, $8F, $25, $25, $8F, $8F, $8F, $25, $07, $FF, $FF
+    db $FF, $FF, $07, $25, $07, $25, $8F, $25, $25, $8F, $25, $07, $25, $07, $FF, $FF
+    db $FF, $FF, $07, $25, $8F, $8F, $8F, $25, $8F, $8F, $25, $8F, $25, $07, $FF, $FF
+    db $FF, $FF, $FF, $8F, $25, $25, $25, $8F, $FF, $8F, $07, $25, $8F, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $07, $07, $07, $FF, $FF, $FF, $8F, $8F, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+
+_description:
+    db "Celtic CE Installer - BETA v1.3", 0
 
 installApp:
     call .clearScreen
@@ -40,15 +42,14 @@ installApp:
     or a, a
     ld hl, osInvalidStr
     jp nz, .printMessage
+    call ti.PushOP1
     
     app_create
     
     jr z, appInstalled
+    call ti.PopOP1
     ld hl, celticAppAlreadyExists
     call ti.PutS
-    call ti.NewLine
-    call ti.PutS
-    call ti.NewLine
     call ti.NewLine
     call ti.PutS
 
@@ -79,8 +80,9 @@ appInstalled:
     ld a, 4
     ld (ti.curRow), a
     ld hl, $FFFF
-    ld (ti.fillRectColor), hl
+    ld.sis (ti.fillRectColor and $FFFF), hl
     res ti.textInverse, (iy + ti.textFlags)
+    call ti.PopOP1
 
 .updateDisplay:
     ld hl, 72
@@ -112,8 +114,6 @@ appInstalled:
     jr nz, .getKey
     bit ti.textInverse, (iy + ti.textFlags)
     jr nz, .exit
-    ld hl, celticName
-    call ti.Mov9ToOP1
     call ti.ChkFindSym
     call ti.DelVarArc
 
@@ -133,16 +133,12 @@ deleteInstallerStr:
 celticAppAlreadyExists:
     db "Celtic CE app is already", 0
     db "installed. Delete first,  then run installer again.", 0
-    db "Press ", $C1, "enter]", 0
 
 optionYes:
     db " Yes ", 0
 
 optionNo:
     db " No ", 0
-
-celticName:
-    db ti.ProgObj, "CELTICCE", 0
 
 relocate installer_ports, ti.saveSScreen
 define installer

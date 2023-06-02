@@ -1,12 +1,12 @@
-#--------------------------------------
+#----------------------------------------
 #
 # Celtic CE Source Code - makefile
 # By RoccoLox Programs and TIny_Hacker
 # Copyright 2022 - 2023
 # License: BSD 3-Clause License
-# Last Built: February 15, 2023
+# Last Built: June 1, 2023
 #
-#--------------------------------------
+#----------------------------------------
 
 NAME = CelticCE
 SRC = src/celtic.asm
