@@ -1688,7 +1688,7 @@ namespace ti?
 ;                          equ 0021AFCh
 ?DrawTILogo                := 0021B00h
 ?DrawThickRectBorder       := 0021B04h
-;                          equ 0021B08h
+?PutSCentered              := 0021B08h
 ?DrawStatusBarTextClr      := 0021B0Ch
 ;                          equ 0021B10h
 ;                          equ 0021B14h
@@ -1784,8 +1784,8 @@ namespace ti?
 ?os.PopErrorHandler        := 0021C7Ch
 ?os.ThrowError             := 0021C80h
 ?os.RealCopy               := 0021C84h
-?os.RealAsinRad            := 0021C88h
-?os.RealAcosRad            := 0021C8Ch
+?os.RealAcosRad            := 0021C88h
+?os.RealAsinRad            := 0021C8Ch
 ?os.RealAtanRad            := 0021C90h
 ?os.RealAdd                := 0021C94h
 ?os.CplxAdd                := 0021C98h
@@ -2102,14 +2102,14 @@ namespace ti?
 ?os.RealToFloat            := 0022174h
 ?os.FontDrawTransText      := 0022178h
 ?os.DelAppVar              := 002217Ch
-?os.GetAppVarDataPtr       := 0022180h
+?os.GetAppVarData          := 0022180h
 ?os.CreateAppVar           := 0022184h
 ;                          equ 0022188h
 ;                          equ 002218Ch
 ;                          equ 0022190h
 ;                          equ 0022194h
 ?os.CreateString           := 0022198h
-?os.GetStringDataPtr       := 002219Ch
+?os.GetStringData          := 002219Ch
 ;                          equ 00221A0h
 ;                          equ 00221A4h
 ;                          equ 00221A8h
@@ -2133,6 +2133,25 @@ namespace ti?
 ;                          equ 00221F0h
 ;                          equ 00221F4h
 ;                          equ 00221F8h
+;                          equ 00221FCh
+;                          equ 0022200h
+;                          equ 0022204h
+;                          equ 0022208h
+;                          equ 002220Ch
+;                          equ 0022210h
+;                          equ 0022214h
+;                          equ 0022218h
+;                          equ 002221Ch
+;                          equ 0022220h
+;                          equ 0022224h
+;                          equ 0022228h
+;                          equ 002222Ch
+;                          equ 0022230h
+;                          equ 0022234h
+;                          equ 0022238h
+;                          equ 002223Ch
+?os.CreateEquation         := 0022240h
+?os.GetEquationData        := 0022244h
 
 ; Boot Calls
 ;-----------------------------------
@@ -2974,8 +2993,8 @@ namespace ti?
 
 ?tempFreeArc		:= 0D02655h ; set after _ArcChk call
 
-?textBGcolor		:= 0D02688h
-?textFGcolor		:= 0D0268Ah
+?textFGcolor		:= 0D02688h
+?textBGcolor		:= 0D0268Ah
 
 ?drawBGColor		:= 0D026AAh
 ?drawFGColor		:= 0D026ACh
@@ -6611,6 +6630,10 @@ namespace ti?
 
 ;Data Type Equates
 ;---------------------------------------------------------------------
+?varTypeMask        := 1Fh
+?varGraphRef        := 6
+?dataTypeMask       := 3Fh
+
 ?RealObj			:= 0
 ?ListObj			:= 1
 ?MatObj			:= 2
@@ -6635,6 +6658,16 @@ namespace ti?
 ?AppVarObj		:= 15h	;application variable
 ?TempProgObj		:= 16h ;program, home deletes when finished
 ?GroupObj		:= 17h ;group.
+?FracObj        := 18h
+;               := 19h
+?ImageObj       := 1Ah
+?CFracObj       := 1Bh
+?RadObj         := 1Ch
+?CRadObj        := 1Dh
+?CPiObj         := 1Eh
+?CPiFracObj     := 1Fh
+?PiObj          := 20h
+?PiFracObj      := 21h
 
 ;System Error Codes
 ;-----------------------------------------------------------
@@ -6692,6 +6725,12 @@ namespace ti?
 ?E_ArchFull		:= 49
 ?E_Variable		:= 50+E_EDIT
 ?E_Duplicate		:= 51+E_EDIT
+?E_Date         := 52+E_EDIT
+?E_UnknownCmd   := 53+E_EDIT
+?E_OverLimit    := 54
+?E_Disabled     := 55
+?E_Xmit         := 56
+E_MemFull       := 57
 
 ;System Variable Equates
 ;------------------------------
@@ -6991,9 +7030,6 @@ namespace ti?
 ;----------------------------------------------------------------------
 ;There is a flag 1Eh.
 ;----------------------------------------------------------------------
-?varTypeMask		:= 1Fh		;is this a flag byte? yes
-?varGraphRef		:= 6
-;----------------------------------------------------------------------
 ?graphFlags2		:= 1Fh
 ?splitOverride		:= 3		;0 = force full screen with ParseInp, or something
 ;----------------------------------------------------------------------
@@ -7123,10 +7159,18 @@ namespace ti?
 ?mathprintEnabled	:= 5		;1 = use mathprint styling
 ;----------------------------------------------------------------------
 ?InitialBootMenuFlags	:= 45h
+?statWizards            := 2        ; 1 = stat wizards off
 ?dispinitialBootMenu	:= 4		; 1 = don't display the initial boot menu
 ;----------------------------------------------------------------------
 ?backlightFlags		:= 46h
 ?restoreBrightness	:= 0		;1 = restore lcd brightness when needed
+;----------------------------------------------------------------------
+?asymptoteFlags     := 47h
+?detectAsymptotes   := 0        ; 1 = detect asymptotes off
+;----------------------------------------------------------------------
+?fracFlags          := 48h
+?mixedFractions     := 0        ; 1 = display mixed fractions (Un/d)
+?answersAuto        := 1        ; 1 = display decimal answers
 ;----------------------------------------------------------------------
 ?grFlags			:= 4Ah
 ?drawGrLbls		:= 0		;1 = don't draw Graph Labels (this is usually reset anyway)
@@ -7137,5 +7181,8 @@ namespace ti?
 ;----------------------------------------------------------------------
 ?graphDispFlags		:= 4Bh
 ?backgroundValid		:= 4		;1 = items in graph background are still valid
+;----------------------------------------------------------------------
+?graphBgFlags        := 4Fh
+?drawGrBackground   := 0            ; 1 = graphBG is a solid color or an image that exists
 ;----------------------------------------------------------------------
 end namespace
