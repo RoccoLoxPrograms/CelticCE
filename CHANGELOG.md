@@ -2,7 +2,7 @@
 
 All notable changes to the Celtic CE library will be documented in this file.
 
-## [1.0.0-rc.1] - yyyy-mm-dd
+## [1.0.0-rc.1] - 2023-07-24
 
 ### Added
 
