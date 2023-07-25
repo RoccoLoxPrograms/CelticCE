@@ -35,6 +35,11 @@ If your program uses Celtic, it is recommended that it makes sure Celtic is inst
 
 ``det([[20]])`` will equal 90 if Celtic CE is installed. If the program aims to be compatible with Celtic 2 CSE, you may wish to refer to the `list of version codes <https://dcs.cemetech.net/index.php?title=Third-Party_BASIC_Libraries_(Color)>`__ on the DCS Wiki as well.
 
+prgmAINSTALL
+~~~~~~~~~~~~
+
+You'll notice that along with the CelticCE installer binary, Celtic also comes with a program called **AINSTALL**. This program can be used to install CelticCE's hooks (The part of the installation done after the app has been installed) by running it instead of needing to open the app. Like the **AINSTALL** program in Celtic III, this can be used if you wish to install CelticCE from a TI-BASIC program, by simply running **prgmAINSTALL** in it. Keep in mind that **prgmAINSTALL** will only work if the CelticCE app is present and installed on your calculator.
+
 Argument Types
 ~~~~~~~~~~~~~~
 
@@ -50,6 +55,8 @@ When using ``Str0`` as a program name, simply store the name of the program into
     :"FOO" -> Str0              //program FOO
     :"rowSwap(FOO" -> Str0      //AppVar FOO
     :"*row(FOO" ->              //group FOO
+
+The system programs ``prgm#`` and ``prgm!`` are not supported, so if you attempt to use a Celtic command on them, the command will simply exit.
 
 If a string is used, it must be in the RAM when the function is called.
 

@@ -239,9 +239,9 @@ Documentation
 
 ------------
 
-.. function:: ScrollScreen: det(58, direction, amount)
+.. function:: ShiftScreen: det(58, direction, amount, x, y, width, height)
 
-    Moves the screen a specified amount of pixels in a specified direction. The following directions and corresponding values are below:
+    Shifts the pixels within a user-specified region of the screen a specified amount of pixels in a specified direction. The following directions and corresponding values are below:
 
     ===== =========
     Value Direction
@@ -255,6 +255,13 @@ Documentation
     Parameters:
      * ``direction``: Direction to move the screen in, as seen in the table above.
      * ``amount``: The amount of pixels to move the screen.
+     * ``x``: Starting X position of the region of the screen to shift.
+     * ``y``: Starting Y position of the region of the screen to shift.
+     * ``width``: Width of the region of the screen to shift.
+     * ``height``: Height of the region of the screen to shift.
+
+    Alternative method: ``det(58, direction, amount)``
+        This alternative method acts as a shorthand way to shift the entire screen, rather than a specified region.
 
     Returns:
      * Moves the screen in the specified direction.
@@ -409,3 +416,108 @@ Documentation
 
     Returns:
      * ``Ans``: 0 if the rectangles do not intersect, and 1 if they do.
+
+------------
+
+.. function:: PutChar: det(66, font, fg_low, fg_high, bg_low, bg_high, x, y, char)
+
+    Displays a character specified by the user at ``x``, ``y``, with a user-specified background color as well. ``char`` can range from 0 - 255. In order to figure out the ``char`` value for your preferred character, you can use the handy images below. Simply take the X and Y values on the chart and add them together.
+
+    .. figure:: images/fontMapSmall.png
+        :alt: Chart for determining the code of a specific character (Small font)
+        :align: center
+
+        Small Font
+
+    .. figure:: images/fontMapLarge.png
+        :alt: Chart for determining the code of a specific character (Large font)
+        :align: center
+
+        Large Font
+
+    Parameters:
+     * ``font``: Whether to use the OS large or small font. 0 for the small font and 1 for the large font.
+     * ``fg_low``: Low byte of the foreground color.
+     * ``fg_high``: High byte of the foreground color.
+     * ``bg_low``: Low byte of the background color.
+     * ``bg_high``: High byte of the background color.
+     * ``x``: X coordinate to display the character at.
+     * ``y``: Y coordinate to display the character at.
+     * ``char``: The numeric code associated with the character to display. See images above for more info.
+
+    Alternative method: ``det(66, font, fg_os, bg_os, x, y, char)``
+     * ``fg_os``: Foreground color from TI-OS Colors menu, like RED or BLUE or NAVY.
+     * ``bg_os``: Background color from TI-OS Colors menu, like RED or BLUE or NAVY.
+
+    Colors:
+     * A list of colors can be found `here <colors.html>`__.
+
+    Returns:
+     * Displays the specified character.
+
+------------
+
+.. function:: PutTransChar: det(67, font, low, high, x, y, char)
+
+    Displays a character specified by the user at ``x``, ``y``, with a transparent background. See the above command for information on character codes.
+
+    Parameters:
+     * ``font``: Whether to use the OS large or small font. 0 for the small font and 1 for the large font.
+     * ``low``: Low byte of the color.
+     * ``high``: High byte of the color.
+     * ``x``: X coordinate to display the character at.
+     * ``y``: Y coordinate to display the character at.
+     * ``char``: The numeric code associated with the character to display. See images above for more info.
+
+    Alternative method: ``det(67, font, os_color, x, y, char)``
+     * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVY.
+
+    Colors:
+     * A list of colors can be found `here <colors.html>`__.
+
+    Returns:
+     * Displays the specified character.
+
+------------
+
+.. function:: HorizLine: det(68, low, high, x, y, length)
+
+    Draws a horizontal line beginning at ``x``, ``y``, with a length of ``length``.
+
+    Parameters:
+     * ``low``: Low byte of the color.
+     * ``high``: High byte of the color.
+     * ``x``: X coordinate to begin drawing the line at.
+     * ``y``: Y coordinate to begin drawing the line at.
+     * ``length``: The length of the horizontal line.
+
+    Alternative method: ``det(68, os_color, x, y, length)``
+     * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVY.
+
+    Colors:
+     * A list of colors can be found `here <colors.html>`__.
+
+    Returns:
+     * Draws a horizontal line ``length`` pixels long, beginning at ``x``, ``y``.
+
+------------
+
+.. function:: VertLine: det(69, low, high, x, y, length)
+
+    Draws a vertical line beginning at ``x``, ``y``, with a length of ``length``.
+
+    Parameters:
+     * ``low``: Low byte of the color.
+     * ``high``: High byte of the color.
+     * ``x``: X coordinate to begin drawing the line at.
+     * ``y``: Y coordinate to begin drawing the line at.
+     * ``length``: The length of the vertical line.
+
+    Alternative method: ``det(69, os_color, x, y, length)``
+     * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVY.
+
+    Colors:
+     * A list of colors can be found `here <colors.html>`__.
+
+    Returns:
+     * Draws a vertical line ``length`` pixels long, beginning at ``x``, ``y``.

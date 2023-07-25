@@ -284,7 +284,7 @@ Documentation
 
 ------------
 
-.. function:: ErrorHandle: det(45); Ans = program to run
+.. function:: ErrorHandle: det(45, get_offset); Ans = program to run
 
     Executes BASIC code with an error handler installed. That means the code you execute can do anything it wants including divide by zero, and it will simply end the execution but an obvious system error will not trigger. Instead, this command will return with a value that indicates the error condition. This command has two different modes. If ``Ans`` contains a program name (beginning with the ``prgm`` token), it will run that program. If ``Ans`` contains program code, it will execute that code instead. This will also work with programs beginning with the ``Asm84CEPrgm`` token.
 
@@ -294,9 +294,11 @@ Documentation
 
     Parameters:
      * ``Ans``: The name of the program to run, or TI-BASIC code to be executed
+     * ``get_offset``: If ``get_offset`` is 1, ErrorHandle will return the byte offset the error occured at in ``Ans``. If it is 0, it will not. This only works with running programs, not strings.
 
     Returns:
      * ``Theta``: Contains the error code returned by the program, or 0 if no error occured.
+     * ``Ans``: Contains the byte offset the error occured at, if ``get_offset`` 1 and an error occured. Otherwise ``Ans`` is not modified.
 
     Errors:
      * ``..NULLVAR`` if the program is empty.

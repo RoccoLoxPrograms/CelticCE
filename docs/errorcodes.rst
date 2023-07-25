@@ -94,4 +94,10 @@ Value Error
 49    ArchFull
 50    Variable
 51    Duplicate
+52    Date
+53    UnknownCmd
+54    OverLimit
+55    Disabled
+56    Xmit
+57    MemFull
 ===== ===========
