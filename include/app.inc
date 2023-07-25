@@ -41,7 +41,7 @@ macro app_private
 		end virtual
 	end postpone
 
- 	postpone
+	postpone
 		app.data_end := $% - app.header_start
 		app.signature := $%
 		db $02,$3e,$01,$00
@@ -51,7 +51,7 @@ macro app_private
 		dl app.size
 	end postpone
 
- 	macro app_start? name,copyright
+	macro app_start? name,copyright
 		local value, freespace
 		app.start := $
 		app.start_offset := $%
@@ -91,7 +91,7 @@ macro app_private
 		end if
 		dl app.information_string	; 024h
 		dl 0				; 027h
- 		; start of application relocation table
+		; start of application relocation table
 		app.table_offset := $% - app.start_offset
 		db app.relocation_table
 

@@ -4,37 +4,55 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: June 1, 2023
+; Last Built: July 24, 2023
 ;
 ;----------------------------------------
 
-FillScreen:
-    ld a, l
-    ld b, h
-    ld hl, ti.vRam
-    ld (hl), a
-    inc hl
-    ld (hl), b
-    ld bc, ((ti.lcdWidth * ti.lcdHeight) * 2) - 2
-    push hl
-    pop de
+_getProgFromStr: ; finds a variable with the name in a string
+    call _findString
+    ld a, (de)
     inc de
+    inc de
+    ex de, hl
+    call _convertChars.varName
+    ld hl, prgmName + 1
+    ld a, (hl)
+    cp a, ti.AppVarObj
+    jr z, .getPtr
     dec hl
-    ldir
-    ret
+    ld (hl), ti.ProgObj
 
-waitAnyKey:
-    call ti.GetCSC
-    or a, a
-    jr z, waitAnyKey
-    ret
+.getPtr:
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call c, _checkHidden
+    jp c, PrgmErr.PNTFN
 
-returnOS: ; return and let the OS handle the function
-    ei
-    cp a, a
-    ret
+_checkSysVar: ; checks if a user is trying to mess with one of the system programs
+    push hl
+    push de
+    push bc
+    ld hl, ti.OP1
+    push hl
+    ld de, sysVarEP
+    push de
+    ld b, 3
+    call ti.StrCmpre
+    jr z, return
+    pop hl
+    inc hl
+    inc hl
+    inc hl
+    ex de, hl
+    pop hl
+    ld b, 3
+    call ti.StrCmpre
+    pop bc
+    pop de
+    pop hl
+    ret nz
 
-return:
+return: ; all args are popped off and the OS continues parsing
     call ti.RclAns
     ld sp, (stackPtr)
     ei
@@ -45,12 +63,6 @@ _decBCretNZ:
     pop hl
     dec bc
     or a, 1
-    ret
-
-_getProgNameLen:
-    ld a, (de)
-    inc de
-    inc de
     ret
 
 _searchLine: ; bc = address being read; de = line counter; ix = where to jump at EOF; hl is destroyed
@@ -64,26 +76,20 @@ _searchLine: ; bc = address being read; de = line counter; ix = where to jump at
 
 .not2byte:
     inc bc
-    cp a, $3F
+    cp a, ti.tEnter
     jr nz, _searchLine
     inc de
     ld hl, (ans)
     or a, a
     sbc hl, de
-    jr z, _decBCretZ
-    jr _searchLine
+    jr nz, _searchLine
 
 _decBCretZ:
     dec bc
     cp a, a
     ret
 
-_decDEretZ:
-    dec de
-    cp a, a
-    ret
-
-_checkEOF: ; bc = current address being read; ix = where to jump back to; destroys hl and a
+_checkEOF: ; bc = current address being read; ix = where to jump back to; destroys hl
     ld hl, (EOF)
     inc hl
     or a, a
@@ -99,7 +105,7 @@ _getEOF: ; args: hl = size of var; de = start of variable; preserves both regist
     pop hl
     ret
 
-.deleteLine:
+.deleteLine: ; alter it slightly for DeleteLine command (I don't know why, but it works)
     push hl
     inc hl
     add hl, de
@@ -123,15 +129,15 @@ _getNextLine: ; bc = address being read; de = byte counter; preserves hl (starti
     jr _getNextLine
 
 .not2byteTok:
-    cp a, $3F
+    cp a, ti.tEnter
     jr nz, _getNextLine
     or a, 1 ; return nz
     ret
 
-_checkHidden:
+_checkHidden: ; see if a variable is hidden and return data pointer (sets hidden flag)
     ld hl, prgmName + 1
     ld a, (ti.OP1)
-    cp a, $15
+    cp a, ti.AppVarObj
     jr nz, .check
     inc hl
 
@@ -140,14 +146,14 @@ _checkHidden:
     sub a, 64
     ld (hl), a
     dec hl
-    res hidden, (iy + ti.asm_Flag2)
+    res hidden, (iy + celticFlags2)
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     ret c
-    set hidden, (iy + ti.asm_Flag2)
+    set hidden, (iy + celticFlags2)
     ret
 
-_moveDown:
+_moveDown: ; move down a row when drawing BufSprites
     ld a, (bufSpriteY)
     dec a
     ld (bufSpriteY), a
@@ -157,25 +163,16 @@ _moveDown:
     ld ix, 0
     ret
 
-_convertTokenToColor:
+_convertTokenToColor: ; convert a token to a color an OS color number. 0 - 9, A - H
     cp a, $30
-    jr nc, .checkTwo
-    jp PrgmErr.INVALA
-
-.checkTwo:
+    jp c, PrgmErr.INVALA
     cp a, $49
-    jr c, .continue
-    jp PrgmErr.INVALA
-
-.continue:
+    jp nc, PrgmErr.INVALA
     sub a, $30
     cp a, $0A
     ret c
     cp a, $11
-    jr nc, .subA
-    jp PrgmErr.INVALA
-
-.subA:
+    jp c, PrgmErr.INVALA
     sub a, $07
     ret
 
@@ -210,9 +207,9 @@ _convertChars:
     ld de, prgmName + 1
     ld c, 8
     ld a, (hl)
-    cp a, $15
+    cp a, ti.AppVarObj
     jr z, .appvar
-    cp a, $17
+    cp a, ti.GroupObj
     jr nz, .loop
 
 .appvar:
@@ -253,7 +250,7 @@ _convertChars:
     dec b
     ret
 
-.dispText: ; a = token value
+.dispText: ; a = token value. convert chars for DispText command and similar ones
     push de
     push bc
     push hl
@@ -303,7 +300,7 @@ _checkValidHex:
     ret nc
     jp PrgmErr.INVALS
 
-_convertTokenToHex: ; a = token
+_convertTokenToHex: ; a = token. token being either 0 - 9 or A - F
     sub a, $30
     cp a, 10
     ret c
@@ -311,24 +308,19 @@ _convertTokenToHex: ; a = token
     ret
 
 _setArchivedFlag:
-    set archived, (iy + ti.asm_Flag2)
+    set archived, (iy + celticFlags2)
     call ti.Arc_Unarc
     call ti.OP6ToOP1
     call ti.ChkFindSym
     ret
 
-_re_archive:
-    call ti.OP6ToOP1
-    call ti.Arc_Unarc
-    ret
-
-_findNthItem: ; item number to find in ixl
+_findNthItem: ; item number to find in ixl. finds the nth item out of programs and appvars in a group
     ld a, (de)
-    cp a, $05
+    cp a, ti.ProgObj
     jr z, .isCounted
-    cp a, $06
+    cp a, ti.ProtProgObj
     jr z, .isCounted
-    cp a, $15
+    cp a, ti.AppVarObj
     jr nz, .skip ; only count programs and appvars
 
 .isCounted:
@@ -343,7 +335,7 @@ _findNthItem: ; item number to find in ixl
     ld hl, 6
     add hl, de
     ex de, hl
-    ld hl, 3
+    ld l, 3
     ld h, a
     mlt hl
     ld bc, .itemTypes
@@ -352,6 +344,7 @@ _findNthItem: ; item number to find in ixl
     jp (hl)
 
 .next:
+    ex de, hl
     push de
     pop bc
     push ix
@@ -364,19 +357,18 @@ _findNthItem: ; item number to find in ixl
 .real:
     ld hl, 12
     add hl, de
-    ex de, hl
-
-.ret: ; use this for things that aren't listed
     ret
 
 .list:
     ld a, (de)
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld l, a
     inc l
     add hl, de ; skip name
     ex de, hl
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld l, a
     inc de
@@ -392,14 +384,14 @@ _findNthItem: ; item number to find in ixl
     add hl, de ; multiply by nine
     pop de
     add hl, de
-    ex de, hl
     ret
 
 .matrix:
     inc de
     inc de
     inc de
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld h, a
     inc de
@@ -416,7 +408,6 @@ _findNthItem: ; item number to find in ixl
     add hl, de ; multiply by nine
     pop de
     add hl, de
-    ex de, hl
     ret
 
 .equation:
@@ -429,7 +420,8 @@ _findNthItem: ; item number to find in ixl
     inc de
     inc de
     inc de
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld l, a 
     inc de
@@ -437,12 +429,12 @@ _findNthItem: ; item number to find in ixl
     ld h, a
     inc de
     add hl, de
-    ex de, hl
     ret
 
 .program:
 .appvar:
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld l, a
     inc l
@@ -453,23 +445,23 @@ _findNthItem: ; item number to find in ixl
     ld d, (hl)
     inc hl
     add hl, de
-    ex de, hl
     ret
 
 .complex:
     ld hl, 21
     add hl, de
-    ex de, hl
     ret
 
 .complexList:
     ld a, (de)
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld l, a
     inc l
     add hl, de ; skip name
     ex de, hl
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld l, a
     inc de
@@ -486,7 +478,6 @@ _findNthItem: ; item number to find in ixl
     add hl, de ; multiply by eighteen
     pop de
     add hl, de
-    ex de, hl
     ret
 
 .itemTypes:
@@ -499,18 +490,18 @@ _findNthItem: ; item number to find in ixl
     dl .program
     dl .picture
     dl .gdb
-    dl .ret
-    dl .ret
-    dl .ret
+    dl return
+    dl return
+    dl return
     dl .complex
     dl .complexList
-    dl .ret
+    dl return
     dl .window
     dl .zsto
     dl .tableRange
-    dl .ret
-    dl .ret
-    dl .ret
+    dl return
+    dl return
+    dl return
     dl .appvar
 
 _byteToToken: ; returns in bc; b = first token, c = second token
@@ -550,7 +541,19 @@ _getVramAddr:
     add hl, de
     ret
 
-_correctCoords:
+_vramAddrShiftScrn:
+    ld l, a
+    ld h, ti.lcdWidth / 2
+    mlt hl
+    add hl, hl
+    ld de, (ix)
+    add hl, de
+    add hl, hl
+    ld de, ti.vRam
+    add hl, de
+    ret
+
+_correctCoords: ; for when using os.FontDrawTransText
     pop de
     pop bc
     ex (sp), hl
@@ -559,4 +562,64 @@ _correctCoords:
     ex (sp), hl
     push bc
     push de
+    ret
+
+_getDataPtr: ; corrects data pointer if not in RAM
+    call ti.ChkInRam
+    ret z
+    ld hl, 10
+    add hl, de
+    ld a, c
+    ld bc, 0
+    ld c, a
+    add hl, bc
+    ex de, hl
+    ret
+
+_findString: ; gets data pointer to a string
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jp c, PrgmErr.SNTFN
+    call ti.ChkInRam
+    jp nz, PrgmErr.SFLASH
+    ret
+
+_checkValidOSColor:
+    cp a, 10
+    jp c, PrgmErr.INVALA
+    cp a, 25
+    jp nc, PrgmErr.INVALA
+    sub a, 9
+    ret
+
+_storeThetaA:
+    push af
+    ld hl, Theta
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVar
+    call ti.CreateReal
+    pop af
+    push de
+    call ti.SetxxOP1
+    pop de
+    ld hl, ti.OP1
+    ld bc, 9
+    ldir
+    ret
+
+_storeThetaHL:
+    push hl
+    ld hl, Theta
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVar
+    call ti.CreateReal
+    pop hl
+    push de
+    call ti.SetxxxxOP2
+    pop de
+    ld hl, ti.OP2
+    ld bc, 9
+    ldir
     ret

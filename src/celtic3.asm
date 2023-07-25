@@ -4,36 +4,38 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: June 1, 2023
+; Last Built: July 24, 2023
 ;
 ;----------------------------------------
 
 getListElem: ; det(30)
     call ti.RclAns
     ld a, (ti.OP1)
-    cp a, $04
+    cp a, ti.StrngObj
     jp nz, PrgmErr.SNTST
     ld a, (noArgs)
     dec a
     jp z, PrgmErr.INVALA
     call ti.AnsName
     call ti.ChkFindSym
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld l, a
     inc de
     ld a, (de)
     ld h, a
     inc de
-    ld bc, 1
-    or a, a
-    sbc hl, bc
+    dec hl
+    ld a, h
+    or a, l
     jp z, PrgmErr.INVALS
+    inc hl
     add hl, bc
     ld a, (de)
-    cp a, $EB
+    cp a, ti.tListName
     jr z, .isAlist
-    cp a, $5D
+    cp a, ti.tVarLst
     jr z, .isAlist
     jp PrgmErr.NTALS
 
@@ -64,25 +66,16 @@ getListElem: ; det(30)
     ld (de), a
     call ti.ChkFindSym
     jp c, PrgmErr.PNTFN
-    res imaginaryList, (iy + ti.asm_Flag2)
+    res imaginaryList, (iy + celticFlags2)
     ld a, (hl)
-    cp a, $0D
+    cp a, ti.CListObj
     jr nz, .chkLoc
-    set imaginaryList, (iy + ti.asm_Flag2)
+    set imaginaryList, (iy + celticFlags2)
 
 .chkLoc:
-    call ti.ChkInRam
-    jr z, .inRam
-    ld hl, 10
-    add hl, de
-    ld a, c
-    ld bc, 0
-    ld c, a
-    add hl, bc
-    ex de, hl
-
-.inRam:
-    ld hl, 0
+    call _getDataPtr
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld l, a
     inc de
@@ -91,8 +84,9 @@ getListElem: ; det(30)
     inc de
     ld a, (var1)
     or a, a
-    jp z, .showDim
-    call ti.ChkHLIs0
+    jr z, .showDim
+    ld a, h
+    or a, l
     jp z, PrgmErr.ENTFN
     push de
     ld de, (var1)
@@ -102,7 +96,7 @@ getListElem: ; det(30)
     jp c, PrgmErr.ENTFN
     ld de, 1
     ld bc, 9
-    bit imaginaryList, (iy + ti.asm_Flag2)
+    bit imaginaryList, (iy + celticFlags2)
     jr z, .loopFindOffset
     ld bc, 18
 
@@ -125,7 +119,7 @@ getListElem: ; det(30)
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     call nc, ti.DelVar
-    bit imaginaryList, (iy + ti.asm_Flag2)
+    bit imaginaryList, (iy + celticFlags2)
     jr z, .createReal
     call ti.CreateCplx
 
@@ -133,11 +127,17 @@ getListElem: ; det(30)
     ld hl, execHexLoc
     pop bc
     ldir
+
+.return:
     jp return
 
 .createReal:
     call ti.CreateReal
     jr .storeValue
+
+.showDim:
+    call _storeThetaHL
+    jr .return
 
 .getListNameLen:
     ld bc, 7
@@ -149,51 +149,20 @@ getListElem: ; det(30)
 
 .validLen:
     ld a, (de)
-    cp a, $5D
+    cp a, ti.tVarLst
     ret nz
     ld bc, 2
     or a, a
     sbc hl, bc
     add hl, bc
     ret z
-    pop bc
     jp PrgmErr.INVALS
-
-.showDim:
-    push hl
-    ld hl, Theta
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    call nc, ti.DelVar
-    call ti.CreateReal
-    pop hl
-    push de
-    call ti.SetxxxxOP2
-    pop de
-    ld hl, ti.OP2
-    ld bc, 9
-    ldir
-    jp return
 
 getArgType: ; det(31)
     call ti.RclAns
-    ld hl, 0
     ld a, (ti.OP1)
-    ld l, a
-    push hl
-    ld hl, Theta
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    call nc, ti.DelVar
-    call ti.CreateReal
-    pop hl
-    push de
-    call ti.SetxxxxOP2
-    pop de
-    ld hl, ti.OP2
-    ld bc, 9
-    ldir
-    jp return
+    call _storeThetaA
+    jr getListElem.return
 
 chkStats: ; det(32)
     ld a, (noArgs)
@@ -209,13 +178,13 @@ chkStats: ; det(32)
     ld a, (var1)
     ld hl, return
     push hl
-    or a, a
+    or a, a ; 0
     jr z, .checkRAM
-    dec a
+    dec a ; 1
     jr z, .checkROM
-    dec a
+    dec a ; 2
     jp z, .checkBoot
-    dec a
+    dec a ; 3
     jp z, .checkOS
     jp PrgmErr.INVALA
 
@@ -311,13 +280,13 @@ chkStats: ; det(32)
     pop hl
     push hl
     inc hl
-    ld (hl), $3A
+    ld (hl), ti.tDecPt
     inc hl
     inc hl
-    ld (hl), $3A
+    ld (hl), ti.tDecPt
     inc hl
     inc hl
-    ld (hl), $3A
+    ld (hl), ti.tDecPt
     call ti.os.GetSystemInfo
     ld bc, 12
     add hl, bc
@@ -389,13 +358,13 @@ chkStats: ; det(32)
     pop hl
     push hl
     inc hl
-    ld (hl), $3A
+    ld (hl), ti.tDecPt
     inc hl
     inc hl
-    ld (hl), $3A
+    ld (hl), ti.tDecPt
     inc hl
     inc hl
-    ld (hl), $3A
+    ld (hl), ti.tDecPt
     call ti.os.GetSystemInfo
     ld bc, 6
     add hl, bc
@@ -406,22 +375,12 @@ chkStats: ; det(32)
 
 .checkCalcVer:
     call ti.os.GetSystemInfo
-    ld bc, 4
-    add hl, bc
+    inc hl
+    inc hl
+    inc hl
+    inc hl
     ld a, (hl)
-    push af
-    ld hl, Theta
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    call nc, ti.DelVar
-    call ti.CreateReal
-    pop af
-    push de
-    call ti.SetxxOP2
-    pop de
-    ld hl, ti.OP2
-    ld bc, 9
-    ldir
+    call _storeThetaA
     jp return
 
 findProg: ; det(33)
@@ -436,14 +395,15 @@ findProg: ; det(33)
     jp PrgmErr.INVALA
 
 .programs:
-    res randFlag, (iy + ti.asm_Flag2) ; reset since we're searching for programs
+    res searchAppvars, (iy + celticFlags1) ; reset since we're searching for programs
     call ti.RclAns
     ld a, (ti.OP1)
-    cp a, 4
+    cp a, ti.StrngObj
     jp nz, .setupFindAll
     call ti.AnsName
     call ti.ChkFindSym
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld l, a
     inc de
@@ -454,21 +414,22 @@ findProg: ; det(33)
     push de
     call ti.ZeroOP1
     pop de
-    ld a, 5
+    ld a, ti.ProgObj
     ld (ti.OP1), a
     ld ix, execHexLoc
     ld bc, 0
     jr .loopFindVars
 
 .appvars:
-    set randFlag, (iy + ti.asm_Flag2) ; set since we're searching for appvars
+    set searchAppvars, (iy + celticFlags1) ; set since we're searching for appvars
     call ti.RclAns
     ld a, (ti.OP1)
-    cp a, 4
+    cp a, ti.StrngObj
     jp nz, .setupFindAll
     call ti.AnsName
     call ti.ChkFindSym
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld l, a
     inc de
@@ -479,7 +440,7 @@ findProg: ; det(33)
     push de
     call ti.ZeroOP1
     pop de
-    ld a, $15
+    ld a, ti.AppVarObj
     ld (ti.OP1), a
     ld ix, execHexLoc
     ld bc, 0
@@ -526,15 +487,13 @@ findProg: ; det(33)
     pop de
     pop bc
     push bc
-    call ti.ChkBCIs0
+    ld a, b
+    or a, c
     jp z, PrgmErr.PNTFN
     ld hl, Str9
-    push hl
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     call nc, ti.DelVarArc
-    pop hl
-    call ti.Mov9ToOP1
     pop hl
     push hl
     call ti.EnoughMem
@@ -551,13 +510,13 @@ findProg: ; det(33)
 
 .setupFindAll:
     call ti.ZeroOP1
-    ld a, 5
+    ld a, ti.ProgObj
     ld (ti.OP1), a
     ld ix, execHexLoc
     ld bc, 0
-    bit randFlag, (iy + ti.asm_Flag2)
+    bit searchAppvars, (iy + celticFlags1)
     jr z, .findAllLoop
-    ld a, $15
+    ld a, ti.AppVarObj
     ld (ti.OP1), a
 
 .findAllLoop:
@@ -588,7 +547,7 @@ findProg: ; det(33)
 .storeName:
     ld hl, ti.OP1 + 1
     ld a, (bufSpriteY)
-    bit randFlag, (iy + ti.asm_Flag2)
+    bit searchAppvars, (iy + celticFlags1)
     jr z, .loopStoreName
     inc a
     dec hl
@@ -628,33 +587,22 @@ ungroupFile: ; det(34)
     dec a
     jp z, PrgmErr.INVALA
     ld hl, Str0
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
-    call _getProgNameLen
+    call _findString
+    ld a, (de)
+    inc de
+    inc de
     ex de, hl
     call _convertChars.varName
     ld hl, prgmName + 1
     ld a, (hl)
-    cp a, $17
+    cp a, ti.GroupObj
     jp nz, PrgmErr.NTAGP
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     jp c, PrgmErr.GNTFN
-    call ti.ChkInRam
-    jr z, .inRam
-    ld hl, 10
-    add hl, de
-    ld a, c
-    ld bc, 0
-    ld c, a
-    add hl, bc
-    ex de, hl
-
-.inRam:
-    ld hl, 0
+    call _getDataPtr
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld l, a
     inc de
@@ -665,11 +613,11 @@ ungroupFile: ; det(34)
 
 .loop:
     ld a, (de)
-    cp a, $05
+    cp a, ti.ProgObj
     jr z, .extract
-    cp a, $06
+    cp a, ti.ProtProgObj
     jr z, .extract
-    cp a, $15
+    cp a, ti.AppVarObj
     jr nz, .advance
 
 .extract:
@@ -743,7 +691,7 @@ ungroupFile: ; det(34)
     ld hl, 6
     add hl, de
     ex de, hl
-    ld hl, 3
+    ld l, 3
     ld h, a
     mlt hl
     ld bc, _findNthItem.itemTypes
@@ -752,6 +700,7 @@ ungroupFile: ; det(34)
     jp (hl)
 
 .next:
+    ex de, hl
     push de
     pop bc
     ld ix, _decBCretZ
@@ -761,33 +710,22 @@ ungroupFile: ; det(34)
 
 getGroup: ; det(35)
     ld hl, Str0
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
-    call _getProgNameLen
+    call _findString
+    ld a, (de)
+    inc de
+    inc de
     ex de, hl
     call _convertChars.varName
     ld hl, prgmName + 1
     ld a, (hl)
-    cp a, $17
+    cp a, ti.GroupObj
     jp nz, PrgmErr.NTAGP
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     jp c, PrgmErr.GNTFN
-    call ti.ChkInRam
-    jr z, .inRam
-    ld hl, 10
-    add hl, de
-    ld a, c
-    ld bc, 0
-    ld c, a
-    add hl, bc
-    ex de, hl
-
-.inRam:
-    ld hl, 0
+    call _getDataPtr
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld l, a
     inc de
@@ -811,11 +749,11 @@ getGroup: ; det(35)
     pop hl
     jr z, .exit
     ld a, (hl)
-    cp a, $05
+    cp a, ti.ProgObj
     jr z, .isValid
-    cp a, $06
+    cp a, ti.ProtProgObj
     jr z, .isValid
-    cp a, $15
+    cp a, ti.AppVarObj
     jr nz, .advance
     pop bc
     inc bc
@@ -830,7 +768,9 @@ getGroup: ; det(35)
     ld (bufSpriteY), a ; preserve name length
     pop bc
     push hl
-    call .storeName
+    inc hl
+    res searchAppvars, (iy + celticFlags1) ; reset this so FindProg's routine doesn't mess up anything
+    call findProg.storeName + 4
     pop hl
     push bc
     ld bc, -6
@@ -844,7 +784,7 @@ getGroup: ; det(35)
     ld hl, 6
     add hl, de
     ex de, hl
-    ld hl, 3
+    ld l, 3
     ld h, a
     mlt hl
     ld bc, _findNthItem.itemTypes
@@ -853,22 +793,19 @@ getGroup: ; det(35)
     jp (hl)
 
 .next:
-    ex de, hl
     pop bc
     jr .findAllLoop
 
 .exit:
     pop bc
     push bc
-    call ti.ChkBCIs0
+    ld a, b
+    or a, c
     jp z, PrgmErr.PNTFN
     ld hl, Str9
-    push hl
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     call nc, ti.DelVarArc
-    pop hl
-    call ti.Mov9ToOP1
     pop hl
     push hl
     call ti.CreateStrng
@@ -879,58 +816,27 @@ getGroup: ; det(35)
     ldir
     jp return
 
-.storeName:
-    ld a, (bufSpriteY)
-    inc hl
-
-.loopStoreName:
-    push af
-    ld a, (hl)
-    call findProg.convertLetter
-    ld (ix), a
-    inc bc
-    inc ix
-    inc hl
-    pop af
-    dec a
-    jr nz, .loopStoreName
-    ld (ix), ti.tSpace
-    inc ix
-    inc bc
-    ret
-
 extGroup: ; det(36)
     ld a, (noArgs)
     dec a
     jp z, PrgmErr.INVALA
     ld hl, Str0
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
-    call _getProgNameLen
+    call _findString
+    ld a, (de)
+    inc de
+    inc de
     ex de, hl
     call _convertChars.varName
     ld hl, prgmName + 1
     ld a, (hl)
-    cp a, $17
+    cp a, ti.GroupObj
     jp nz, PrgmErr.NTAGP
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     jp c, PrgmErr.GNTFN
-    call ti.ChkInRam
-    jr z, .inRam
-    ld hl, 10
-    add hl, de
-    ld a, c
-    ld bc, 0
-    ld c, a
-    add hl, bc
-    ex de, hl
-
-.inRam:
-    ld hl, 0
+    call _getDataPtr
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld l, a
     inc de
@@ -993,33 +899,22 @@ groupMem: ; det(37)
     dec a
     jp z, PrgmErr.INVALA
     ld hl, Str0
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
-    call _getProgNameLen
+    call _findString
+    ld a, (de)
+    inc de
+    inc de
     ex de, hl
     call _convertChars.varName
     ld hl, prgmName + 1
     ld a, (hl)
-    cp a, $17
+    cp a, ti.GroupObj
     jp nz, PrgmErr.NTAGP
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     jp c, PrgmErr.GNTFN
-    call ti.ChkInRam
-    jr z, .inRam
-    ld hl, 10
-    add hl, de
-    ld a, c
-    ld bc, 0
-    ld c, a
-    add hl, bc
-    ex de, hl
-
-.inRam:
-    ld hl, 0
+    call _getDataPtr
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld l, a
     inc de
@@ -1041,19 +936,7 @@ groupMem: ; det(37)
     inc hl
     ld d, (hl)
     ex de, hl
-    push hl
-    ld hl, Theta
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    call nc, ti.DelVar
-    call ti.CreateReal
-    pop hl
-    push de
-    call ti.SetxxxxOP2
-    pop de
-    ld hl, ti.OP2
-    ld bc, 9
-    ldir
+    call _storeThetaHL
     jp return
 
 binRead: ; det(38)
@@ -1061,54 +944,23 @@ binRead: ; det(38)
     cp a, 3
     jp c, PrgmErr.INVALA
     ld hl, Str0
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
-    call _getProgNameLen
-    ex de, hl
-    call _convertChars.varName
-    ld hl, prgmName + 1
-    ld a, (hl)
-    cp a, $15
-    jr z, .continue
-    dec hl
-    ld (hl), $05
-
-.continue:
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    call c, _checkHidden
-    jp c, PrgmErr.PNTFN
-    call ti.ChkInRam
-    jr z, .inRam
-    ld hl, 10
-    add hl, de
-    ld a, c
-    ld bc, 0
-    ld c, a
-    add hl, bc
-    ex de, hl
-
-.inRam:
+    call _getProgFromStr
+    call _getDataPtr
     inc de
     inc de
     ld hl, (var1)
     add hl, de
     push hl
     ld hl, (var2)
-    call ti.ChkHLIs0
+    ld a, h
+    or a, l
     jp z, PrgmErr.INVALA
     add hl, hl
     push hl
     ld hl, Str9
-    push hl
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     call nc, ti.DelVarArc
-    pop hl
-    call ti.Mov9ToOP1
     pop hl
     push hl
     call ti.CreateStrng
@@ -1140,26 +992,7 @@ binWrite: ; det(39)
     dec a
     jp z, PrgmErr.INVALA
     ld hl, Str0
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
-    call _getProgNameLen
-    ex de, hl
-    call _convertChars.varName
-    ld hl, prgmName + 1
-    ld a, (hl)
-    cp a, $15
-    jr z, .continue
-    dec hl
-    ld (hl), $05
-
-.continue:
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    call c, _checkHidden
-    jp c, PrgmErr.PNTFN
+    call _getProgFromStr
     call ti.ChkInRam
     jp nz, PrgmErr.PGMARC
     ld bc, 0
@@ -1172,11 +1005,7 @@ binWrite: ; det(39)
     push de
     push bc
     ld hl, Str9
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
+    call _findString
     ld bc, 0
     ld a, (de)
     ld c, a
@@ -1260,7 +1089,8 @@ binWrite: ; det(39)
     pop bc
     pop de
     dec de
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld h, a
     dec de
@@ -1279,26 +1109,7 @@ binDelete: ; det(40)
     cp a, 3
     jp c, PrgmErr.INVALA
     ld hl, Str0
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
-    call _getProgNameLen
-    ex de, hl
-    call _convertChars.varName
-    ld hl, prgmName + 1
-    ld a, (hl)
-    cp a, $15
-    jr z, .continue
-    dec hl
-    ld (hl), $05
-
-.continue:
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    call c, _checkHidden
-    jp c, PrgmErr.PNTFN
+    call _getProgFromStr
     call ti.ChkInRam
     jp nz, PrgmErr.PGMARC
     ld bc, 0
@@ -1308,12 +1119,14 @@ binDelete: ; det(40)
     ld a, (de)
     ld b, a
     inc de
-    call ti.ChkBCIs0
+    ld a, b
+    or a, c
     jp z, return
     push de
     push bc
     ld hl, (var2)
-    call ti.ChkHLIs0
+    ld a, h
+    or a, l
     jp z, PrgmErr.INVALA
     ld hl, (var1)
     add hl, de
@@ -1360,7 +1173,7 @@ hexToBin: ; det(41)
     call ti.RclAns
     pop hl
     ld a, (ti.OP1)
-    cp a, $04
+    cp a, ti.StrngObj
     jp nz, PrgmErr.SNTST
     ld bc, 0
     ld c, (hl)
@@ -1399,12 +1212,9 @@ hexToBin: ; det(41)
     jr nz, .loop
     pop hl
     ld hl, Str9
-    push hl
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     call nc, ti.DelVarArc
-    pop hl
-    call ti.Mov9ToOP1
     pop hl
     push hl
     call ti.CreateStrng
@@ -1427,9 +1237,10 @@ binToHex: ; det(42)
     call ti.RclAns
     pop de
     ld a, (ti.OP1)
-    cp a, $04
+    cp a, ti.StrngObj
     jp nz, PrgmErr.SNTST
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld l, a
     inc de
@@ -1459,12 +1270,9 @@ binToHex: ; det(42)
     or a, c
     jr nz, .loop
     ld hl, Str9
-    push hl
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     call nc, ti.DelVarArc
-    pop hl
-    call ti.Mov9ToOP1
     pop hl
     push hl
     call ti.CreateStrng
@@ -1497,10 +1305,7 @@ edit1Byte: ; det(44)
     call ti.Mov9ToOP1
     pop af
     ld (ti.OP1 + 2), a
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
+    call _findString + 4
     ex de, hl
     ld bc, 0
     ld c, (hl)
@@ -1520,19 +1325,32 @@ edit1Byte: ; det(44)
     jp return
 
 errorHandle: ; det(45)
+    ld iy, ti.flags ; iy gets set a couple times for safety
     ld hl, basicPrgmName
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     jp nc, .return
+    res showErrorOffset, (iy + celticFlags1)
+    ld a, (noArgs)
+    dec a
+    jr z, .skipOffsetFlag
+    ld a, (var1)
+    or a, a
+    jr z, .skipOffsetFlag
+    set showErrorOffset, (iy + celticFlags1)
+
+.skipOffsetFlag:
     call ti.AnsName
     call ti.ChkFindSym
     push de
     call ti.RclAns
     pop hl
     ld a, (ti.OP1)
-    cp a, 4
+    cp a, ti.StrngObj
     jp nz, PrgmErr.SNTST
-    call _getProgNameLen
+    ld a, (de)
+    inc de
+    inc de
     ex de, hl
     ld b, a
     ld a, (hl)
@@ -1543,22 +1361,12 @@ errorHandle: ; det(45)
     ld a, b
     call _convertChars.varName
     ld hl, prgmName
-    ld (hl), 5
+    ld (hl), ti.ProgObj
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     call c, _checkHidden
     jp c, PrgmErr.PNTFN
-    call ti.ChkInRam
-    jr z, .inRam
-    ld hl, 10
-    add hl, de
-    ld a, c
-    ld bc, 0
-    ld c, a
-    add hl, bc
-    ex de, hl
-
-.inRam:
+    call _getDataPtr
     ld bc, 0
     ex de, hl
     ld c, (hl)
@@ -1583,17 +1391,7 @@ errorHandle: ; det(45)
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     call c, _checkHidden
-    call ti.ChkInRam
-    jr z, .inRam2
-    ld hl, 10
-    add hl, de
-    ld a, c
-    ld bc, 0
-    ld c, a
-    add hl, bc
-    ex de, hl
-
-.inRam2:
+    call _getDataPtr
     inc de
     inc de
     ld a, (de)
@@ -1649,30 +1447,34 @@ errorHandle: ; det(45)
     xor a, a
 
 .endQuit:
-    cp a, ti.E_AppErr1
-    jr nz, $ + 3
-    xor a, a
+    ld iy, ti.flags
     and a, $7F ; start error codes at 1
     pop hl
-    call ti.SetParserHook
     push af
+    or a, a
+    jr z, .skipStoOffsetChk
+    bit showErrorOffset, (iy + celticFlags1)
+    jr z, .skipStoOffsetChk
+    push hl
+    ld hl, (ti.curPC)
+    ld bc, (ti.begPC)
+    or a, a
+    sbc hl, bc
+    call ti.SetxxxxOP2
+    call ti.OP2ToOP1
+    call ti.StoAns
+    pop hl
+
+.skipStoOffsetChk:
+    call ti.SetParserHook
+    res ti.onInterrupt, (iy + ti.onFlags)
     call ti.PopOP1
     ld hl, ti.OP1
     ld de, ti.basic_prog
     call ti.Mov9b
     call ti.ChkFindSym
     call c, _checkHidden
-    call ti.ChkInRam
-    jr z, .inRam3
-    ld hl, 10
-    add hl, de
-    ld a, c
-    ld bc, 0
-    ld c, a
-    add hl, bc
-    ex de, hl
-
-.inRam3:
+    call _getDataPtr
     inc de
     inc de
     ld (ti.begPC), de
@@ -1690,24 +1492,15 @@ errorHandle: ; det(45)
     call nc, ti.DelVarArc
 
 .loadTheta:
-    ld hl, Theta
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    call nc, ti.DelVar
-    call ti.CreateReal
     pop af
-    push de
-    call ti.SetxxOP1
-    pop de
-    ld hl, ti.OP1
-    ld bc, 9
-    ldir
+    call _storeThetaA
 
 .return:
     ld (stackPtr), sp
     jp return
 
 .string:
+    res showErrorOffset, (iy + celticFlags1)
     dec hl
     dec hl
     ld bc, 0
@@ -1731,7 +1524,9 @@ errorHandle: ; det(45)
     push de
     call ti.AnsName
     call ti.ChkFindSym
-    jp .inRam2
+    inc de
+    inc de
+    jp .noSquish
 
 .squish:
     inc de
@@ -1745,13 +1540,12 @@ errorHandle: ; det(45)
     pop bc ; size of data
     dec bc
     dec bc ; remove Asm84CEPrgm from un-squished size
-    push hl
     push bc
     push bc
 
 .loopNewlines:
     ld a, (hl)
-    cp a, $3F
+    cp a, ti.tEnter
     jr nz, .notNewline
     pop de
     dec de
@@ -1780,9 +1574,18 @@ errorHandle: ; det(45)
     ld hl, ti.userMem
     push hl
     call ti.MemSet
+    ld hl, prgmName
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call c, _checkHidden
+    call _getDataPtr
+    inc de
+    inc de
+    inc de
+    inc de
+    ex de, hl
     pop de ; userMem
     pop bc ; original (un-squished) size
-    pop hl ; start of program data
 
 .loopLoad:
     ld a, b
@@ -1791,7 +1594,7 @@ errorHandle: ; det(45)
     ld a, (hl)
     inc hl
     dec bc
-    cp a, $3F
+    cp a, ti.tEnter
     jr z, .loopLoad
     push de
     call _checkValidHex
@@ -1824,6 +1627,7 @@ errorHandle: ; det(45)
     xor a, a
 
 .endHexQuit:
+    ld iy, ti.flags
     and a, $7F ; start error codes at 1
     push af
     ld de, (ti.asm_prgm_size)
@@ -1841,7 +1645,8 @@ stringRead: ; det(46)
     cp a, 4
     jp c, PrgmErr.INVALA
     ld hl, (var2)
-    call ti.ChkHLIs0
+    ld a, h
+    or a, l
     jp z, .getSize
     ld a, (var1)
     cp a, 10
@@ -1857,17 +1662,15 @@ stringRead: ; det(46)
     call ti.Mov9ToOP1
     pop af
     ld (ti.OP1 + 2), a
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
+    call _findString + 4
     ex de, hl
     inc hl
     ld de, (var2)
     add hl, de
     ex de, hl
     ld bc, (var3)
-    call ti.ChkBCIs0
+    ld a, b
+    or a, c
     jp z, PrgmErr.INVALA
     ld hl, execHexLoc
     push bc
@@ -1890,12 +1693,9 @@ stringRead: ; det(46)
     add hl, hl
     push hl
     ld hl, Str9
-    push hl
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     call nc, ti.DelVarArc
-    pop hl
-    call ti.Mov9ToOP1
     pop hl
     push hl
     call ti.CreateStrng
@@ -1908,7 +1708,8 @@ stringRead: ; det(46)
 
 .getSize:
     ld hl, (var2)
-    call ti.ChkHLIs0
+    ld a, h
+    or a, l
     jp nz, PrgmErr.INVALA
     ld a, (var1)
     cp a, 10
@@ -1924,34 +1725,21 @@ stringRead: ; det(46)
     call ti.Mov9ToOP1
     pop af
     ld (ti.OP1 + 2), a
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
+    call _findString + 4
     ex de, hl
     ld bc, 0
     ld c, (hl)
     inc hl
     ld b, (hl)
     push bc
-    ld hl, Theta
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    call nc, ti.DelVar
-    call ti.CreateReal
     pop hl
-    push de
-    call ti.SetxxxxOP2
-    pop de
-    ld hl, ti.OP2
-    ld bc, 9
-    ldir
+    call _storeThetaHL
     jp return
 
 hexToDec: ; det(47)
     call ti.RclAns
     ld a, (ti.OP1)
-    cp a, 4
+    cp a, ti.StrngObj
     jp nz, PrgmErr.SNTST
     call ti.AnsName
     call ti.ChkFindSym
@@ -1962,7 +1750,8 @@ hexToDec: ; det(47)
     ld b, (hl)
     inc hl
     ex de, hl
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld ixl, 4
 
 .loop:
@@ -1972,12 +1761,7 @@ hexToDec: ; det(47)
     add hl, hl
     add hl, hl
     add hl, hl
-    sub a, $30
-    cp a, 10
-    jr c, .skipDec
-    sub a, 7
-
-.skipDec:
+    call _convertTokenToHex
     or a, l
     ld l, a
     inc de
@@ -1989,19 +1773,7 @@ hexToDec: ; det(47)
     jr nz, .loop
 
 .storeTheta:
-    push hl
-    ld hl, Theta
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    call nc, ti.DelVar
-    call ti.CreateReal
-    pop hl
-    push de
-    call ti.SetxxxxOP2
-    pop de
-    ld hl, ti.OP2
-    ld bc, 9
-    ldir
+    call _storeThetaHL
     jp return
 
 decToHex: ; det(48)
@@ -2045,12 +1817,9 @@ decToHex: ; det(48)
     call ti.StrLength
     push bc
     ld hl, Str9
-    push hl
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     call nc, ti.DelVarArc
-    pop hl
-    call ti.Mov9ToOP1
     pop hl
     push hl
     call ti.CreateStrng
@@ -2084,10 +1853,7 @@ editWord: ; det(49)
     call ti.Mov9ToOP1
     pop af
     ld (ti.OP1 + 2), a
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
+    call _findString + 4
     ex de, hl
     ld bc, 0
     ld c, (hl)
@@ -2113,9 +1879,10 @@ bitOperate: ; det(50)
     ld a, (noArgs)
     cp a, 4
     jp c, PrgmErr.INVALA
+    ld hl, (var1)
     ld a, (var3)
     or a, a
-    jr z, .none
+    jr z, .storeTheta
     dec a ; 1
     jr z, .and
     dec a ; 2
@@ -2140,7 +1907,6 @@ bitOperate: ; det(50)
 .leftShift:
     ld a, (var2)
     ld b, a
-    ld hl, (var1)
 
 .leftShiftLoop:
     add hl, hl
@@ -2148,7 +1914,6 @@ bitOperate: ; det(50)
     jr .storeTheta
 
 .xor:
-    ld hl, (var1)
     ld bc, (var2)
     ld a, l
     xor a, c
@@ -2159,7 +1924,6 @@ bitOperate: ; det(50)
     jr .storeTheta
 
 .or:
-    ld hl, (var1)
     ld bc, (var2)
     ld a, l
     or a, c
@@ -2170,7 +1934,6 @@ bitOperate: ; det(50)
     jr .storeTheta
 
 .and:
-    ld hl, (var1)
     ld bc, (var2)
     ld a, l
     and a, c
@@ -2178,26 +1941,9 @@ bitOperate: ; det(50)
     ld a, h
     and a, b
     ld h, a
-    jr .storeTheta
-
-.none:
-    ld hl, (var1)
 
 .storeTheta:
-    call ti.SetHLUTo0
-    push hl
-    ld hl, Theta
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    call nc, ti.DelVar
-    call ti.CreateReal
-    pop hl
-    push de
-    call ti.SetxxxxOP2
-    pop de
-    ld hl, ti.OP2
-    ld bc, 9
-    ldir
+    call _storeThetaHL
     jp return
 
 getProgList: ; det(51)
@@ -2214,14 +1960,15 @@ getProgList: ; det(51)
     jp PrgmErr.INVALA
 
 .programs:
-    res randFlag, (iy + ti.asm_Flag2) ; reset since we're searching for programs
+    res searchAppvars, (iy + celticFlags1) ; reset since we're searching for programs
     call ti.RclAns
     ld a, (ti.OP1)
-    cp a, 4
+    cp a, ti.StrngObj
     jp nz, PrgmErr.SNTST
     call ti.AnsName
     call ti.ChkFindSym
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld l, a
     inc de
@@ -2232,7 +1979,7 @@ getProgList: ; det(51)
     push de
     call ti.ZeroOP1
     pop de
-    ld a, 5
+    ld a, ti.ProgObj
     ld (ti.OP1), a
     ld ix, execHexLoc
     ld bc, 0
@@ -2245,14 +1992,15 @@ getProgList: ; det(51)
 .appvars:
     ld c, 0
     push bc
-    set randFlag, (iy + ti.asm_Flag2) ; set since we're searching for appvars or groups
+    set searchAppvars, (iy + celticFlags1) ; set since we're searching for appvars or groups
     call ti.RclAns
     ld a, (ti.OP1)
-    cp a, 4
+    cp a, ti.StrngObj
     jp nz, PrgmErr.SNTST
     call ti.AnsName
     call ti.ChkFindSym
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, (de)
     ld l, a
     inc de
@@ -2264,7 +2012,7 @@ getProgList: ; det(51)
     call ti.ZeroOP1
     pop de
     pop bc
-    ld a, $15
+    ld a, ti.AppVarObj
     add a, c
     ld (ti.OP1), a
     ld ix, execHexLoc
@@ -2294,15 +2042,13 @@ getProgList: ; det(51)
     pop de
     pop bc
     push bc
-    call ti.ChkBCIs0
+    ld a, b
+    or a, c
     jp z, PrgmErr.PNTFN
     ld hl, Str9
-    push hl
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     call nc, ti.DelVarArc
-    pop hl
-    call ti.Mov9ToOP1
     pop hl
     push hl
     call ti.EnoughMem

@@ -4,9 +4,39 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: June 1, 2023
+; Last Built: July 24, 2023
 ;
 ;----------------------------------------
+
+fillScreen: ; det(16)
+    ld a, (noArgs)
+    dec a
+    jp z, PrgmErr.INVALA
+    dec a
+    jr z, .osColor
+    ld a, (var1)
+    ld e, a
+    ld a, (var2)
+    ld d, a
+
+.fillScrn:
+    ld hl, ti.vRam
+    ld (hl), e
+    inc hl
+    ld (hl), d
+    push hl
+    pop de
+    dec hl
+    inc de
+    ld bc, ((ti.lcdWidth * ti.lcdHeight) * 2) - 2
+    ldir
+    jp return
+
+.osColor:
+    ld a, (var1)
+    call _checkValidOSColor
+    call ti.GetColorValue
+    jr .fillScrn
 
 drawLine: ; det(17)
     ld a, (noArgs)
@@ -15,11 +45,7 @@ drawLine: ; det(17)
     cp a, 6
     jp c, PrgmErr.INVALA
     ld a, (var1)
-    cp a, 25
-    jp nc, PrgmErr.INVALA
-    cp a, 10
-    jp c, PrgmErr.INVALA
-    sub a, 9
+    call _checkValidOSColor
     call ti.GetColorValue
     ld.sis (ti.drawFGColor and $FFFF), de
     ld ix, var2
@@ -190,29 +216,22 @@ drawLine: ; det(17)
     ret
 
 setPixel: ; det(18)
-    res invertPixel, (iy + ti.asm_Flag2)
+    res invertPixel, (iy + celticFlags2)
     ld a, (noArgs)
     cp a, 5
     jr z, .fiveArgs
     cp a, 4
     jp c, PrgmErr.INVALA
     ld a, (var1)
-    cp a, 25
-    jp nc, PrgmErr.INVALA
     or a, a
-    jr z, .skipSub
-    cp a, 10
-    jp c, PrgmErr.INVALA
-    sub a, 9
-
-.skipSub:
+    call nz, _checkValidOSColor
     call ti.GetColorValue
     push de
     ld ix, var2
     ld a, (var1)
     or a, a
     jr nz, .getCoord
-    set invertPixel, (iy + ti.asm_Flag2)
+    set invertPixel, (iy + celticFlags2)
     jr .getCoord
 
 .fiveArgs:
@@ -233,13 +252,18 @@ setPixel: ; det(18)
     add hl, hl
     ld de, ti.vRam
     add hl, de
-    bit invertPixel, (iy + ti.asm_Flag2)
+    ex de, hl
+    ld hl, -ti.vRamEnd
+    add hl, de
+    ex de, hl
+    jr c, .return
+    bit invertPixel, (iy + celticFlags2)
     jr nz, .invertColor
     pop de
     ld (hl), e
     inc hl
     ld (hl), d
-    jp return
+    jr .return
 
 .invertColor:
     ld a, (hl)
@@ -249,6 +273,8 @@ setPixel: ; det(18)
     ld a, (hl)
     cpl
     ld (hl), a
+
+.return:
     jp return
 
 getPixel: ; det(19)
@@ -269,26 +295,14 @@ getPixel: ; det(19)
     ld e, (hl)
     push de
     inc hl
-    ld de, 0
     ld e, (hl)
-    push de
-    ld hl, Theta
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    call nc, ti.DelVar
-    call ti.CreateReal
-    pop hl
-    push de
-    call ti.SetxxxxOP2
-    pop de
-    ld hl, ti.OP2
-    ld bc, 9
-    ldir
+    ex de, hl
+    call _storeThetaHL
     pop hl
     call ti.SetxxxxOP2
     call ti.OP2ToOP1
     call ti.StoAns
-    jp return
+    jr setPixel.return
 
 pixelTestColor: ; det(20)
     ld a, (noArgs)
@@ -345,20 +359,19 @@ putSprite: ; det(21)
 .notStr0:
     dec a
     ld (ti.OP1 + 2), a
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
+    call _findString + 4
     inc de
     inc de
     ex de, hl
     ld bc, (var4)
-    call ti.ChkBCIs0
+    ld a, b
+    or a, c
     jp z, PrgmErr.INVALA
     ld bc, 0
     ld (currentWidth), bc
     ld bc, (var3)
-    call ti.ChkBCIs0
+    ld a, b
+    or a, c
     jp z, PrgmErr.INVALA
     pop de
     ld (bufSpriteXStart), de
@@ -403,15 +416,22 @@ putSprite: ; det(21)
     pop bc
     or a, a
     sbc hl, bc
-    jp z, return
+    jr z, .return
     pop bc
     ld hl, (bufSpriteXStart)
-    ld de, 640
+    ld de, ti.lcdWidth * 2
     add hl, de
     ld (bufSpriteXStart), hl
     ex de, hl
-    ld hl, 0
+    ld hl, -ti.vRamEnd
+    add hl, de
+    jr c, .return
+    or a, a
+    sbc hl, hl
     ret
+
+.return:
+    jp return
 
 getStringWidth: ; det(54)
     ld a, (noArgs)
@@ -423,7 +443,7 @@ getStringWidth: ; det(54)
     call ti.RclAns
     pop hl
     ld a, (ti.OP1)
-    cp a, $04
+    cp a, ti.StrngObj
     jp nz, PrgmErr.SNTST
     ex de, hl
     ld bc, 0
@@ -448,7 +468,6 @@ getStringWidth: ; det(54)
     or a, a
     jr z, .smallFont
     call ti.StrLength
-    ld hl, 0
     ld l, c
     ld h, 12
     mlt hl
@@ -460,19 +479,7 @@ getStringWidth: ; det(54)
     pop hl
 
 .storeTheta:
-    push hl
-    ld hl, Theta
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    call nc, ti.DelVar
-    call ti.CreateReal
-    pop hl
-    push de
-    call ti.SetxxxxOP2
-    pop de
-    ld hl, ti.OP2
-    ld bc, 9
-    ldir
+    call _storeThetaHL
     jp return
 
 transSprite: ; det(55)
@@ -502,20 +509,19 @@ transSprite: ; det(55)
 .notStr0:
     dec a
     ld (ti.OP1 + 2), a
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
+    call _findString + 4
     inc de
     inc de
     ex de, hl
     ld bc, (var4)
-    call ti.ChkBCIs0
+    ld a, b
+    or a, c
     jp z, PrgmErr.INVALA
     ld bc, 0
     ld (currentWidth), bc
     ld bc, (var3)
-    call ti.ChkBCIs0
+    ld a, b
+    or a, c
     jp z, PrgmErr.INVALA
     pop de
     ld (bufSpriteXStart), de
@@ -554,28 +560,10 @@ transSprite: ; det(55)
     or a, a
     sbc hl, bc
     pop hl
-    call z, .moveDown
+    call z, putSprite.moveDown
     ld (currentWidth), hl
     pop hl
     jr .loopSprite
-
-.moveDown:
-    inc ix
-    ld hl, (var4)
-    push bc
-    push ix
-    pop bc
-    or a, a
-    sbc hl, bc
-    jp z, return
-    pop bc
-    ld hl, (bufSpriteXStart)
-    ld de, ti.lcdWidth * 2
-    add hl, de
-    ld (bufSpriteXStart), hl
-    ex de, hl
-    ld hl, 0
-    ret
 
 .skipDraw:
     inc de
@@ -613,20 +601,19 @@ scaleSprite: ; det(56)
 .notStr0:
     dec a
     ld (ti.OP1 + 2), a
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
+    call _findString + 4
     inc de
     inc de
     push de ; address of string, ix + 12
     ld ix, var3
     ld hl, (ix)
-    call ti.ChkHLIs0
+    ld a, h
+    or a, l
     jp z, return
     push hl ; width, ix + 9
     ld hl, (ix + 3)
-    call ti.ChkHLIs0
+    ld a, h
+    or a, l
     jp z, return
     push hl ; height, ix + 6
     ld hl, (ix + 6)
@@ -757,20 +744,19 @@ scaleTSprite: ; det(57)
 .notStr0:
     dec a
     ld (ti.OP1 + 2), a
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
+    call _findString + 4
     inc de
     inc de
     push de ; address of string, ix + 12
     ld ix, var3
     ld hl, (ix)
-    call ti.ChkHLIs0
+    ld a, h
+    or a, l
     jp z, return
     push hl ; width, ix + 9
     ld hl, (ix + 3)
-    call ti.ChkHLIs0
+    ld a, h
+    or a, l
     jp z, return
     push hl ; height, ix + 6
     ld hl, (ix + 6)
@@ -806,223 +792,262 @@ scaleTSprite: ; det(57)
     ld (ix + 12), hl
     call _convertTokenToHex
     add a, b
-    call .setPixel
+    cp a, (ix + 21)
+    jr z, .skipPixel
+    call scaleSprite.setPixel
+
+.pixelDrawn:
     ld hl, (ix + 9)
     ld de, (ix - 3)
     or a, a
     sbc hl, de
     jr nz, .loopSprite
-    call .moveDown
+    call scaleSprite.moveDown
     jr .loopSprite
 
-.moveDown:
-    or a, a
-    sbc hl, hl
-    ld (ix - 3), hl
-    ld hl, (ix + 15)
-    ld bc, ti.lcdWidth * 2
-    add hl, bc
-    ld (ix + 15), hl
-    ld (ix + 18), hl
-    dec (ix - 9)
-    jr nz, .skipReload
-    ld hl, (ix)
-    ld (ix - 9), hl
-    ld de, (ix - 6)
-    inc de
-    ld hl, (ix + 6)
-    or a, a
-    sbc hl, de
-    jp z, return
-    ld (ix - 6), de
-    ret
-
-.skipReload:
-    ld hl, (ix + 9)
-    add hl, hl
-    ex de, hl
-    ld hl, (ix + 12)
-    or a, a
-    sbc hl, de
-    ld (ix + 12), hl
-    ret
-
-.setPixel: ; color = a
+.skipPixel:
     ld hl, (ix - 3)
     inc hl
     ld (ix - 3), hl
     ld b, (ix + 3)
 
-.loopXScale:
-    ld de, (ix + 18)
-    ld hl, -ti.vRamEnd
-    add hl, de
-    ret c
-    ex de, hl
-    cp a, (ix + 21)
-    jr z, .skipPixel
-    ld (hl), a
-    inc hl
-    ld (hl), a
-    inc hl
-    ld (ix + 18), hl
-    djnz .loopXScale
-    ret
-
-.skipPixel:
+.skipLoop:
+    ld hl, (ix + 18)
     inc hl
     inc hl
     ld (ix + 18), hl
-    djnz .loopXScale
-    ret
+    djnz .skipLoop
+    jr .pixelDrawn
 
-scrollScreen: ; det(58)
+shiftScreen: ; det(58)
     ld a, (noArgs)
     cp a, 3
-    jp c, PrgmErr.INVALA
-    ld a, (var1)
-    or a, a
-    jr z, .scrollUp
-    dec a
-    jr z, .scrollDown
-    dec a
-    jr z, .scrollLeft
-    dec a
-    jp z, .scrollRight
+    jr z, .setDefaults
+    cp a, 7
+    jr nc, .checkDirection
     jp PrgmErr.INVALA
 
-.scrollUp:
-    ld a, (var2)
+.setDefaults:
     or a, a
-    jp z, return
-    cp a, ti.lcdHeight
+    sbc hl, hl
+    ld (var3), hl
+    ld (var4), hl
+    ld hl, ti.lcdWidth
+    ld (var5), hl
+    ld hl, ti.lcdHeight
+    ld (var6), hl
+
+.checkDirection:
+    ld ix, var3 ; pixelAmount (var2) = ix - 3, XOrigin = ix + 0, YOrigin = ix + 3, width = ix + 6, height = ix + 9
+    call .checkBounds
+    ld a, (ix + 3)
+    call _vramAddrShiftScrn
+    ld a, (ix - 6)
+    or a, a ; 0
+    jr z, .shiftUp
+    dec a ; 1
+    jr z, .shiftDown
+    dec a ;  2
+    jp z, .shiftLeft
+    dec a ; 3
+    jr z, .shiftRight
+    jp PrgmErr.INVALA
+
+.shiftUp:
+    push hl
+    ld hl, (ix - 3)
+    ld de, (ix + 9)
+    or a, a
+    sbc hl, de
     jp nc, return
-    ld hl, ti.vRam
-    ld de, ti.lcdWidth * 2
-    ld b, a
-
-.loopCoordUp:
-    add hl, de
-    djnz .loopCoordUp
+    ld a, (ix - 3)
+    add a, (ix + 3)
+    call _vramAddrShiftScrn
     push hl
-    ld de, ti.vRamEnd
-    ex de, hl
-    or a, a
-    sbc hl, de
+    ld hl, (ix + 6)
+    add hl, hl
     push hl
     pop bc
+    ld a, (ix + 9)
+    sub a, (ix - 3)
     pop hl
-    ld de, ti.vRam
-    ldir
-    jp return
+    pop de
+    jp .shiftLDIR
 
-.scrollDown:
-    ld a, (var2)
-    or a, a
-    jp z, return
-    ld b, a
-    ld a, ti.lcdHeight
-    sub a, b
-    jp c, return
-    ld hl, ti.vRam
-    ld de, ti.lcdWidth * 2
-    or a, a
-    jp z, return
-    ld b, a
-
-.loopCoordDown:
-    add hl, de
-    djnz .loopCoordDown
-    push hl
-    ld de, ti.vRam
-    or a, a
-    sbc hl, de
-    push hl
-    pop bc
-    pop hl
-    ld de, ti.vRamEnd
-    lddr
-    jp return
-
-.scrollLeft:
-    ld de, (var2)
-    call ti.ChkDEIs0
-    jp z, return
-    ld hl, ti.lcdWidth
-    or a, a
-    sbc hl, de
-    jp c, return
-    jp z, return
-    add hl, hl
-    push hl ; bc for ldir, ix + 12
-    ex de, hl
-    add hl, hl
-    ld de, ti.vRam
-    add hl, de
-    push hl ; hl for ldir, ix + 9
-    ld hl, ti.lcdWidth * 2
-    push hl ; adder for loop, ix + 6
-    push de ; de for ldir, ix + 3
-    ld c, ti.lcdHeight
-    push bc ; loop counter, ix + 0
-    ld ix, 0
-    add ix, sp
-
-.scrollLoopLeft:
-    ld de, (ix + 3)
-    ld hl, (ix + 9)
-    ld bc, (ix + 12)
-    ldir
-    ld hl, (ix + 3)
+.shiftRight:
+    ld hl, (ix - 3)
     ld de, (ix + 6)
-    add hl, de
-    ld (ix + 3), hl
-    ld hl, (ix + 9)
-    add hl, de
-    ld (ix + 9), hl
-    dec (ix)
-    jr nz, .scrollLoopLeft
-    jp return
-
-.scrollRight:
-    ld de, (var2)
-    call ti.ChkDEIs0
-    jp z, return
-    ld hl, ti.lcdWidth
     or a, a
     sbc hl, de
-    jp c, return
-    jp z, return
-    add hl, hl
-    push hl ; bc for lddr, ix + 12
-    ld de, ti.vRam
+    jp nc, return
+    ld a, (ix + 3)
+    add a, (ix + 9)
+    dec a
+    ld de, (ix)
+    ld hl, (ix + 6)
     add hl, de
+    ld (ix), hl
+    call _vramAddrShiftScrn
     dec hl
-    push hl ; hl for lddr, ix + 9
-    ld hl, ti.lcdWidth * 2
-    push hl ; adder for loop, ix + 6
-    ld de, ti.vRam + (ti.lcdWidth * 2) - 1
-    push de ; de for lddr, ix + 3
-    ld c, ti.lcdHeight
-    push bc ; loop counter, ix + 0
-    ld ix, 0
-    add ix, sp
+    push hl
+    ld hl, (ix - 3)
+    add hl, hl
+    ex de, hl
+    pop hl
+    push hl
+    or a, a
+    sbc hl, de
+    push hl
+    ld hl, (ix + 6)
+    ld de, (ix - 3)
+    or a, a
+    sbc hl, de
+    add hl, hl
+    push hl
+    pop bc
+    pop hl
+    pop de
+    ld a, (ix + 9)
+    jr .shiftLDDR
 
-.scrollLoopRight:
-    ld de, (ix + 3)
-    ld hl, (ix + 9)
-    ld bc, (ix + 12)
+.shiftDown:
+    ld hl, (ix - 3)
+    ld de, (ix + 9)
+    or a, a
+    sbc hl, de
+    jp nc, return
+    ld de, (ix)
+    ld hl, (ix + 6)
+    add hl, de
+    ld (ix), hl
+    ld a, (ix + 3)
+    add a, (ix + 9)
+    dec a
+    push af
+    call _vramAddrShiftScrn
+    dec hl
+    pop af
+    push hl
+    sub a, (ix - 3)
+    call _vramAddrShiftScrn
+    dec hl
+    pop de
+    push hl
+    ld hl, (ix + 6)
+    add hl, hl
+    push hl
+    pop bc
+    ld a, (ix + 9)
+    sub a, (ix - 3)
+    pop hl
+    jr .shiftLDDR
+
+.shiftLeft:
+    push hl
+    ld hl, (ix - 3)
+    ld de, (ix + 6)
+    or a, a
+    sbc hl, de
+    jr nc, .return
+    ld hl, (ix - 3)
+    ex de, hl
+    or a, a
+    sbc hl, de
+    add hl, hl
+    push hl
+    pop bc
+    ld hl, (ix - 3)
+    add hl, hl
+    pop de
+    add hl, de
+    ld a, (ix + 9)
+
+.shiftLDIR: ; for shifting up and left
+    push bc
+    push hl
+    push de
+    ldir
+    pop hl
+    pop de
+    ld bc, ti.lcdWidth * 2
+    add hl, bc
+    ex de, hl
+    add hl, bc
+    pop bc
+    dec a
+    jr nz, .shiftLDIR
+    jr .return
+
+.shiftLDDR: ; for shifting down and right
+    push bc
+    push hl
+    push de
     lddr
-    ld hl, (ix + 3)
+    pop hl
+    pop de
+    ld bc, ti.lcdWidth * 2
+    or a, a
+    sbc hl, bc
+    ex de, hl
+    or a, a
+    sbc hl, bc
+    pop bc
+    dec a
+    jr nz, .shiftLDDR
+
+.return:
+    jp return
+
+.checkBounds:
+    ld hl, (ix - 3)
+    ld a, h
+    or a, l
+    jr z, .return
+    ld de, (ix)
+    ld hl, -ti.lcdWidth
+    add hl, de
+    jr c, .return
+    ld de, (ix + 3)
+    ld hl, -ti.lcdHeight
+    add hl, de
+    jr c, .return
+    ld hl, (ix)
     ld de, (ix + 6)
     add hl, de
-    ld (ix + 3), hl
-    ld hl, (ix + 9)
+    ex de, hl
+    ld hl, -ti.lcdWidth
     add hl, de
+    jr nc, .goodXBounds
+    ex de, hl
+    ld hl, (ix + 6)
+    or a, a
+    sbc hl, de
+    ld (ix + 6), hl
+
+.goodXBounds:
+    ld hl, (ix + 3)
+    ld de, (ix + 9)
+    add hl, de
+    ex de, hl
+    ld hl, -ti.lcdHeight
+    add hl, de
+    jr nc, .goodYBounds
+    ex de, hl
+    ld hl, (ix + 9)
+    or a, a
+    sbc hl, de
     ld (ix + 9), hl
-    dec (ix)
-    jr nz, .scrollLoopRight
-    jp return
+
+.goodYBounds:
+    ld hl, (ix + 6)
+    ld a, h
+    or a, l
+    jr z, .return
+    ld hl, (ix + 9)
+    ld a, h
+    or a, l
+    jr z, .return
+    ret
 
 rgbto565: ; det(59)
     ld a, (noArgs)
@@ -1040,7 +1065,8 @@ rgbto565: ; det(59)
     djnz .leftShiftLoop
     ld a, (var2)
     and a, $FC
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld l, a
     ld b, 3
     add hl, hl
@@ -1057,21 +1083,9 @@ rgbto565: ; det(59)
     or a, d
     ld h, a
     push hl
-    push hl
-    ld hl, Theta
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    call nc, ti.DelVar
-    call ti.CreateReal
-    pop hl
     ld l, h
     ld h, 0
-    push de
-    call ti.SetxxxxOP2
-    pop de
-    ld hl, ti.OP2
-    ld bc, 9
-    ldir
+    call _storeThetaHL
     pop hl
     ld h, 0
     call ti.SetxxxxOP2
@@ -1086,11 +1100,7 @@ drawRect: ; det(60)
     cp a, 6
     jp c, PrgmErr.INVALA
     ld a, (var1)
-    cp a, 25
-    jp nc, PrgmErr.INVALA
-    cp a, 10
-    jp c, PrgmErr.INVALA
-    sub a, 9
+    call _checkValidOSColor
     call ti.GetColorValue
     ld.sis (ti.drawFGColor and $FFFF), de
     ld hl, (var2)
@@ -1102,11 +1112,10 @@ drawRect: ; det(60)
     ld a, (var5)
     ld c, a
     ld a, (var3)
+    ld b, a
     add a, c
     dec a
     ld c, a
-    ld a, (var3)
-    ld b, a
     jr .drawRect
 
 .sevenArgs:
@@ -1123,11 +1132,10 @@ drawRect: ; det(60)
     ld a, (var6)
     ld c, a
     ld a, (var4)
+    ld b, a
     add a, c
     dec a
     ld c, a
-    ld a, (var4)
-    ld b, a
 
 .drawRect:
     call ti.DrawRectBorder
@@ -1140,31 +1148,28 @@ drawCircle: ; det(61)
     cp a, 5
     jp c, PrgmErr.INVALA
     ld a, (var1)
-    cp a, 25
-    jp nc, PrgmErr.INVALA
-    cp a, 10
-    jp c, PrgmErr.INVALA
-    sub a, 9
+    call _checkValidOSColor
     call ti.GetColorValue
     push de
-    ld de, (var2)
-    ld hl, (var4)
-    ld bc, (var3)
+    ld ix, var2
     jr .drawCircle
 
 .sixArgs:
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, (var1)
     ld l, a
     ld a, (var2)
     ld h, a
     push hl
-    ld de, (var3)
-    ld hl, (var5)
-    ld bc, (var4)
+    ld ix, var3
 
 .drawCircle: ; color = ix + 9
-    call ti.ChkHLIs0
+    ld de, (ix)
+    ld hl, (ix + 6)
+    ld bc, (ix + 3)
+    ld a, h
+    or a, l
     jp z, return
     push de ; x center, ix + 6
     push bc ; y center, ix + 3
@@ -1405,31 +1410,28 @@ fillCircle: ; det(62)
     cp a, 5
     jp c, PrgmErr.INVALA
     ld a, (var1)
-    cp a, 25
-    jp nc, PrgmErr.INVALA
-    cp a, 10
-    jp c, PrgmErr.INVALA
-    sub a, 9
+    call _checkValidOSColor
     call ti.GetColorValue
     push de
-    ld de, (var2)
-    ld hl, (var4)
-    ld bc, (var3)
+    ld ix, var2
     jr .drawCircle
 
 .sixArgs:
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, (var1)
     ld l, a
     ld a, (var2)
     ld h, a
     push hl
-    ld de, (var3)
-    ld hl, (var5)
-    ld bc, (var4)
+    ld ix, var3
 
 .drawCircle: ; color = ix + 9
-    call ti.ChkHLIs0
+    ld de, (ix)
+    ld hl, (ix + 6)
+    ld bc, (ix + 3)
+    ld a, h
+    or a, l
     jp z, return
     push de ; x center, ix + 6
     push bc ; y center, ix + 3
@@ -1664,11 +1666,7 @@ drawArc: ; det(63)
     cp a, 7
     jp c, PrgmErr.INVALA
     ld a, (var1)
-    cp a, 25
-    jp nc, PrgmErr.INVALA
-    cp a, 10
-    jp c, PrgmErr.INVALA
-    sub a, 9
+    call _checkValidOSColor
     call ti.GetColorValue
     push de
     ld hl, var6 + 2 ; shift the arguments over
@@ -1929,7 +1927,8 @@ drawArc: ; det(63)
     ld de, (var3)
     ld hl, (var5)
     ld bc, (var4)
-    call ti.ChkHLIs0
+    ld a, h
+    or a, l
     jp z, return
     push de ; x center, ix + 6
     push bc ; y center, ix + 3
@@ -2252,11 +2251,7 @@ dispTransText: ; det(64)
     cp a, 5
     jp c, PrgmErr.INVALA
     ld a, (var2)
-    cp a, 25
-    jp nc, PrgmErr.INVALA
-    cp a, 10
-    jp c, PrgmErr.INVALA
-    sub a, 9
+    call _checkValidOSColor
     call ti.GetColorValue
     ld.sis (ti.drawFGColor and $FFFF), de
     ld hl, (var4)
@@ -2267,7 +2262,8 @@ dispTransText: ; det(64)
     jr .drawText
 
 .sixArgs:
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, (var2)
     ld l, a
     ld a, (var3)
@@ -2283,11 +2279,7 @@ dispTransText: ; det(64)
     ld hl, (var1)
     call .loadFont
     ld hl, Str9
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
+    call _findString
     ex de, hl
     ld bc, 0
     ld c, (hl)
@@ -2306,7 +2298,7 @@ dispTransText: ; det(64)
     jr nz, .storeText
     xor a, a
     ld (de), a
-    bit randFlag, (iy + ti.asm_Flag2)
+    bit largeFont, (iy + celticFlags1)
     call z, _correctCoords
     ld hl, execHexLoc
     push hl
@@ -2314,12 +2306,12 @@ dispTransText: ; det(64)
     jp return
 
 .loadFont:
-    res randFlag, (iy + ti.asm_Flag2)
+    res largeFont, (iy + celticFlags1)
     ld a, h
     or a, l
     jr z, .setFont
     ld hl, 1
-    set randFlag, (iy + ti.asm_Flag2)
+    set largeFont, (iy + celticFlags1)
 
 .setFont:
     push hl
@@ -2369,4 +2361,247 @@ chkRect: ; det(65)
 .storeAns:
     call ti.SetxxOP1
     call ti.StoAns
+    jp return
+
+putChar: ; det(66)
+    ld a, (noArgs)
+    cp a, 9
+    jr z, .nineArgs
+    cp a, 7
+    jp c, PrgmErr.INVALA
+    ld a, (var3)
+    call _checkValidOSColor
+    call ti.GetColorValue
+    ld.sis (ti.drawBGColor and $FFFF), de
+    ld a, (var2)
+    call _checkValidOSColor
+    call ti.GetColorValue
+    ld.sis (ti.drawFGColor and $FFFF), de
+    ld hl, (var4)
+    ld (ti.penCol), hl
+    ld a, (var5)
+    ld (ti.penRow), a
+    ld a, (var6)
+    push af
+    jr .putChar
+
+.nineArgs:
+    or a, a
+    sbc hl, hl
+    ld a, (var4)
+    ld l, a
+    ld a, (var5)
+    ld h, a
+    ld.sis (ti.drawBGColor and $FFFF), hl
+    ld a, (var2)
+    ld l, a
+    ld a, (var3)
+    ld h, a
+    ld.sis (ti.drawFGColor and $FFFF), hl
+    ld hl, (var6)
+    ld (ti.penCol), hl
+    ld a, (var7)
+    ld (ti.penRow), a
+    ld a, (var8)
+    push af
+
+.putChar:
+    ld a, (var1)
+    or a, a
+    jr z, $ + 6
+    set ti.fracDrawLFont, (iy + ti.fontFlags)
+    pop af
+    call ti.VPutMap
+    res ti.fracDrawLFont, (iy + ti.fontFlags)
+    or a, a
+    sbc hl, hl
+    ld.sis (ti.drawFGColor and $FFFF), hl
+    dec hl
+    ld.sis (ti.drawBGColor and $FFFF), hl
+    jp return
+
+putTransChar: ; det(67)
+    ld a, (noArgs)
+    cp a, 7
+    jr z, .sevenArgs
+    cp a, 6
+    jp c, PrgmErr.INVALA
+    ld a, (var2)
+    call _checkValidOSColor
+    call ti.GetColorValue
+    ld.sis (ti.drawFGColor and $FFFF), de
+    ld hl, (var4)
+    push hl
+    ld hl, (var3)
+    dec hl
+    push hl
+    ld a, (var5)
+    push af
+    jr .putChar
+
+.sevenArgs:
+    or a, a
+    sbc hl, hl
+    ld a, (var2)
+    ld l, a
+    ld a, (var3)
+    ld h, a
+    ld.sis (ti.drawFGColor and $FFFF), hl
+    ld hl, (var5)
+    push hl
+    ld hl, (var4)
+    dec hl
+    push hl
+    ld a, (var6)
+    push af
+
+.putChar:
+    ld hl, (var1)
+    call dispTransText.loadFont
+    pop af
+    ld hl, execHexLoc
+    ld (hl), a
+    inc hl
+    ld (hl), 0
+    bit largeFont, (iy + celticFlags1)
+    call z, _correctCoords
+    ld hl, execHexLoc
+    push hl
+    call ti.os.FontDrawTransText
+    jp return
+
+horizLine: ; det(68)
+    ld a, (noArgs)
+    cp a, 6
+    jr z, .sixArgs
+    ld a, (var1)
+    call _checkValidOSColor
+    call ti.GetColorValue
+    push de
+    ld ix, var2
+    jr .drawHorizLine
+
+.sixArgs:
+    or a, a
+    sbc hl, hl
+    ld a, (var1)
+    ld l, a
+    ld a, (var2)
+    ld h, a
+    push hl
+    ld ix, var3
+
+.drawHorizLine: ; x, y, l : 0, +3, +6
+    ld hl, (ix + 6)
+    ld a, h
+    or a, l
+    jp z, return
+    ld de, (ix + 3)
+    ld hl, -ti.lcdHeight
+    add hl, de
+    jp c, return
+    ld de, (ix)
+    ld hl, -ti.lcdWidth
+    add hl, de
+    jp c, return
+    ld hl, (ix + 6)
+    add hl, de
+    ex de, hl
+    ld hl, -ti.lcdWidth
+    add hl, de
+    jr nc, .startHorizLine
+    ex de, hl
+    ld hl, (ix + 6)
+    or a, a
+    sbc hl, de
+    ld (ix + 6), hl
+
+.startHorizLine:
+    ld a, (ix + 3)
+    call _vramAddrShiftScrn ; use this call to get the VRAM address
+    push hl
+    ld hl, (ix + 6)
+    add hl, hl
+    push hl
+    pop bc
+    pop hl
+    pop de
+    ld (hl), e
+    inc hl
+    ld (hl), d
+    dec bc
+    dec bc
+    ld a, b
+    or a, c
+    jr z, .return
+    push hl
+    pop de
+    dec hl
+    inc de
+    ldir
+
+.return:
+    jp return
+
+vertLine: ; det(69)
+    ld a, (noArgs)
+    cp a, 6
+    jr z, .sixArgs
+    ld a, (var1)
+    call _checkValidOSColor
+    call ti.GetColorValue
+    push de
+    ld ix, var2
+    jr .drawVertLine
+
+.sixArgs:
+    or a, a
+    sbc hl, hl
+    ld a, (var1)
+    ld l, a
+    ld a, (var2)
+    ld h, a
+    push hl
+    ld ix, var3
+
+.drawVertLine: ; x, y, l : 0, +3, +6
+    ld hl, (ix + 6)
+    ld a, h
+    or a, l
+    jp z, return
+    ld de, (ix)
+    ld hl, -ti.lcdWidth
+    add hl, de
+    jp c, return
+    ld de, (ix + 3)
+    ld hl, -ti.lcdHeight
+    add hl, de
+    jp c, return
+    ld hl, (ix + 6)
+    add hl, de
+    ex de, hl
+    ld hl, -ti.lcdHeight
+    add hl, de
+    jr nc, .startVertLine
+    ex de, hl
+    ld hl, (ix + 6)
+    or a, a
+    sbc hl, de
+    ld (ix + 6), hl
+
+.startVertLine:
+    ld a, (ix + 3)
+    call _vramAddrShiftScrn ; use this call to get the VRAM address
+    ld a, (ix + 6)
+    ld bc, ti.lcdWidth * 2
+    pop de
+
+.vertLineLoop:
+    ld (hl), e
+    inc hl
+    ld (hl), d
+    dec hl
+    add hl, bc
+    dec a
+    jr nz, .vertLineLoop
     jp return

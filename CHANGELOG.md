@@ -2,6 +2,62 @@
 
 All notable changes to the Celtic CE library will be documented in this file.
 
+## [1.0.0-rc.1] - yyyy-mm-dd
+
+### Added
+
+- Graphics Functions:
+    - PutChar
+    - PutTransChar
+    - HorizLine
+    - VertLine
+- OS Utility Functions:
+    - RunAsmPrgm
+    - LineToOffset
+    - OffsetToLine
+    - GetKey
+    - TurnCalcOff
+    - BackupString
+    - RestoreString
+    - BackupReal
+    - RestoreReal
+    - SetParseLine
+    - SwapFileType
+    - PrgmCleanUp
+- AINSTALL program that can be called to install Celtic's hooks outside of the CelticCE app
+- Hook which detects <kbd>2nd</kbd> + <kbd>enter</kbd> in the TI-OS editor and displays line number and file size information on the status bar
+- Created COMMANDS.md which contains a simplified list of all commands in CelticCE
+
+### Changed
+- Graphics Functions:
+    - ScrollScreen command renamed to ShiftScreen
+    - ShiftScreen can now shift a user-specified region of the screen
+- OS Utility Functions:
+    - GetMode command can now also check the following modes:
+        - DetectAsymptotes
+        - StatWizards
+        - MixedFractions
+        - AnswersAuto
+- Celtic III Functions:
+    - ErrorHandle now has an option to return the offset in the program at which the error occurred
+- Major optimizations to core functionalities, including both size and speed improvements
+- Replaced all arbitrary numbers with equates for readability
+- Changed flag equates for better readability
+- UI overhaul to the CelticCE app
+- Updated installer to display "Installing app..." and not display the run indicator so it doesn't appear frozen when installing the app
+
+### Fixed
+
+- Celtic 2 CSE Functions:
+    - ReadLine correctly gets the data pointer of the program if it is hidden
+    - ExecArcPrgm correctly gets the data pointer of the program if it is hidden
+- OS Utility Functions:
+    - LockPrgm now re-archives hidden programs correctly
+    - HidePrgm now re-archives hidden programs correctly
+- Celtic III Functions:
+    - ErrorHandle now runs unsquished asm programs in the RAM
+- Blocked user access to system programs (AKA `prgm!` and `prgm#`)
+
 ## [1.3.0-beta] - 2023-06-01
 
 ### Added
@@ -21,7 +77,7 @@ All notable changes to the Celtic CE library will be documented in this file.
     - ChkRect
 - OS Utility Functions:
     - SearchFile
-    - CheckGC 
+    - CheckGC
 - Celtic III Functions:
     - ErrorHandle
     - StringRead
@@ -45,7 +101,7 @@ All notable changes to the Celtic CE library will be documented in this file.
     - FindProg command now returns a memory error if there isn't enough RAM to store the return string
 - Split up files
 - Better formatting consistency in CHANGELOG.md
-- Allocated an extra 3 bytes for a 9th argument to be passed in Celtic instructions
+- Allocated an extra 3 bytes for a 9th argument to be passed in Celtic commands
 - Celtic now uses its own ConvOP1 routine (borrowed from Doors CS 7 and modified for eZ80) rather than the TI-OS one
 - Some arbitrary numbers in the source code were changed to equates for better readability
 - X and Y coordinates on the screen are now calculated in VRAM using a routine provided by [calc84maniac](https://github.com/calc84maniac)

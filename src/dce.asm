@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: June 1, 2023
+; Last Built: July 24, 2023
 ;
 ;----------------------------------------
 
@@ -15,22 +15,13 @@ dispText: ; det(13)
     cp a, 6
     jp c, PrgmErr.INVALA
     ld a, (var3)
-    cp a, 25
-    jp nc, PrgmErr.INVALA
-    cp a, 10
-    jp c, PrgmErr.INVALA
-    sub a, 9
+    call _checkValidOSColor
     call ti.GetColorValue
     ld.sis (ti.drawBGColor and $FFFF), de
     ld a, (var2)
-    cp a, 25
-    jp nc, PrgmErr.INVALA
-    cp a, 10
-    jp c, PrgmErr.INVALA
-    sub a, 9
+    call _checkValidOSColor
     call ti.GetColorValue
     ld.sis (ti.drawFGColor and $FFFF), de
-    ; store x, y values to draw text
     ld hl, (var4)
     ld (ti.penCol), hl
     ld a, (var5)
@@ -38,19 +29,18 @@ dispText: ; det(13)
     jr .drawText
 
 .eightArgs:
-    ld hl, 0
-    ld a, (var4) ; low byte color
+    or a, a
+    sbc hl, hl
+    ld a, (var4)
     ld l, a
-    ld a, (var5) ; high byte of color
+    ld a, (var5)
     ld h, a
     ld.sis (ti.drawBGColor and $FFFF), hl
-    ; repeat process
     ld a, (var2)
     ld l, a
     ld a, (var3)
     ld h, a
     ld.sis (ti.drawFGColor and $FFFF), hl
-    ; store x, y values to draw text
     ld hl, (var6)
     ld (ti.penCol), hl
     ld a, (var7)
@@ -59,13 +49,10 @@ dispText: ; det(13)
 .drawText:
     ld a, (var1)
     or a, a
-    call nz, .setLargeFont
+    jr z, $ + 6
+    set ti.fracDrawLFont, (iy + ti.fontFlags)
     ld hl, Str9
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    jp c, PrgmErr.SNTFN
-    call ti.ChkInRam
-    jp nz, PrgmErr.SFLASH
+    call _findString
     ex de, hl
     ld bc, 0
     ld c, (hl)
@@ -88,15 +75,12 @@ dispText: ; det(13)
     call ti.VPutS
     res ti.fracDrawLFont, (iy + ti.fontFlags) ; in case the flag was set earlier, just always reset it
     ; reset text color
-    ld hl, $FFFF
-    ld.sis (ti.drawBGColor and $FFFF), hl
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld.sis (ti.drawFGColor and $FFFF), hl
+    dec hl
+    ld.sis (ti.drawBGColor and $FFFF), hl
     jp return
-
-.setLargeFont:
-    set ti.fracDrawLFont, (iy + ti.fontFlags)
-    ret
 
 execHex: ; det(14)
     call ti.AnsName
@@ -105,7 +89,7 @@ execHex: ; det(14)
     call ti.RclAns
     pop hl
     ld a, (ti.OP1)
-    cp a, $04
+    cp a, ti.StrngObj
     jp nz, PrgmErr.SNTST
     ld bc, 0
     ld c, (hl)
@@ -113,7 +97,7 @@ execHex: ; det(14)
     ld b, (hl)
     inc hl
     push hl
-    ld hl, $2000
+    ld hl, $2000 ; max allowed length of hex code
     or a, a
     sbc hl, bc
     pop hl
@@ -148,7 +132,7 @@ execHex: ; det(14)
     or a, c
     jr nz, .loop
     pop hl
-    ld (hl), $C9
+    ld (hl), $C9 ; ret instruction
     call execHexLoc
     jp return
 
@@ -159,35 +143,30 @@ fillRect: ; det(15)
     cp a, 6
     jp c, PrgmErr.INVALA
     ld a, (var1)
-    cp a, 25
-    jp nc, PrgmErr.INVALA
     or a, a
     jr z, .invertRect
-    cp a, 10
-    jp c, PrgmErr.INVALA
-    sub a, 9
+    call _checkValidOSColor
     call ti.GetColorValue
     ld.sis (ti.fillRectColor and $FFFF), de
     ld ix, var2
     jr .fillRect
 
 .invertRect:
-    ld hl, (var2) ; x coord
-    ld de, (var4) ; width value
+    ld hl, (var2)
+    ld de, (var4)
     ; calculate bottom right x coord
     add hl, de
     dec hl
     ex de, hl
     ld hl, (var2)
-    ld a, (var5) ; height value
+    ld a, (var5)
     ; calculate bottom right y coord
     ld c, a
     ld a, (var3)
+    ld b, a
     add a, c
     dec a
     ld c, a
-    ld a, (var3)
-    ld b, a
     call ti.InvertRect
     jp return
 
@@ -200,10 +179,12 @@ fillRect: ; det(15)
 
 .fillRect: ; x, y, w, h : 0, +3, +6, +9
     ld hl, (ix + 6)
-    call ti.ChkHLIs0
+    ld a, h
+    or a, l
     jp z, return
     ld hl, (ix + 9)
-    call ti.ChkHLIs0
+    ld a, h
+    or a, l
     jp z, return
     ld de, (ix)
     ld hl, -ti.lcdWidth
@@ -284,37 +265,3 @@ fillRect: ; det(15)
     push bc
     ld bc, (ix + 6)
     jr .fillLoop
-
-fillScreen: ; det(16)
-    ld a, (noArgs)
-    dec a
-    jp z, PrgmErr.INVALA
-    dec a
-    jr z, .osColor
-    ld a, (var1)
-    ld e, a
-    ld a, (var2)
-    ld d, a
-
-.fillScrn:
-    ld hl, ti.vRam
-    ld (hl), e
-    inc hl
-    ld (hl), d
-    push hl
-    pop de
-    dec hl
-    inc de
-    ld bc, ((ti.lcdWidth * ti.lcdHeight) * 2) - 2
-    ldir
-    jp return
-
-.osColor:
-    ld a, (var1)
-    cp a, 10
-    jp c, PrgmErr.INVALA
-    cp a, 25
-    jp nc, PrgmErr.INVALA
-    sub a, 9
-    call ti.GetColorValue
-    jr .fillScrn

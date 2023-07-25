@@ -36,11 +36,11 @@ ConvOP1:
     ld hl, ti.OP1
     di
     ld de, 0
-    res randFlag, (iy + ti.asm_Flag2)
+    res negative, (iy + celticFlags1)
     ld a, (hl)
     bit 7, a
     jr z, $ + 6
-    set randFlag, (iy + ti.asm_Flag2)
+    set negative, (iy + celticFlags1)
     res 7, a
     or a, a
     ret nz ; quit if this is not a real-type variable
@@ -63,7 +63,8 @@ ConvOP1:
     ld sp, ConvOp1CT
     add hl, sp
     ld sp, hl
-    ld hl, 0
+    or a, a
+    sbc hl, hl
     ld a, b
 
 ConvOp1CL:
@@ -96,7 +97,7 @@ ConvOp1CL:
     jr nz, ConvOp1CL
 
 ConvOp1CE:
-    bit randFlag, (iy + ti.asm_Flag2)
+    bit negative, (iy + celticFlags1)
     jr z, $ + 9
     ld a, h
     cpl 

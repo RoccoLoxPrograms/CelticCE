@@ -4,74 +4,26 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: June 1, 2023
+; Last Built: July 24, 2023
 ;
 ;----------------------------------------
 
-celticInstalledMsg:
-    db "Celtic CE installation", 0
-    db "successful.", 0
-    db "Press any key.", 0
+; string data
 
-celticUninstalledMsg:
-    db "Celtic CE has been", 0
-    db "uninstalled.", 0
-    db "Press any key.", 0
+relocate hookStrings, ti.cursorImage + 32
+programLineText:
+    db "PROGRAM  LINE:  "
 
-installScrnLine1:
-    db "--------Celtic CE--------", 0
+numberText:
+    db "0000"
+    db 10 dup ' '
 
-installScrnOption1:
-    db "1: Install Celtic", 0
+sizeStr:
+    db "SIZE:  "
 
-installScrnOption1Alt:
-    db "1: Uninstall Celtic", 0
-
-installScrnOption2:
-    db "2: About", 0
-
-installScrnOption3:
-    db "3: Quit", 0
-
-aboutScrnLine1:
-    db "Celtic CE", 0
-
-aboutScrnLine2:
-    db "By RoccoLox Programs", 0
-
-aboutScrnLine3:
-    db "and TIny_Hacker", 0
-
-versionString:
-    db "Version BETA 1.3", 0
-
-copyright:
-    db "(c) 2022-2023", 0
-
-creditsStr1:    db "Thank you to:", 0
-creditsStr2:    db "Iambian", 0
-creditsStr3:    db "PT_", 0
-creditsStr4:    db "Kerm Martian", 0
-creditsStr5:    db "MateoC", 0
-creditsStr6:    db "jacobly", 0
-creditsStr7:    db "NoahK", 0
-creditsStr8:    db "Oxiti8", 0
-creditsStr9:    db "DJ_O", 0
-
-easterEgg:
-    db "EASTER", ti.tSpace, "EGG", ti.tFact
-easterEggLen := $ - easterEgg
-    db 0
-
-if flag_prerelease
-
-warningMsg:
-    db "WARNING!", 0
-    db "This program is still in", 0
-    db "development. Please", 0
-    db "proceed with caution.", 0
-
-end if
+sizeNumText:
+    db "00000", 0
+end relocate
 
 celticCommands:
 C00:    db "ReadLine() : Str0, Ans : Str9 or [", 0
@@ -119,7 +71,7 @@ C41:    db "HexToBin() : Ans : Str9", 0
 C42:    db "BinToHex() : Ans : Str9", 0
 C43:    db "GraphCopy()", 0
 C44:    db "Edit1Byte(STR_NUM,START,BYTE)", 0
-C45:    db "ErrorHandle() : Ans : [", 0
+C45:    db "ErrorHandle(GET_OFFSET) : Ans : [", 0
 C46:    db "StringRead(STR#,START,BYTES) : NA : Str9", 0
 C47:    db "HexToDec() : Ans : [", 0
 C48:    db "DecToHex(NUMBER,OVERRIDE) : NA : Str9", 0
@@ -132,7 +84,7 @@ C54:    db "GetStringWidth(LF) : Ans : [", 0
 C55:    db "TransSprite(X,Y,WTH,HT,T_COLOR,STR#)", 0
 C56:    db "ScaleSprite(X,Y,WTH,HT,SC_X,SC_Y,STR#)", 0
 C57:    db "ScaleTSprite(X,Y,W,H,SC_X,SC_Y,TC,STR#)", 0
-C58:    db "ScrollScreen(DIRECTION,AMOUNT)", 0
+C58:    db "ShiftScreen(DIR,AMOUNT,X,Y,WTH,HT)", 0
 C59:    db "RGBto565(R,G,B) : NA : Ans, [", 0
 C60:    db "DrawRect(COLOR_L,COLOR_H,X,Y,WTH,HT)", 0
 C61:    db "DrawCircle(COLOR_L,COLOR_H,X,Y,RADIUS)", 0
@@ -140,6 +92,22 @@ C62:    db "FillCircle(COLOR_L,COLOR_H,X,Y,RADIUS)", 0
 C63:    db "DrawArc(CLR_L,CLR_H,X,Y,R,STRT", $D4,",END", $D4,")", 0
 C64:    db "DispTransText(LF,FG_LO,FG_HI,X,Y) : Str9", 0
 C65:    db "ChkRect(X0,Y0,W0,H0,X1,Y1,W1,H1) : NA : Ans", 0
+C66:    db "PutChar(LF,F_L,F_H,B_L,B_H,X,Y,CHAR#)", 0
+C67:    db "PutTransChar(LF,FG_LO,FG_HI,X,Y,CHAR#)", 0
+C68:    db "HorizLine(COLOR_L,COLOR_H,X,Y,LENGTH)", 0
+C69:    db "VertLine(COLOR_L,COLOR_H,X,Y,LENGTH)", 0
+C70:    db "RunAsmPrgm() : Ans : [", 0
+C71:    db "LineToOffset(LINE#) : Str0 : [", 0
+C72:    db "OffsetToLine(OFFSET) : Str0 : [", 0
+C73:    db "GetKey() : NA : Ans", 0
+C74:    db "TurnCalcOff()", 0
+C75:    db "BackupString(STR_NUM)", 0
+C76:    db "RestoreString(STR_NUM) : NA : Str", $01, 0
+C77:    db "BackupReal(VAR_NUM)", 0
+C78:    db "RestoreReal(VAR_NUM)", 0
+C79:    db "SetParseLine(LINE#) : NA : [", 0
+C80:    db "SwapFileType() : Str0", 0
+C81:    db "PrgmCleanUp()", 0
 
 ; additional rodata
 
@@ -148,7 +116,26 @@ celticCommandsPtrs:
     dl C16, C17, C18, C19, C20, C21, C22, C23, C24, C25, C26, C27, C28, C29, C30, C31
     dl C32, C33, C34, C35, C36, C37, C38, C39, C40, C41, C42, C43, C44, C45, C46, C47
     dl C48, C49, C50, C51, C52, C53, C54, C55, C56, C57, C58, C59, C60, C61, C62, C63
-    dl C64, C65
+    dl C64, C65, C66, C67, C68, C69, C70, C71, C72, C73, C74, C75, C76, C77, C78, C79
+    dl C80, C81
+
+arrowKeysLUT: ; equates for different arrow key press combos
+    db 00 ; none
+    db 01 ; down
+    db 02 ; left
+    db 05 ; left/down
+    db 03 ; right
+    db 06 ; right/down
+    db 57 ; left/right
+    db 58 ; left/right/down
+    db 04 ; up
+    db 59 ; up/down
+    db 07 ; left/up
+    db 60 ; up/left/down
+    db 08 ; right/up
+    db 61 ; up/right/down
+    db 62 ; up/right/left
+    db 63 ; all arrow keys
 
 Str9:
     db ti.StrngObj, ti.tVarStrng, ti.tStr9, 0, 0
@@ -159,11 +146,14 @@ Str0:
 Theta:
     db ti.RealObj, ti.tTheta, 0, 0
 
+sysVarEP:
+    db ti.ProgObj, "!", 0
+
+sysVarHash:
+    db ti.ProgObj, "#", 0
+
 tempPrgmName:
     db ti.ProtProgObj, "XTEMP000", 0
 
 basicPrgmName:
     db ti.ProgObj, "celticex", 0
-
-appName:
-    db ti.AppVarObj, "CelticCE", 0

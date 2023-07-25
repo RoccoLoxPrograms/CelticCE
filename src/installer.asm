@@ -4,14 +4,14 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: June 1, 2023
+; Last Built: July 24, 2023
 ;
 ;----------------------------------------
 
     jp installApp
-    db $01
+    db $01 ; icon byte
 
-_icon:
+icon:
     db $10, $10
     db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
     db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
@@ -30,12 +30,15 @@ _icon:
     db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
     db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 
-_description:
-    db "Celtic CE Installer - BETA v1.3", 0
+description:
+    db "Celtic CE Installer - 1.0.0-rc.1", 0
 
 installApp:
     call .clearScreen
-    
+    call ti.RunIndicOff
+    ld hl, installingStr
+    call ti.PutS
+
     installer_ports.copy
 
     call installer.port_setup
@@ -43,23 +46,21 @@ installApp:
     ld hl, osInvalidStr
     jp nz, .printMessage
     call ti.PushOP1
-    
+
     app_create
-    
+
     jr z, appInstalled
     call ti.PopOP1
+    call .clearScreen
     ld hl, celticAppAlreadyExists
     call ti.PutS
     call ti.NewLine
     call ti.PutS
-
-.getKey:
-    call ti.GetCSC
-    cp a, ti.skEnter
-    jr nz, .getKey
+    call ti.GetKey
     jr .clearScreen
 
 .printMessage:
+    call .clearScreen
     call ti.PutS
     call ti.GetKey
 
@@ -90,12 +91,12 @@ appInstalled:
     ld b, 117
     ld c, 134
     call ti.FillRect
-    ld a, 6
-    ld (ti.curCol), a
+    ld hl, 6
+    ld.sis (ti.curCol and $FFFF), hl
     ld hl, optionYes
     call ti.PutS
-    ld a, 16
-    ld (ti.curCol), a
+    ld hl, 16
+    ld.sis (ti.curCol and $FFFF), hl
     ld a, (iy + ti.textFlags)
     xor a, 8
     ld (iy + ti.textFlags), a
@@ -120,6 +121,9 @@ appInstalled:
 .exit:
     call ti.ClrScrn
     jp ti.HomeUp
+
+installingStr:
+    db "Installing app...", 0
 
 osInvalidStr:
     db "Cannot use this OS.", 0
