@@ -37,7 +37,7 @@ All notable changes to the Celtic CE library will be documented in this file.
         - DetectAsymptotes
         - StatWizards
         - MixedFractions
-        - AnswersAuto
+        - DecimalAnswers
 - Celtic III Functions:
     - ErrorHandle now has an option to return the offset in the program at which the error occurred
 - Major optimizations to core functionalities, including both size and speed improvements
