@@ -86,8 +86,7 @@ Documentation
      * ``HEADER``: whether or not to include a header which allows `CEaShell <https://github.com/roccoloxprograms/shell>`__ to edit the appvar. This extra argument is optional. 1 to include the header, and 0 to not.
 
     Returns:
-     * ``Str9``: Intact if no error occured; otherwise, contains an error code.
-     * ``Str0``: Intact with program's name to be created.
+     * Creates the program or AppVar.
 
     Errors:
      * ``..P:IS:FN`` if the program already exists.
@@ -127,13 +126,13 @@ Documentation
      * ``Ans``: Line number to delete from, begins at 1.
 
     Returns:
-     * ``Str9``: Intact if no error occured; otherwise, contains an error code.
+     * Deletes the specified line from the program or AppVar.
 
 ------------
 
 .. function:: VarStatus: det(8); Str0 = variable name
 
-    Output status string describing a program or AppVar's current state, including size, visibility, and more.
+    Output a status string describing a program or AppVar's current state, including size, visibility, and more.
 
     Parameters:
      * ``Str0``: Name of program or AppVar to examine.
@@ -189,7 +188,7 @@ Documentation
 
 .. function:: ExecArcPrgm: det(11, function, temp_prog_number); Ans = program name
 
-    Copies a program to the ``XTEMP`` program of the specified ``temp_prog_number``. ``Ans`` is the name of the program to copy. ``function`` refers to the behavior of the ``ExecArcPrgm`` command, as seen in the table below:
+    Copies a program to the ``XTEMP`` program of the specified ``temp_prog_number``. ``temp_prog_number`` can only be 0 - 15. ``Ans`` is the name of the program to copy. ``function`` refers to the behavior of the ``ExecArcPrgm`` command, as seen in the table below:
 
     ==== ================================================================
     Code Function
@@ -201,7 +200,7 @@ Documentation
 
     Parameters:
      * ``function``: The requested behavior of the function. Can be 0, 1, or 2.
-     * ``temp_prog_number``: The number of the ``XTEMP`` program to create/delete.
+     * ``temp_prog_number``: The number of the ``XTEMP`` program to create/delete. This must be within 0 - 15.
      * ``Ans``: Name of program to copy from.
 
     Returns:

@@ -95,6 +95,8 @@ Documentation
 
     Copies the contents of a file specified in ``Str0`` to the string specified by ``string_number``. If you wish to read the contents of an appvar, you must preceed the name with the ``rowSwap(`` token in ``Str0``.
 
+    .. warning:: Using this command on ASM programs and AppVars could cause the string to contain invalid tokens, resulting in a crash. Keep this in mind when using the command and ensure that you do not accidentally try to get invalid tokens.
+
     Parameters:
      * ``string_number``: The number of the string to copy to. Can be from 0 to 9. 0 means ``Str0``, 1 means ``Str1`` and so on.
      * ``Str0``: Name of the variable to copy. The name must be preceeded by the ``rowSwap(`` token if you wish to read an appvar.
@@ -122,13 +124,13 @@ Documentation
     ==== =============
 
     Parameters:
-     * ``Str0``: Name of the program to check. It cannot be an appvar.
+     * ``Str0``: Name of the program to check. It cannot be an AppVar.
 
     Returns:
      * ``Theta``: Contains the number referencing the filetype. See the table above.
 
     Errors:
-     * ``..INVAL:S`` if you attempt to use this function on an appvar.
+     * ``..INVAL:S`` if you attempt to use this function on an AppVar.
 
 ------------
 
@@ -159,19 +161,19 @@ Documentation
 
 .. function:: SearchFile: det(52, offset); Str0 = file name, Str9 = search string
 
-    Search a file specified by ``file name``, for a ``search string``, beginning at the user-specified (0-indexed) ``offset``.
+    Searches a program or AppVar specified by ``file name``, for a ``search string``, beginning at the user-specified (0-indexed) ``offset``.
 
     Parameters:
-     * ``offset``: Byte offset in the program to start searching, with 0 being the first byte of the program
-     * ``Str0``: Name of the file to search in
-     * ``Str9``: String to search for
+     * ``offset``: Byte offset in the file to start searching, with 0 being the first byte of the file.
+     * ``Str0``: Name of the file to search in.
+     * ``Str9``: String to search for.
 
     Returns:
-     * ``Theta``: The byte offset of the located string
+     * ``Theta``: The byte offset of the located string.
 
     Errors:
-     * ``..E:NT:FN`` if the string is not located
-     * ``..INVAL:S`` if the string is bigger than the program to search for
+     * ``..E:NT:FN`` if the string is not located.
+     * ``..INVAL:S`` if the string is bigger than the file to search for.
 
 ------------
 
@@ -183,7 +185,7 @@ Documentation
         If the file is already archived, the command will not say that archiving it will cause a Garbage Collect, regardless of size.
 
     Parameters:
-     * ``Str0``: Name of variable to check for
+     * ``Str0``: Name of variable to check for.
 
     Returns:
      * ``Ans``: 0 if a Garbage Collect will not occur, and 1 if it will.
@@ -195,7 +197,7 @@ Documentation
     This command works similarly to ErrorHandle, though for assembly programs instead of BASIC ones. This includes assembly programs, C programs, and (compiled) ICE programs. It can be useful in newer versions of TI-OS where assembly is blocked. Unlike ErrorHandle, ``Ans`` should not begin with the ``prgm`` token.
 
     Parameters:
-     * ``Ans``: Name of the ASM program to run
+     * ``Ans``: Name of the ASM program to run.
 
     Returns:
      * ``Theta``: Contains the error code returned by the program, or 0 if no error occured.
@@ -211,8 +213,8 @@ Documentation
     Gets the byte offset of a newline in the program or AppVar specified by ``Str0``. Lines begin at 1 and bytes begin at 0.
 
     Parameters:
-     * ``line``: Line to get the byte offset of
-     * ``Str0``: Name of the variable to search for the byte offset in
+     * ``line``: Line to get the byte offset of.
+     * ``Str0``: Name of the variable to search for the byte offset in.
 
     Returns:
      * ``Theta``: Contains the byte offset of ``line``.
@@ -227,8 +229,8 @@ Documentation
     Gets the line at which a specific byte (specified by ``offset``) occurs in the program or AppVar specified by ``Str0``. Lines begin at 1 and bytes begin at 0.
 
     Parameters:
-     * ``offset``: Byte offset to detect the line it occurs in
-     * ``Str0``: Name of the variable to search for the line in
+     * ``offset``: Byte offset to detect the line it occurs in.
+     * ``Str0``: Name of the variable to search for the line in.
 
     Returns:
      * ``Theta``: Line containing ``offset``.
@@ -242,11 +244,22 @@ Documentation
 
     This command acts as a faster version of the TI-OS GetKey command, though it returns different keycodes, including keycodes for diagonal keypresses and other combinations of arrow keys. A map with the keycodes for different keys (returned in ``Ans``) is below:
 
-    .. figure:: images/keycodes.png
-        :alt: A map of buttons and their corresponding keycodes
-        :align: center
+    .. only:: html
 
-        A map of buttons and their corresponding keycodes
+        .. figure:: images/keycodes.png
+            :alt: A map of buttons and their corresponding keycodes
+            :align: center
+
+            A map of buttons and their corresponding keycodes
+
+    .. only:: latex
+
+        .. figure:: images/keycodes.png
+            :width: 50 %
+            :alt: A map of buttons and their corresponding keycodes
+            :align: center
+
+            A map of buttons and their corresponding keycodes
 
     There are also a few "unofficial" combinations of arrow keys with codes as well:
 
@@ -286,6 +299,9 @@ Documentation
     Returns:
      * Backs up the string specified by the user to be restored at a future time in the program.
 
+    Errors:
+     * ``..INVAL:S`` if the string being backed up has a length of 0.
+
 ------------
 
 .. function:: RestoreString: det(76, string_number)
@@ -299,9 +315,6 @@ Documentation
 
     Returns:
      * Copies the data backed up from the BackupString command into the user-specified string.
-
-    Errors:
-     * ``..INVAL:S`` if the size of the backed up string that is being restored has a length of 0.
 
 ------------
 
@@ -332,6 +345,9 @@ Documentation
     Returns:
      * Copies the value backed up by BackupReal into a variable specified by the user.
 
+    Errors:
+     * ``..NT:REAL``: If the value of the currently backed up number is not a real number.
+
 ------------
 
 .. function:: SetParseLine: det(79, line)
@@ -345,7 +361,10 @@ Documentation
         5: Disp "PROGRAM MIDDLE"
         6: det(79,Theta+1) // Jump to the line after the previous jump, in this case, line 3
 
-    To make using this command easier, you can view the line number of the line your cursor is currently on in the editor by pressing :kbd:`2nd` + :kbd:`enter` if Celtic is installed. This will display the current line number in the status bar, along with the current size of the program in bytes as well.
+    To make using this command easier, you can view the line number of the line your cursor is currently on in the editor by pressing :kbd:`2nd` + :kbd:`enter` if Celtic is installed. This will display the current line number in the status bar, along with the current byte offset and size of the program in bytes as well.
+
+    Alternative method: ``det(79)`` OR ``det(79, 0)``
+        If no line argument is included or you attempt to jump to line 0, Celtic will only return the current line offset without jumping.
 
     Parameters:
      * ``line``: The line of the program currently being executed to jump to.
@@ -358,9 +377,30 @@ Documentation
 
 ------------
 
-.. function:: SwapFileType: det(80); Str0 = variable name
+.. function:: SetParseByte: det(80, offset)
 
-    This command swaps the type of a given file from program to AppVar, or vice versa. For example, if used on the AppVar "FOOBAR", it will change said AppVar's file type become a program. If used again, this time on the program "FOOBAR", it will change the program's file type to become an AppVar. Swapping an AppVar to a program type will swap to a locked program, for safety purposes. If the program or AppVar specified is in the archive, this operation could cause a garbage collect.
+    This command jumps to a specific byte offset in the program currently being executed. It acts essentially the same as SetParseLine, other than working with byte offsets instead of lines. This also means that the command will run faster. It will also return the byte offset after the command in ``Theta``.
+
+    .. note:: If the byte offset specified is past the end of program, SetParseByte will simply jump to the end of the program, which will end the program.
+
+    To make using this command easier, you can view the current offset in your program of the byte your cursor is currently on in the editor by pressing :kbd:`2nd` + :kbd:`enter` if Celtic is installed. This will display the current byte offset in the status bar, along with the current line number and size of the program in bytes as well.
+
+    Alternative method: ``det(80)``
+        If you do not include an offset argument, SetParseByte will only return the byte offset after the SetParseByte command without jumping.
+
+    Parameters:
+     * ``offset``: Byte offset in the currently executing program to jump to.
+
+    Returns:
+     * ``Theta``: Contains the byte offset after the SetParseByte command.
+
+------------
+
+.. function:: SwapFileType: det(81); Str0 = variable name
+
+    This command swaps the type of a given file from program to AppVar, or vice versa. For example, if used on the AppVar "FOOBAR", it will change said AppVar's file type to a program. If used again, this time on the program "FOOBAR", it will change the program's file type to become an AppVar. Swapping an AppVar to a program type will swap to a locked program, for safety purposes.
+
+    .. warning:: If you swap the file type of a file in the archive, Celtic un-archives it when running the function and then re-archives it when the function is complete. This means that it could result in a garbage collect.
 
     Parameters:
      * ``Str0``: The name of the variable to run the operation on. Like other Celtic commands, AppVar names must be prefaced with the ``rowSwap(`` token.
@@ -370,7 +410,7 @@ Documentation
 
 ------------
 
-.. function:: PrgmCleanUp: det(81)
+.. function:: ResetScreen: det(82)
 
     This command clears the screen, restores the status bar, and essentially resets / cleans up the entire screen. You can think of it like ClrHome, but applying to the entire screen as well.
 

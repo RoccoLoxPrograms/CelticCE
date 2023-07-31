@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 24, 2023
+; Last Built: July 31, 2023
 ;
 ;----------------------------------------
 
@@ -37,6 +37,26 @@ macro relocate? name, address* ; macro by MateoConLechuga
         org name.source? + name.length?
         purge end?.relocate?
         end macro
+end macro
+
+macro iconData?
+    db $10, $10
+    db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $FF, $07, $25, $25, $07, $FF, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $07, $25, $8F, $8F, $25, $07, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $25, $8F, $07, $25, $8F, $25, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $25, $8F, $25, $8F, $8F, $25, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $8F, $8F, $25, $8F, $25, $25, $07, $07, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $8F, $25, $07, $25, $25, $25, $25, $25, $25, $8F, $FF, $FF, $FF
+    db $FF, $FF, $07, $25, $8F, $25, $8F, $25, $25, $8F, $8F, $8F, $25, $07, $FF, $FF
+    db $FF, $FF, $07, $25, $07, $25, $8F, $25, $25, $8F, $25, $07, $25, $07, $FF, $FF
+    db $FF, $FF, $07, $25, $8F, $8F, $8F, $25, $8F, $8F, $25, $8F, $25, $07, $FF, $FF
+    db $FF, $FF, $FF, $8F, $25, $25, $25, $8F, $FF, $8F, $07, $25, $8F, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $07, $07, $07, $FF, $FF, $FF, $8F, $8F, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 end macro
 
 ;------------------------------------------------------------------------------------
@@ -86,10 +106,9 @@ YEnd   equ execHexLoc + 9
 celticFlags1    := ti.asm_Flag1 ; Celtic flags
 searchAppvars   := 0
 largeFont       := 1
-negative        := 2
-isProgram       := 3
-showErrorOffset := 4
-showLineNum     := 5 ; this flag is flipped, it will be set to not show the line number and reset to show it
+isProgram       := 2
+showErrorOffset := 3
+showLineNum     := 4 ; this flag is flipped, it will be set to not show the line number and reset to show it
 
 celticFlags2    := ti.asm_Flag2
 archived        := 0

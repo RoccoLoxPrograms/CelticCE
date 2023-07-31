@@ -73,8 +73,9 @@ This file contains a simplified list of all commands in CelticCE, sorted by cate
 - BackupReal (77)
 - RestoreReal (78)
 - SetParseLine (79)
-- SwapFileType (80)
-- PrgmCleanUp (81)
+- SetParseByte (80)
+- SwapFileType (81)
+- ResetScreen (82)
 
 ### [Celtic III](https://roccoloxprograms.github.io/CelticCE/celticiiifunctions.html)
 

@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 24, 2023
+; Last Built: July 31, 2023
 ;
 ;----------------------------------------
 
@@ -12,11 +12,18 @@
 
 relocate hookStrings, ti.cursorImage + 32
 programLineText:
-    db "PROGRAM  LINE:  "
+    db "LINE:  "
 
 numberText:
     db "0000"
-    db 10 dup ' '
+    db 8 dup ' '
+
+byteOffsetText:
+    db "BYTE:  "
+
+byteNumber:
+    db "00000"
+    db 8 dup ' '
 
 sizeStr:
     db "SIZE:  "
@@ -106,8 +113,9 @@ C76:    db "RestoreString(STR_NUM) : NA : Str", $01, 0
 C77:    db "BackupReal(VAR_NUM)", 0
 C78:    db "RestoreReal(VAR_NUM)", 0
 C79:    db "SetParseLine(LINE#) : NA : [", 0
-C80:    db "SwapFileType() : Str0", 0
-C81:    db "PrgmCleanUp()", 0
+C80:    db "SetParseByte(OFFSET) : NA : [", 0
+C81:    db "SwapFileType() : Str0", 0
+C82:    db "ResetScreen()", 0
 
 ; additional rodata
 
@@ -117,7 +125,7 @@ celticCommandsPtrs:
     dl C32, C33, C34, C35, C36, C37, C38, C39, C40, C41, C42, C43, C44, C45, C46, C47
     dl C48, C49, C50, C51, C52, C53, C54, C55, C56, C57, C58, C59, C60, C61, C62, C63
     dl C64, C65, C66, C67, C68, C69, C70, C71, C72, C73, C74, C75, C76, C77, C78, C79
-    dl C80, C81
+    dl C80, C81, C82
 
 arrowKeysLUT: ; equates for different arrow key press combos
     db 00 ; none
@@ -152,8 +160,9 @@ sysVarEP:
 sysVarHash:
     db ti.ProgObj, "#", 0
 
-tempPrgmName:
+relocate tempPrgmName, xtempName
     db ti.ProtProgObj, "XTEMP000", 0
+end relocate
 
 basicPrgmName:
     db ti.ProgObj, "celticex", 0

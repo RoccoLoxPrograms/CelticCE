@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 24, 2023
+; Last Built: July 31, 2023
 ;
 ;----------------------------------------
 
@@ -35,7 +35,6 @@ fillScreen: ; det(16)
 .osColor:
     ld a, (var1)
     call _checkValidOSColor
-    call ti.GetColorValue
     jr .fillScrn
 
 drawLine: ; det(17)
@@ -46,7 +45,6 @@ drawLine: ; det(17)
     jp c, PrgmErr.INVALA
     ld a, (var1)
     call _checkValidOSColor
-    call ti.GetColorValue
     ld.sis (ti.drawFGColor and $FFFF), de
     ld ix, var2
     jr .drawLine
@@ -225,7 +223,6 @@ setPixel: ; det(18)
     ld a, (var1)
     or a, a
     call nz, _checkValidOSColor
-    call ti.GetColorValue
     push de
     ld ix, var2
     ld a, (var1)
@@ -609,20 +606,22 @@ scaleSprite: ; det(56)
     ld hl, (ix)
     ld a, h
     or a, l
-    jp z, return
+    jr z, .return
     push hl ; width, ix + 9
     ld hl, (ix + 3)
     ld a, h
     or a, l
-    jp z, return
+    jr z, .return
     push hl ; height, ix + 6
     ld hl, (ix + 6)
     xor a, a
     cp a, l
-    jp z, return
+    jr z, .return
     push hl ; x scale, ix + 3
     ld hl, (ix + 9)
     cp a, l
+
+.return:
     jp z, return
     push hl ; y scale, ix + 0
     ld ix, 0
@@ -752,20 +751,22 @@ scaleTSprite: ; det(57)
     ld hl, (ix)
     ld a, h
     or a, l
-    jp z, return
+    jr z, .return
     push hl ; width, ix + 9
     ld hl, (ix + 3)
     ld a, h
     or a, l
-    jp z, return
+    jr z, .return
     push hl ; height, ix + 6
     ld hl, (ix + 6)
     xor a, a
     cp a, l
-    jp z, return
+    jr z, .return
     push hl ; x scale, ix + 3
     ld hl, (ix + 9)
     cp a, l
+
+.return:
     jp z, return
     push hl ; y scale, ix + 0
     ld ix, 0
@@ -1101,21 +1102,8 @@ drawRect: ; det(60)
     jp c, PrgmErr.INVALA
     ld a, (var1)
     call _checkValidOSColor
-    call ti.GetColorValue
     ld.sis (ti.drawFGColor and $FFFF), de
-    ld hl, (var2)
-    ld de, (var4)
-    add hl, de
-    dec hl
-    ex de, hl
-    ld hl, (var2)
-    ld a, (var5)
-    ld c, a
-    ld a, (var3)
-    ld b, a
-    add a, c
-    dec a
-    ld c, a
+    ld ix, var2
     jr .drawRect
 
 .sevenArgs:
@@ -1123,22 +1111,29 @@ drawRect: ; det(60)
     ld (ti.drawFGColor), a
     ld a, (var2)
     ld (ti.drawFGColor + 1), a
-    ld hl, (var3)
-    ld de, (var5)
+    ld ix, var3
+
+.drawRect:
+    ld hl, (ix)
+    push hl
+    ld de, (ix + 6)
+    ld a, d
+    or a, e
+    jr z, .return
     add hl, de
     dec hl
     ex de, hl
-    ld hl, (var3)
-    ld a, (var6)
-    ld c, a
-    ld a, (var4)
-    ld b, a
-    add a, c
+    pop hl
+    ld b, (ix + 3)
+    ld a, (ix + 9)
+    or a, a
+    jr z, .return
+    add a, b
     dec a
     ld c, a
-
-.drawRect:
     call ti.DrawRectBorder
+
+.return:
     jp return
 
 drawCircle: ; det(61)
@@ -1149,7 +1144,6 @@ drawCircle: ; det(61)
     jp c, PrgmErr.INVALA
     ld a, (var1)
     call _checkValidOSColor
-    call ti.GetColorValue
     push de
     ld ix, var2
     jr .drawCircle
@@ -1168,9 +1162,6 @@ drawCircle: ; det(61)
     ld de, (ix)
     ld hl, (ix + 6)
     ld bc, (ix + 3)
-    ld a, h
-    or a, l
-    jp z, return
     push de ; x center, ix + 6
     push bc ; y center, ix + 3
     push hl ; radius, ix + 0
@@ -1195,7 +1186,9 @@ drawCircle: ; det(61)
     push hl
     ld hl, (ix + 3)
     ld de, (ix - 3)
-    or a, a
+    ld a, d
+    or a, e
+    jp z, return
     sbc hl, de
     push hl
     call .setPixel
@@ -1244,9 +1237,7 @@ drawCircle: ; det(61)
     inc hl
     ld (ix - 6), hl
     ld de, (ix - 9)
-    or a, a
-    sbc hl, hl
-    sbc hl, de
+    call ti.ChkDEIs0
     jr z, .Pis0orLess
     bit 7, (ix - 7) ; upper byte of perimeter
     jr z, .PisMoreThan0
@@ -1411,7 +1402,6 @@ fillCircle: ; det(62)
     jp c, PrgmErr.INVALA
     ld a, (var1)
     call _checkValidOSColor
-    call ti.GetColorValue
     push de
     ld ix, var2
     jr .drawCircle
@@ -1430,9 +1420,6 @@ fillCircle: ; det(62)
     ld de, (ix)
     ld hl, (ix + 6)
     ld bc, (ix + 3)
-    ld a, h
-    or a, l
-    jp z, return
     push de ; x center, ix + 6
     push bc ; y center, ix + 3
     push hl ; radius, ix + 0
@@ -1456,6 +1443,9 @@ fillCircle: ; det(62)
     push hl
     ld hl, (ix + 3)
     ld de, (ix - 3)
+    ld a, d
+    or a, e
+    jp z, return
     add hl, de
     push hl
     call drawCircle.setPixel
@@ -1495,9 +1485,7 @@ fillCircle: ; det(62)
     inc hl
     ld (ix - 6), hl
     ld de, (ix - 9)
-    or a, a
-    sbc hl, hl
-    sbc hl, de
+    call ti.ChkDEIs0
     jr z, .Pis0orLess
     bit 7, (ix - 7) ; upper byte of perimeter
     jr z, .PisMoreThan0
@@ -1667,7 +1655,6 @@ drawArc: ; det(63)
     jp c, PrgmErr.INVALA
     ld a, (var1)
     call _checkValidOSColor
-    call ti.GetColorValue
     push de
     ld hl, var6 + 2 ; shift the arguments over
     ld de, var7 + 2
@@ -1947,13 +1934,12 @@ drawArc: ; det(63)
     ld de, (ix + 3)
     add hl, de
     push hl
-    ld de, (var6)
-    or a, a
-    sbc hl, hl
-    sbc hl, de
+    ld hl, (var6)
+    ld a, h
+    or a, l
     jr z, .setPixel
-    ld de, (var7)
-    ld hl, 360
+    ld hl, (var7)
+    ld de, 360
     or a, a
     sbc hl, de
 
@@ -2020,9 +2006,7 @@ drawArc: ; det(63)
     inc hl
     ld (ix - 6), hl
     ld de, (ix - 9)
-    or a, a
-    sbc hl, hl
-    sbc hl, de
+    call ti.ChkDEIs0
     jr z, .Pis0orLess
     bit 7, (ix - 7) ; upper byte of perimeter
     jr z, .PisMoreThan0
@@ -2171,12 +2155,12 @@ drawArc: ; det(63)
     or a, a
     sbc hl, de
     ret c
+    ld hl, (var6)
     ex de, hl
-    ld de, (var6)
     or a, a
     sbc hl, de
     ret c
-    jp drawCircle.setPixel
+    jr .drawArcPixel
 
 .checkFirstHalf: ; x = ix - 12, y = ix - 15
     ld hl, (YStart)
@@ -2198,17 +2182,19 @@ drawArc: ; det(63)
     ld de, (ix + 3)
     or a, a
     sbc hl, de
-    jp c, drawCircle.setPixel
+    jr c, .drawArcPixel
     ld hl, 360
     ld de, (var7)
     or a, a
     sbc hl, de
-    jp z, drawCircle.setPixel
+    jr z, .drawArcPixel
     ld hl, (ix - 12)
     ld de, (XEnd)
     or a, a
     sbc hl, de
     ret c
+
+.drawArcPixel:
     jp drawCircle.setPixel
 
 .checkSecondHalf: ; x = ix - 12, y = ix - 15
@@ -2231,18 +2217,18 @@ drawArc: ; det(63)
     ld de, (YStart)
     or a, a
     sbc hl, de
-    jp c, drawCircle.setPixel
+    jr c, .drawArcPixel
     or a, a
     sbc hl, hl
     ld de, (var6)
     sbc hl, de
-    jp z, drawCircle.setPixel
+    jr z, .drawArcPixel
     ld hl, (ix - 12)
     ld de, (XStart)
     or a, a
     sbc hl, de
     ret c
-    jp drawCircle.setPixel
+    jr .drawArcPixel
 
 dispTransText: ; det(64)
     ld a, (noArgs)
@@ -2252,7 +2238,6 @@ dispTransText: ; det(64)
     jp c, PrgmErr.INVALA
     ld a, (var2)
     call _checkValidOSColor
-    call ti.GetColorValue
     ld.sis (ti.drawFGColor and $FFFF), de
     ld hl, (var4)
     push hl
@@ -2371,11 +2356,9 @@ putChar: ; det(66)
     jp c, PrgmErr.INVALA
     ld a, (var3)
     call _checkValidOSColor
-    call ti.GetColorValue
     ld.sis (ti.drawBGColor and $FFFF), de
     ld a, (var2)
     call _checkValidOSColor
-    call ti.GetColorValue
     ld.sis (ti.drawFGColor and $FFFF), de
     ld hl, (var4)
     ld (ti.penCol), hl
@@ -2428,7 +2411,6 @@ putTransChar: ; det(67)
     jp c, PrgmErr.INVALA
     ld a, (var2)
     call _checkValidOSColor
-    call ti.GetColorValue
     ld.sis (ti.drawFGColor and $FFFF), de
     ld hl, (var4)
     push hl
@@ -2476,7 +2458,6 @@ horizLine: ; det(68)
     jr z, .sixArgs
     ld a, (var1)
     call _checkValidOSColor
-    call ti.GetColorValue
     push de
     ld ix, var2
     jr .drawHorizLine
@@ -2495,15 +2476,15 @@ horizLine: ; det(68)
     ld hl, (ix + 6)
     ld a, h
     or a, l
-    jp z, return
+    jr z, .return
     ld de, (ix + 3)
     ld hl, -ti.lcdHeight
     add hl, de
-    jp c, return
+    jr c, .return
     ld de, (ix)
     ld hl, -ti.lcdWidth
     add hl, de
-    jp c, return
+    jr c, .return
     ld hl, (ix + 6)
     add hl, de
     ex de, hl
@@ -2549,7 +2530,6 @@ vertLine: ; det(69)
     jr z, .sixArgs
     ld a, (var1)
     call _checkValidOSColor
-    call ti.GetColorValue
     push de
     ld ix, var2
     jr .drawVertLine
@@ -2568,15 +2548,15 @@ vertLine: ; det(69)
     ld hl, (ix + 6)
     ld a, h
     or a, l
-    jp z, return
+    jr z, .return
     ld de, (ix)
     ld hl, -ti.lcdWidth
     add hl, de
-    jp c, return
+    jr c, .return
     ld de, (ix + 3)
     ld hl, -ti.lcdHeight
     add hl, de
-    jp c, return
+    jr c, .return
     ld hl, (ix + 6)
     add hl, de
     ex de, hl
@@ -2604,4 +2584,6 @@ vertLine: ; det(69)
     add hl, bc
     dec a
     jr nz, .vertLineLoop
+
+.return:
     jp return

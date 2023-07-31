@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 24, 2023
+; Last Built: July 31, 2023
 ;
 ;----------------------------------------
 
@@ -49,7 +49,7 @@ installPage:
     ld (ti.penRow), a
     ld hl, aboutScrnLine1
     call ti.VPutS
-    ld hl, 53
+    ld hl, 83
     ld (ti.penCol), hl
     ld a, 25
     ld (ti.penRow), a

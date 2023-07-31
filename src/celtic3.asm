@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 24, 2023
+; Last Built: July 31, 2023
 ;
 ;----------------------------------------
 
@@ -1281,7 +1281,7 @@ binToHex: ; det(42)
     pop bc
     ld hl, execHexLoc
     ldir
-    jp return
+    jr graphCopy + 4 ; use as a return
 
 graphCopy: ; det(43)
     call ti.GrBufCpy

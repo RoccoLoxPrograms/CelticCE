@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 24, 2023
+; Last Built: July 31, 2023
 ;
 ;----------------------------------------
 
@@ -163,18 +163,21 @@ _moveDown: ; move down a row when drawing BufSprites
     ld ix, 0
     ret
 
-_convertTokenToColor: ; convert a token to a color an OS color number. 0 - 9, A - H
+_convertTokenToColor: ; convert a token to an OS color number. 0 - 9, A - H
     cp a, $30
-    jp c, PrgmErr.INVALA
+    jr c, .invalidColor
     cp a, $49
-    jp nc, PrgmErr.INVALA
+    jr nc, .invalidColor
     sub a, $30
     cp a, $0A
     ret c
     cp a, $11
-    jp c, PrgmErr.INVALA
+    jr c, .invalidColor
     sub a, $07
     ret
+
+.invalidColor:
+    jp PrgmErr.INVALS
 
 _getGrphColor:
     ld de, (bufSpriteX)
@@ -285,19 +288,15 @@ _convertChars:
 
 _checkValidHex:
     cp a, $30
-    jr nc, .checkTwo
-    jp PrgmErr.INVALS
-
-.checkTwo:
+    jr c, .invalidHex
     cp a, $47
-    jr c, .continue
-    jp PrgmErr.INVALS
-
-.continue:
+    jr nc, .invalidHex
     cp a, $3A
     ret c
     cp a, $40
     ret nc
+
+.invalidHex:
     jp PrgmErr.INVALS
 
 _convertTokenToHex: ; a = token. token being either 0 - 9 or A - F
@@ -584,12 +583,13 @@ _findString: ; gets data pointer to a string
     jp nz, PrgmErr.SFLASH
     ret
 
-_checkValidOSColor:
+_checkValidOSColor: ; checks if a valid OS color was entered and returns the RGB565 color value
     cp a, 10
     jp c, PrgmErr.INVALA
     cp a, 25
     jp nc, PrgmErr.INVALA
     sub a, 9
+    call ti.GetColorValue
     ret
 
 _storeThetaA:

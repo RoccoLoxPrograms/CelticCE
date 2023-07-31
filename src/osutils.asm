@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 24, 2023
+; Last Built: July 31, 2023
 ;
 ;----------------------------------------
 
@@ -847,6 +847,8 @@ backupString: ; det(75)
     inc de
     ld a, (de)
     ld b, a
+    or a, c
+    jp z, PrgmErr.INVALS
     inc de
     ld hl, 256
     or a, a
@@ -887,10 +889,9 @@ restoreString: ; det(76)
     ld (ti.OP1 + 2), a
     call ti.ChkFindSym
     call nc, ti.DelVarArc
-    ld a, (stringLen)
     or a, a
-    jp z, PrgmErr.INVALS
     sbc hl, hl
+    ld a, (stringLen)
     ld l, a
     inc hl
     push hl
@@ -1044,7 +1045,36 @@ setParseLine: ; det(79)
 .return:
     jp return
 
-swapFileType: ; det(80)
+setParseByte: ; det(80)
+    ld de, (ti.begPC)
+    ld hl, (ti.curPC)
+    dec hl
+    or a, a
+    sbc hl, de
+    call _storeThetaHL
+    ld a, (noArgs)
+    dec a
+    jr z, .return
+    ld de, (ti.begPC)
+    ld hl, (var1)
+    add hl, de
+    push hl
+    ld de, (ti.endPC)
+    inc de
+    or a, a
+    sbc hl, de
+    pop hl
+    jr nc, $ + 5
+    dec hl
+    jr $ + 4
+    dec de
+    ex de, hl
+    ld (ti.curPC), hl
+
+.return:
+    jp return
+
+swapFileType: ; det(81)
     res archived, (iy + celticFlags2)
     ld hl, Str0
     call _getProgFromStr
@@ -1068,12 +1098,12 @@ swapFileType: ; det(80)
     ld (hl), a
     ld (ti.OP6), a
     bit archived, (iy + celticFlags2)
-    jr z, prgmCleanUp + 12 ; use as return label
+    jr z, resetScreen + 12 ; use as return label
     call ti.OP6ToOP1
     call ti.Arc_Unarc
-    jr prgmCleanUp + 12
+    jr resetScreen + 12
 
-prgmCleanUp: ; det(81)
+resetScreen: ; det(82)
     call ti.ClrLCDFull
     call ti.HomeUp
     call ti.DrawStatusBar

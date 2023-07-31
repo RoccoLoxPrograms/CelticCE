@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 24, 2023
+; Last Built: July 31, 2023
 ;
 ;----------------------------------------
 
@@ -32,9 +32,8 @@ readLine: ; det(0)
     jp nz, PrgmErr.NTREAL
     call ConvOP1
     ld (ans), de
-    or a, a
-    sbc hl, hl
-    sbc hl, de
+    ld a, d
+    or a, e
     jp z, .getNumOfLines
     ld hl, 1
     or a, a
@@ -119,9 +118,8 @@ readLine: ; det(0)
     jr .createDataStr
 
 .readOneOrZero:
-    or a, a
-    sbc hl, hl
-    sbc hl, bc
+    ld a, b
+    or a, c
     pop hl
     jp z, PrgmErr.NULLSTR
     ldi
@@ -210,9 +208,8 @@ insertLine: ; det(2)
     jp nz, PrgmErr.NTREAL
     call ConvOP1
     ld (ans), de
-    or a, a
-    sbc hl, hl
-    sbc hl, de
+    ld a, d
+    or a, e
     jp z, PrgmErr.LNTFN
     pop bc
     push bc
@@ -389,7 +386,7 @@ arcUnarcVar: ; det(5)
     ld hl, Str0
     call _getProgFromStr
     call ti.Arc_Unarc
-    jr deleteVar + 12
+    jr deleteVar + 12 ; use as a return
 
 deleteVar: ; det(6)
     ld hl, Str0
@@ -422,9 +419,8 @@ deleteLine: ; det(7)
     jp nz, PrgmErr.NTREAL
     call ConvOP1
     ld (ans), de
-    or a, a
-    sbc hl, hl
-    sbc hl, de
+    ld a, d
+    or a, e
     jp z, PrgmErr.LNTFN
     or a, a
     ld hl, 1
@@ -607,9 +603,8 @@ bufSprite: ; det(9)
     ld bc, 1
     ld (currentWidth), bc
     ld bc, (var1)
-    or a, a
-    sbc hl, hl
-    sbc hl, bc
+    ld a, b
+    or a, c
     jp z, PrgmErr.INVALA
     pop hl
     pop de
@@ -725,9 +720,8 @@ bufSpriteSelect: ; det(10)
     ld bc, 1
     ld (currentWidth), bc
     ld bc, (var1)
-    or a, a
-    sbc hl, hl
-    sbc hl, bc
+    ld a, b
+    or a, c
     jp z, PrgmErr.INVALA
     pop hl
     pop de
@@ -802,10 +796,8 @@ bufSpriteSelect: ; det(10)
     jr .checkLoop
 
 execArcPrgm: ; det(11)
-    ld hl, tempPrgmName
-    ld de, xtempName
-    ld bc, 10
-    ldir
+    tempPrgmName.copy
+
     ld a, (noArgs)
     cp a, 2
     jp c, PrgmErr.INVALA
@@ -853,7 +845,7 @@ execArcPrgm: ; det(11)
     cp a, 2
     jr z, .deletePrgms
     cp a, 3
-    jp nc, PrgmErr.INVALA
+    jr nc, $ + 8
     ld a, (var2)
     cp a, 16
     jp nc, PrgmErr.INVALA
@@ -875,7 +867,7 @@ execArcPrgm: ; det(11)
     ld hl, xtempName
     call ti.Mov9ToOP1
     ld a, (var1)
-    cp a, 1
+    dec a
     jr nz, .createTempPrgm
     call ti.ChkFindSym
     call nc, ti.DelVarArc
@@ -936,9 +928,8 @@ execArcPrgm: ; det(11)
     jp return
 
 .zeroOrOneByte:
-    or a, a
-    sbc hl, hl
-    sbc hl, bc
+    ld a, b
+    or a, c
     pop hl
     jr z, .return
     ex de, hl
@@ -954,15 +945,11 @@ dispColor: ; det(12)
     jp c, PrgmErr.INVALA
     ld a, (var1)
     call _checkValidOSColor
-    call ti.GetColorValue
+    push de
     ld a, (var2)
     call _checkValidOSColor
-    push de
-    call ti.GetColorValue
     pop hl
-    call ti.SetTextFGBGcolors_
-    set ti.textEraseBelow, (iy + ti.textFlags)
-    jr .return
+    jr .setColors
 
 .fiveArgs:
     or a, a
@@ -977,6 +964,8 @@ dispColor: ; det(12)
     ld e, a
     ld a, (var4)
     ld d, a
+
+.setColors:
     call ti.SetTextFGBGcolors_
     set ti.textEraseBelow, (iy + ti.textFlags)
 

@@ -13,7 +13,7 @@ First you'll need to download the latest version of convimg from the `GitHub rel
 
 .. note::
 
-    If you already have the CE C toolchain installed, chances are that convimg has already been installed and is in your Path. You can check this by opening a terminal and running `convimg --version`.
+    If you already have the CE C toolchain installed, chances are that convimg has already been installed and is in your Path. You can check this by opening a terminal and running :code:`convimg --version`.
 
 On Windows:
     * Extract the zip to a file path without spaces.
@@ -96,6 +96,6 @@ Once you have completed your yaml, navigate to the directory with the sprites an
             image | 256 bytes
             "FFFFFFFF0000000000000000FFFFFFFFFFFFFFFF0000... (Data continues)
 
-You can then use the data in your programs by copying it into the source code or pasting it into a TI-BASIC IDE like SourceCoder.
+You can then use the data in your programs by copying it into the source code or pasting it into a TI-BASIC IDE like `SourceCoder <https://www.cemetech.net/sc/>`__.
 
 For more documentation on convimg, check out the README `here <https://github.com/mateoconlechuga/convimg/blob/master/README.md>`__. For more info on glob patterns, look `here <https://en.wikipedia.org/wiki/Glob_(programming)>`__.

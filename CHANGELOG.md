@@ -2,6 +2,26 @@
 
 All notable changes to the Celtic CE library will be documented in this file.
 
+## [1.0.0] - 2023-07-31
+
+### Added
+- OS Utility Functions:
+    - SetParseByte
+- Custom app icon to be viewed in shells
+### Changed
+- Graphics Functions:
+    - DrawCircle will now draw a circle with a radius of zero
+    - FillCircle will now draw a circle with a radius of zero
+- OS Utility Functions:
+    - PrgmCleanUp command renamed to ResetScreen
+- <kbd>2nd</kbd> + <kbd>enter</kbd> hook now also displays the byte offset that you're currently at in the program while editing it
+
+### Fixed
+
+- OS Utility Functions:
+    - BackupString will no longer backup strings with no data in them
+- Celtic now handles invalid arguments correctly
+
 ## [1.0.0-rc.1] - 2023-07-24
 
 ### Added

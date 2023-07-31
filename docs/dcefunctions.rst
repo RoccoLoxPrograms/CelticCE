@@ -55,7 +55,7 @@ Documentation
 
 .. function:: FillRect: det(15, low, high, x, y, width, height)
 
-    Draw a filled, colored rectangle on the screen. This command can also be used to draw an individual pixel by setting the width and height to 1, or a line by setting either the width or height to 1.
+    Draws a filled, colored rectangle on the screen.
 
     Parameters:
      * ``low``: low byte of color.

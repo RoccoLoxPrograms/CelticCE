@@ -3,7 +3,7 @@ Celtic III Functions
 
 Overview
 ~~~~~~~~
-Some (not all) of the functions from Celtic III are included in Celtic CE.
+Essentially all of the functions from Celtic III are included in Celtic CE.
 
 Documentation
 ~~~~~~~~~~~~~
@@ -14,7 +14,7 @@ Documentation
 
     Parameters:
      * ``list_element``: Element of the list to access, beginning at 1. Accessing 0 will return the dimension of the list.
-     * ``Ans``: Name of the list to access. Begins with the :sub:`L`\  token found in the :menuselection:`List --> OPS`. (:kbd:`2nd` + :kbd:`stat` + :kbd:`left arrow` + :kbd:`alpha` + :kbd:`apps`).
+     * ``Ans``: Name of the list to access. The data in ``Ans`` must be a string beginning with the :sub:`L`\  token found in the :menuselection:`List --> OPS` (:kbd:`2nd` + :kbd:`stat` + :kbd:`left arrow` + :kbd:`alpha` + :kbd:`apps`), unless you are using a default OS list such as L :sub:`1`\. When using default OS lists, simply use the corresponding list name token, such as L :sub:`1`\ or L :sub:`2`\.
 
     Returns:
      * ``Theta``: The number at the element of the list accessed, or the dimension of the list if ``list_element`` was 0.
@@ -30,26 +30,26 @@ Documentation
     Outputs a real number depicting the type of argument in ``Ans``.
 
     Parameters:
-     * ``Ans``: Argument to check the type of
+     * ``Ans``: Argument to check the type of.
 
     Returns:
      * ``Theta``: The number corresponding to the argument's type. A table with the possible types is below.
     
-    ====== ========
+    ====== =========
     Number Type
     0      Real
     1      List
     2      Matrix
     4      String
     12     Complex
-    13     Cpx List
-    ====== ========
+    13     Cplx List
+    ====== =========
 
 ------------
 
 .. function:: ChkStats: det(32, function)
 
-    This is a multi-purpose command used to read various system statuses. The output will very based on the specified function. A table with the possible functions and their resulting outputs is below.
+    This is a multi-purpose command used to read various system statuses. The output will vary based on the specified function. A table with the possible functions and their resulting outputs is below.
 
     ======== ==============================================================================
     Function Output
@@ -61,10 +61,10 @@ Documentation
     ======== ==============================================================================
 
     Parameters:
-     * ``function``: Function to complete
+     * ``function``: Function to complete.
 
     Returns:
-     * Varies based on input
+     * Varies based on input.
 
 ------------
 
@@ -205,7 +205,7 @@ Documentation
 
 .. function:: BinDelete: det(40, byte_start, number_of_bytes); Str0 = file name
 
-    Deletes the ``number_of_bytes`` bytes from the file specified by ``Str0``, starting at ``byte_start``. ``byte_start`` is 0-indexed, meaning that the first byte of the program is 0, the second is 1, and so on.
+    Deletes ``number_of_bytes`` bytes from the file specified by ``Str0``, starting at ``byte_start``. ``byte_start`` is 0-indexed, meaning that the first byte of the program is 0, the second is 1, and so on.
 
     Parameters:
      * ``byte_start``: The byte of the file to start deleting from. It is 0-indexed, so the first byte of the file is 0, the second is 1, and so on.
@@ -290,10 +290,12 @@ Documentation
 
     A list of return values and their corresponding errors can be found in the `error codes <errorcodes.html#ti-os-errors>`__ section, under TI-OS Errors.
 
+    .. warning:: ErrorHandle cannot be used recursively. This means that if you attempt to run ErrorHandle on a program and then run ErrorHandle again inside that second program, the ErrorHandle command in that second program will be ignored.
+
     .. note:: When using ErrorHandle from the homescreen, it will not run BASIC programs, though it can still run programs beginning with the Asm84CEPrgm token.
 
     Parameters:
-     * ``Ans``: The name of the program to run, or TI-BASIC code to be executed
+     * ``Ans``: The name of the program to run, or TI-BASIC code to be executed.
      * ``get_offset``: If ``get_offset`` is 1, ErrorHandle will return the byte offset the error occured at in ``Ans``. If it is 0, it will not. This only works with running programs, not strings.
 
     Returns:
@@ -311,9 +313,9 @@ Documentation
     Works almost identically to BASIC's sub() command, except that the output will be in hexadecimal and two-byte tokens will read as two instead of one byte. It is particularly useful for extracting data from a string that may contain nonsensical data that simply needs to be manipulated. If you allow the start point to be zero, the size of the string in bytes is returned instead. For data manipulation, you should use the Edit1Byte command.
 
     Parameters:
-     * ``string``: Which string variable to read from, where 0 = Str0, 9 = Str9, and so on
-     * ``start``: The byte of the string to begin reading at
-     * ``bytes``: How many bytes to read
+     * ``string``: Which string variable to read from, where 0 = Str0, 9 = Str9, and so on.
+     * ``start``: The byte of the string to begin reading at.
+     * ``bytes``: How many bytes to read.
 
     Returns:
      * ``Str9``: The extracted substring.
@@ -326,7 +328,7 @@ Documentation
     Converts up to 4 hex digits back to decimal. If you pass a string longer than 4 digits, only the first four are read.
 
     Parameters:
-     * ``Ans``: Hex string to convert
+     * ``Ans``: Hex string to convert.
 
     Returns:
      * ``Theta``: Decimal integer converted from hex string.
@@ -341,8 +343,8 @@ Documentation
     Converts a number between 0 and 65535 to its hexadecimal equivalent. The number of hexadecimal output to the string will have its leading zeroes stripped so inputting 15 will result in “F” and 16 will result in “10”. If override is 1, it will output all leading zeroes, which may be useful for routines that require four hex digits at all times but cannot spend the memory/time whipping up a BASIC solution to fill the missing zeroes.
 
     Parameters:
-     * ``number``: Decimal integer to convert
-     * ``override``: 1 to output all leading zeroes, or 0 to not
+     * ``number``: Decimal integer to convert.
+     * ``override``: 1 to output all leading zeroes, or 0 to not.
 
     Returns:
      * ``Str9``: Hex string converted from decimal integer.
@@ -358,15 +360,15 @@ Documentation
     .. note:: Note: A “word” in this sense is two bytes. Useful for editing a binary string which entries are all two bytes in length, such as a special string tilemap. You’re required, however, to specify offset in bytes. Also know that all words are stored little-endian. That means that the least significant byte is stored before the most significant byte is.
 
     Parameters:
-     * ``string``: Which string variable to read from, where 0 = Str0, 9 = Str9, and so on
-     * ``start``: The byte to start editing in the string
-     * ``word``: The two bytes to rewrite
+     * ``string``: Which string variable to read from, where 0 = Str0, 9 = Str9, and so on.
+     * ``start``: The byte to start editing in the string.
+     * ``word``: The two bytes to rewrite.
 
     Returns:
-     * Modifies the string with the specified word
+     * Modifies the string with the specified word.
 
     Errors:
-     * ``..E:NT:FN`` If the offset is past the end of the string
+     * ``..E:NT:FN`` If the offset is past the end of the string.
 
 ------------
 
@@ -387,12 +389,12 @@ Documentation
     5     Right Shift
     ===== ===========
 
-    If the numbers are out of bounds, then the function will exit out with an error. This command really helps mask out hex digits but if you use strings to store those digits, you'll need to use the HexToDec command for each value you need.
+    This command really helps mask out hex digits but if you use strings to store those digits, you'll need to use the HexToDec command for each value you need.
 
     Parameters:
-     * ``value1``: First value to perform bit operation with
-     * ``value2``: Second value to perform bit operation with
-     * ``function``: Which operation to perform, as seen in the table above
+     * ``value1``: First value to perform bit operation with.
+     * ``value2``: Second value to perform bit operation with.
+     * ``function``: Which operation to perform, as seen in the table above.
 
     Returns:
      * ``Theta``: Result of the bit operation.
@@ -401,7 +403,7 @@ Documentation
 
 .. function:: GetProgList: det(51, type); Ans = search string
 
-    This function will return a space-delimited string consisting of the names of programs, appvars, or groups that match partial name of the search string. Which is to say::
+    This function will return a space-delimited string consisting of the names of programs, appvars, or groups whose names partially match the search string. Which is to say::
 
         "TEMP
         det(51, 0) 
@@ -420,12 +422,12 @@ Documentation
         This command is NOT to be confused with FindProg, which outputs a string consisting of files whose CONTENTS starts with the specified string. Also use the fact that the final name in the list is terminated with a space to make extracting names from the list easier. It also will not find hidden variables.
 
     Parameters:
-     * ``type``: The type of file to search for, as seen above
-     * ``Ans``: String to find in file names
+     * ``type``: The type of file to search for, as seen above.
+     * ``Ans``: String to find in file names.
 
     Returns:
-     * ``Str9``: Filtered list of files
+     * ``Str9``: Filtered list of files.
 
     Errors:
-     * ``..S:NT:FN`` if ``Ans`` is not a string
-     * ``..P:NT:FN`` if no files were found containing the search string
+     * ``..S:NT:FN`` if ``Ans`` is not a string.
+     * ``..P:NT:FN`` if no files were found containing the search string.

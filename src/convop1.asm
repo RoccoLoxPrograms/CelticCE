@@ -31,20 +31,13 @@
 ; OF THE POSSIBILITY OF SUCH DAMAGE.
 ;
 ; Modified for Celtic CE by RoccoLox Programs.
+; This will only convert positive, real integers.
 
 ConvOP1:
-    ld hl, ti.OP1
+    call ti.TRunc
     di
+    ld hl, ti.OP1 + 1
     ld de, 0
-    res negative, (iy + celticFlags1)
-    ld a, (hl)
-    bit 7, a
-    jr z, $ + 6
-    set negative, (iy + celticFlags1)
-    res 7, a
-    or a, a
-    ret nz ; quit if this is not a real-type variable
-    inc hl
     ld a, -$7F
     add a, (hl)
     ret nc
@@ -97,15 +90,6 @@ ConvOp1CL:
     jr nz, ConvOp1CL
 
 ConvOp1CE:
-    bit negative, (iy + celticFlags1)
-    jr z, $ + 9
-    ld a, h
-    cpl 
-    ld h, a ; retrieves "negative" number equivalent for input
-    ld a, l
-    cpl
-    ld l, a
-    inc hl
     ex de, hl
     ld sp, (ans)
     ret

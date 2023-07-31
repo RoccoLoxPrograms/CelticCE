@@ -35,7 +35,7 @@ Documentation
      * ``low``: Low byte of color.
      * ``high``: High byte of color.
      * ``x1``: x location to begin drawing the line from, beginning from the top-left corner of the screen. x has a range of 0 - 319.
-     * ``y1``: y location to begin drawing the line from, beginning from the top-left corner of the screen. y has a range of 0 - 239
+     * ``y1``: y location to begin drawing the line from, beginning from the top-left corner of the screen. y has a range of 0 - 239.
      * ``x2``: x location to finish drawing the line at, beginning from the top-left corner of the screen.
      * ``y2``: y location to finish drawing the line at, beginning from the top-left corner of the screen.
 
@@ -90,7 +90,7 @@ Documentation
 
 .. function:: PixelTestColor: det(20, row, column)
 
-    This function works just like OS function pxl-Test() does, however, it will return 0 if no pixel is present and the OS color of the pixel if one is present. This only applies to the graph screen, like pxl-Test().
+    This function works just like the OS function pxl-Test() does, however, it will return 0 if no pixel is present and the OS color of the pixel if one is present. This only applies to the graph screen, like pxl-Test().
 
     Parameters:
      * ``row``: Row of the graphscreen that contains the pixel to test.
@@ -114,7 +114,7 @@ Documentation
 
         A sample sprite.
 
-    We'll convert it into a a matrix, where each pixel is replaced with the hex equivalent of its xLIBC color::
+    We'll convert it into a matrix, where each pixel is replaced with the hex equivalent of its xLIBC color::
 
         [FF, FF, 00, 00, 00, 00, FF, FF
          FF, 00, E6, E6, E6, E6, 00, FF
@@ -125,7 +125,7 @@ Documentation
          FF, 00, E5, E5, E5, E5, 00, FF
          FF, FF, 00, 00, 00, 00, FF, FF]
 
-    Then, to make it a string, we'll take remove the newlines and commas, like this:
+    Then, to make it into a string that we can use in a program, we'll remove the newlines and commas, like this:
 
     .. only:: html
 
@@ -172,7 +172,7 @@ Documentation
      * ``Theta``: Contains the width of the string in pixels.
 
     Errors:
-     * ``..S:NT:ST`` if ``Ans`` is not a string
+     * ``..S:NT:ST`` if ``Ans`` is not a string.
 
 ------------
 
@@ -255,8 +255,8 @@ Documentation
     Parameters:
      * ``direction``: Direction to move the screen in, as seen in the table above.
      * ``amount``: The amount of pixels to move the screen.
-     * ``x``: Starting X position of the region of the screen to shift.
-     * ``y``: Starting Y position of the region of the screen to shift.
+     * ``x``: Starting X position of the region of the screen to shift, beginning at the top-left corner of the screen.
+     * ``y``: Starting Y position of the region of the screen to shift, beginning at the top-left corner of the screen.
      * ``width``: Width of the region of the screen to shift.
      * ``height``: Height of the region of the screen to shift.
 
@@ -273,9 +273,9 @@ Documentation
     Converts an RGB color to a high and low byte that can be used in other Celtic functions.
 
     Parameters:
-     * ``r``: Red color value
-     * ``g``: Green color value
-     * ``b``: Blue color value
+     * ``r``: Red color value.
+     * ``g``: Green color value.
+     * ``b``: Blue color value.
 
     Returns:
      * ``Ans``: Low byte of the color.
@@ -288,12 +288,12 @@ Documentation
     Draws an unfilled rectangle of user-specified color, location, and size.
 
     Parameters:
-     * ``low``: Low byte of color
-     * ``high``: High byte of color
-     * ``x``: x location to begin drawing the rectangle, starting at the top-left corner of the screen
-     * ``y``: y location to begin drawing the rectangle, starting at the top-left corner of the screen
-     * ``width``: Width of the rectangle to draw
-     * ``height``: Height of the rectangle to draw
+     * ``low``: Low byte of color.
+     * ``high``: High byte of color.
+     * ``x``: x location to begin drawing the rectangle, starting at the top-left corner of the screen.
+     * ``y``: y location to begin drawing the rectangle, starting at the top-left corner of the screen.
+     * ``width``: Width of the rectangle to draw.
+     * ``height``: Height of the rectangle to draw.
 
     Alternative method: ``det(60, os_color, x, y, width, height)``
      * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVY.
@@ -311,11 +311,11 @@ Documentation
     Draws an unfilled circle with the user specified color. The ``x`` and ``y`` arguments refer to the center point of the circle.
 
     Parameters:
-     * ``low``: Low byte of color
-     * ``high``: High byte of color
-     * ``x``: x location of the center of the circle, starting at the top-left corner of the screen
-     * ``y``: y location of the center of the circle, starting at the top-left corner of the screen
-     * ``radius``: Radius of the circle
+     * ``low``: Low byte of color.
+     * ``high``: High byte of color.
+     * ``x``: x location of the center of the circle, starting at the top-left corner of the screen.
+     * ``y``: y location of the center of the circle, starting at the top-left corner of the screen.
+     * ``radius``: Radius of the circle.
 
     Alternative method: ``det(61, os_color, x, y, radius)``
      * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVY.
@@ -333,11 +333,11 @@ Documentation
     Draws a filled circle with the user specified color. The ``x`` and ``y`` arguments refer to the center point of the circle.
 
     Parameters:
-     * ``low``: Low byte of color
-     * ``high``: High byte of color
-     * ``x``: x location of the center of the circle, starting at the top-left corner of the screen
-     * ``y``: y location of the center of the circle, starting at the top-left corner of the screen
-     * ``radius``: Radius of the circle
+     * ``low``: Low byte of color.
+     * ``high``: High byte of color.
+     * ``x``: x location of the center of the circle, starting at the top-left corner of the screen.
+     * ``y``: y location of the center of the circle, starting at the top-left corner of the screen.
+     * ``radius``: Radius of the circle.
 
     Alternative method: ``det(62, os_color, x, y, radius)``
      * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVY.
@@ -361,13 +361,13 @@ Documentation
         A diagram showing various points along the circle.
 
     Parameters:
-     * ``low``: Low byte of color
-     * ``high``: High byte of color
-     * ``x``: x location of the center of the arc, starting at the top-left corner of the screen
-     * ``y``: y location of the center of the arc, starting at the top-left corner of the screen
-     * ``radius``: Radius of the arc
-     * ``start_angle``: Angle to begin drawing the arc at
-     * ``end_angle``: Angle to finish drawing the arc at
+     * ``low``: Low byte of color.
+     * ``high``: High byte of color.
+     * ``x``: x location of the center of the arc, starting at the top-left corner of the screen.
+     * ``y``: y location of the center of the arc, starting at the top-left corner of the screen.
+     * ``radius``: Radius of the arc.
+     * ``start_angle``: Angle to begin drawing the arc at.
+     * ``end_angle``: Angle to finish drawing the arc at.
 
     Alternative method: ``det(63, os_color, x, y, radius, start_angle, end_angle)``
      * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVY.
@@ -386,11 +386,11 @@ Documentation
 
     Parameters:
      * ``font``: Whether to use the OS large or small font. 0 for small font, 1 for large font.
-     * ``low``: Low byte of color
-     * ``high``: High byte of color
-     * ``x``: x location to begin drawing the text at, starting at the top-left corner of the screen
-     * ``y``: y location to begin drawing the text at, starting at the top-left corner of the screen
-     * ``Str9``: String to display
+     * ``low``: Low byte of color.
+     * ``high``: High byte of color.
+     * ``x``: x location to begin drawing the text at, starting at the top-left corner of the screen.
+     * ``y``: y location to begin drawing the text at, starting at the top-left corner of the screen.
+     * ``Str9``: String to display.
 
     Alternative method: ``det(64, font, os_color, x, y)``
      * ``os_color``: Color from TI-OS Colors menu, like RED or BLUE or NAVY.
@@ -405,14 +405,14 @@ Documentation
     Checks if a rectangle intersects with another rectangle.
 
     Parameters:
-     * ``x0``: x coordinate of rectangle 0, starting at the top left corner of the screen
-     * ``y0``: y coordinate of rectangle 0, starting at the top left corner of the screen
-     * ``width0``: Width of rectangle 0
-     * ``height0``: Height of rectangle 0
-     * ``x1``: x coordinate of rectangle 1, starting at the top left corner of the screen
-     * ``y1``: y coordinate of rectangle 1, starting at the top left corner of the screen
-     * ``width1``: Width of rectangle 1
-     * ``height1``: Height of rectangle 1
+     * ``x0``: x coordinate of rectangle 0, starting at the top-left corner of the screen.
+     * ``y0``: y coordinate of rectangle 0, starting at the top-left corner of the screen.
+     * ``width0``: Width of rectangle 0.
+     * ``height0``: Height of rectangle 0.
+     * ``x1``: x coordinate of rectangle 1, starting at the top-left corner of the screen.
+     * ``y1``: y coordinate of rectangle 1, starting at the top-left corner of the screen.
+     * ``width1``: Width of rectangle 1.
+     * ``height1``: Height of rectangle 1.
 
     Returns:
      * ``Ans``: 0 if the rectangles do not intersect, and 1 if they do.
@@ -441,8 +441,8 @@ Documentation
      * ``fg_high``: High byte of the foreground color.
      * ``bg_low``: Low byte of the background color.
      * ``bg_high``: High byte of the background color.
-     * ``x``: X coordinate to display the character at.
-     * ``y``: Y coordinate to display the character at.
+     * ``x``: X coordinate to display the character at, beginning at the top-left corner of the screen.
+     * ``y``: Y coordinate to display the character at, beginning at the top-left corner of the screen.
      * ``char``: The numeric code associated with the character to display. See images above for more info.
 
     Alternative method: ``det(66, font, fg_os, bg_os, x, y, char)``
@@ -465,8 +465,8 @@ Documentation
      * ``font``: Whether to use the OS large or small font. 0 for the small font and 1 for the large font.
      * ``low``: Low byte of the color.
      * ``high``: High byte of the color.
-     * ``x``: X coordinate to display the character at.
-     * ``y``: Y coordinate to display the character at.
+     * ``x``: X coordinate to display the character at, beginning at the top-left corner of the screen.
+     * ``y``: Y coordinate to display the character at, beginning at the top-left corner of the screen.
      * ``char``: The numeric code associated with the character to display. See images above for more info.
 
     Alternative method: ``det(67, font, os_color, x, y, char)``
@@ -487,8 +487,8 @@ Documentation
     Parameters:
      * ``low``: Low byte of the color.
      * ``high``: High byte of the color.
-     * ``x``: X coordinate to begin drawing the line at.
-     * ``y``: Y coordinate to begin drawing the line at.
+     * ``x``: X coordinate to begin drawing the line at, beginning at the top-left corner of the screen.
+     * ``y``: Y coordinate to begin drawing the line at, beginning at the top-left corner of the screen.
      * ``length``: The length of the horizontal line.
 
     Alternative method: ``det(68, os_color, x, y, length)``
@@ -509,8 +509,8 @@ Documentation
     Parameters:
      * ``low``: Low byte of the color.
      * ``high``: High byte of the color.
-     * ``x``: X coordinate to begin drawing the line at.
-     * ``y``: Y coordinate to begin drawing the line at.
+     * ``x``: X coordinate to begin drawing the line at, beginning at the top-left corner of the screen.
+     * ``y``: Y coordinate to begin drawing the line at, beginning at the top-left corner of the screen.
      * ``length``: The length of the vertical line.
 
     Alternative method: ``det(69, os_color, x, y, length)``

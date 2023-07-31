@@ -11,8 +11,8 @@ When hovering with the cursor over a valid Celtic command, the status bar will d
 
 .. image:: images/functionPreview.png
 
-Current Line and Program Size
+Line / Byte Offset and Program Size
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Another useful feature Celtic adds to the editor is the ability to check the current size of the program, along with the line of the program the cursor is currently on. This can be useful for checking optimizations, and also for figuring out the line number of a certain line for the SetParseLine command. You can view this information by pressing :kbd:`2nd` + :kbd:`enter` when in the OS editor. A screenshot of the line and program size info is below:
+Another useful feature Celtic adds to the editor is the ability to check the current size of the program, along with the line and byte offset of the program the cursor is currently on. This can be useful for checking optimizations, and also for figuring out the line number or byte offset of a certain location for the SetParseLine and SetParseByte commands. You can view this information by pressing :kbd:`2nd` + :kbd:`enter` when in the OS editor. A screenshot of the line / byte offset and program size info is below:
 
 .. image:: images/statusBarInfo.png

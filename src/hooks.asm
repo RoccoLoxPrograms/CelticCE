@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 24, 2023
+; Last Built: July 31, 2023
 ;
 ;----------------------------------------
 
@@ -61,14 +61,12 @@ matrixType:
     call ti.SetxxOP1
     pop bc
     pop hl
-    ei
     or a, 1
     ret
 
 popReturnOS:
     pop bc
     pop hl
-    ei
     cp a, a
     ret
 
@@ -85,7 +83,7 @@ hookTriggered:
     ld a, (ti.OP1)
     cp a, ti.MatObj
     jr z, matrixType
-    call ti.PushRealO1 ; push so all args are on FPS
+    call ti.PushOP1 ; push so all args are on FPS
     ld a, (noArgs)
     push af
     dec a
@@ -101,11 +99,10 @@ hookTriggered:
 popArgs:
     push bc
     push hl
-    call ti.PopRealO1
+    call ti.PopOP1
     ld a, (ti.OP1)
     or a, a
     jr nz, removeAllArgs
-    call ti.TRunc
     call ConvOP1
     pop hl
     ld (hl), de
@@ -116,7 +113,6 @@ popArgs:
     djnz popArgs
 
 hookTriggeredCont:
-    di
     ld a, (var0)
     cp a, (celticTableEnd - celticTableBegin) / 3
     jp nc, PrgmErr.SUPPORT
@@ -132,12 +128,16 @@ hookTriggeredCont:
 removeAllArgs:
     pop hl
     pop bc
+    dec b
+    jr z, .argsPopped
 
 .clearArgs:
     push bc
-    call ti.PopRealO1
+    call ti.PopOP1
     pop bc
     djnz .clearArgs
+
+.argsPopped:
     jp PrgmErr.INVALA
 
 celticTableBegin:
@@ -221,8 +221,9 @@ celticTableBegin:
     dl backupReal
     dl restoreReal
     dl setParseLine
+    dl setParseByte
     dl swapFileType
-    dl prgmCleanUp ; det(81)
+    dl resetScreen ; det(82)
 celticTableEnd:
 
 cursorHook:
@@ -239,12 +240,18 @@ cursorHook:
     ld a, (ti.cxCurApp)
     cp a, ti.cxPrgmEdit
     ret nz
-    ld hl, (ti.editCursor)
     bit keyPressed, (iy + celticFlags2)
     ret nz
+    set keyPressed, (iy + celticFlags2)
+    ld de, .displayProgInfo
+    push de
+    ld hl, (ti.editCursor)
     ld a, (hl)
     cp a, ti.tDet
-    jp nz, .displayProgInfo
+    ret nz
+    bit showLineNum, (iy + celticFlags1)
+    ret z
+    pop hl
     ld hl, (ti.editTail)
     inc hl
     ld a, (hl)
@@ -316,7 +323,6 @@ cursorHook:
     call ti.VPutS
     ld de, $FFFF
     ld.sis (ti.drawBGColor and $FFFF), de
-    set keyPressed, (iy + celticFlags2)
     inc a
     ret
 
@@ -357,7 +363,11 @@ cursorHook:
     ld bc, (ti.editTop)
     or a, a
     sbc hl, bc
-    ex de, hl
+    push hl
+    dec hl
+    ld de, byteNumber
+    call .convertNumberToStr
+    pop de
     ld hl, (ti.editBtm)
     ld bc, (ti.editTail)
     inc bc
@@ -379,7 +389,7 @@ cursorHook:
     ld hl, programLineText
     jp .drawText
 
-.convertNumberToStr:
+.convertNumberToStr: ; hl = number to convert; de = pointer to store text
     ld bc, -10000
     call .aqu
     ld bc, -1000
@@ -416,11 +426,11 @@ getkeyHook:
     or a, a
     ld a, b
     ret nz
+    res keyPressed, (iy + celticFlags2)
     cp a, ti.kLastEnt
     jr z, .setDrawLineNum
     push af
     call ti.os.ClearStatusBarLow
-    res keyPressed, (iy + celticFlags2)
     pop af
     ret
 

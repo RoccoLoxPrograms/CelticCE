@@ -51,7 +51,7 @@ macro app_private
 		dl app.size
 	end postpone
 
-	macro app_start? name,copyright
+	macro app_start? name,copyright,icon_length
 		local value, freespace
 		app.start := $
 		app.start_offset := $%
@@ -82,7 +82,7 @@ macro app_private
 		dl app.code			; 012h
 		dl app.data			; 015h
 		dl app.data_end-app.data	; 018h
-		dl app.code			; 01Bh
+		dl app.code+icon_length	; 01Bh
 		dl 0				; 01Eh
 		if defined app.library_table
 			dl app.library_table	; 021h

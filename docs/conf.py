@@ -24,9 +24,9 @@ copyright = '2022 - 2023, RoccoLox Programs, TIny_Hacker'
 author = 'RoccoLox Programs, TIny_Hacker'
 
 # The short X.Y version
-version = '1.0-rc.1'
+version = '1.0'
 # The full version, including alpha/beta/rc tags
-release = 'Release Candidate 1.0'
+release = '1.0'
 
 
 # -- General configuration ---------------------------------------------------

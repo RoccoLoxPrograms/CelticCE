@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 24, 2023
+; Last Built: July 31, 2023
 ;
 ;----------------------------------------
 
@@ -12,9 +12,15 @@ include 'include/macros.inc'
 
 include 'installer.asm'
 
-;--------------------------------------------------------------
+;--------------------------------------------------------------------------
 
-    app_start 'CelticCE', '(C)  2022-2023  RoccoLox  Programs'
+    app_start 'CelticCE', '(C)  2022-2023  RoccoLox  Programs', appIconLen
+
+appIcon:
+    db $01 ; icon byte
+
+    iconData
+appIconLen := $ - appIcon
 
 hookPointers:
     jr $ + 11 ; skip over the pointers
@@ -39,7 +45,7 @@ end relocate
     include 'error.asm'
     include 'rodata.asm'
 
-;--------------------------------------------------------------
+;--------------------------------------------------------------------------
 
     app_data 
     ; stick all of this here since it's only used when the app is run
@@ -84,7 +90,7 @@ aboutScrnLine3:
     db "and TIny_Hacker", 0
 
 versionString:
-    db "Version 1.0.0-rc.1", 0
+    db "Version 1.0.0", 0
 
 copyright:
     db "(c) 2022-2023", 0

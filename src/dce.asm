@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 24, 2023
+; Last Built: July 31, 2023
 ;
 ;----------------------------------------
 
@@ -16,11 +16,9 @@ dispText: ; det(13)
     jp c, PrgmErr.INVALA
     ld a, (var3)
     call _checkValidOSColor
-    call ti.GetColorValue
     ld.sis (ti.drawBGColor and $FFFF), de
     ld a, (var2)
     call _checkValidOSColor
-    call ti.GetColorValue
     ld.sis (ti.drawFGColor and $FFFF), de
     ld hl, (var4)
     ld (ti.penCol), hl
@@ -101,7 +99,7 @@ execHex: ; det(14)
     or a, a
     sbc hl, bc
     pop hl
-    jp c, PrgmErr.INVALS
+    jr c, $ + 6
     srl b
     rr c
     jp c, PrgmErr.INVALS
@@ -146,7 +144,6 @@ fillRect: ; det(15)
     or a, a
     jr z, .invertRect
     call _checkValidOSColor
-    call ti.GetColorValue
     ld.sis (ti.fillRectColor and $FFFF), de
     ld ix, var2
     jr .fillRect
@@ -181,15 +178,15 @@ fillRect: ; det(15)
     ld hl, (ix + 6)
     ld a, h
     or a, l
-    jp z, return
+    jr z, .return
     ld hl, (ix + 9)
     ld a, h
     or a, l
-    jp z, return
+    jr z, .return
     ld de, (ix)
     ld hl, -ti.lcdWidth
     add hl, de
-    jp c, return
+    jr c, .return
     ld hl, (ix + 6)
     add hl, de
     ex de, hl
@@ -202,11 +199,14 @@ fillRect: ; det(15)
     sbc hl, de
     ld (ix + 6), hl
 
+.return:
+    jp return
+
 .clipHeight:
     ld de, (ix + 3)
     ld hl, -ti.lcdHeight
     add hl, de
-    jp c, return
+    jr c, .return
     ld hl, (ix + 9)
     add hl, de
     ex de, hl
@@ -258,7 +258,7 @@ fillRect: ; det(15)
 
 .checkLoop:
     dec (ix + 9)
-    jp z, return
+    jr z, .return
     pop hl
     pop bc
     add hl, bc
