@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 31, 2023
+; Last Built: December 24, 2023
 ;
 ;----------------------------------------
 
@@ -16,8 +16,7 @@ getListElem: ; det(30)
     ld a, (noArgs)
     dec a
     jp z, PrgmErr.INVALA
-    call ti.AnsName
-    call ti.ChkFindSym
+    call _findAnsStr
     or a, a
     sbc hl, hl
     ld a, (de)
@@ -400,8 +399,7 @@ findProg: ; det(33)
     ld a, (ti.OP1)
     cp a, ti.StrngObj
     jp nz, .setupFindAll
-    call ti.AnsName
-    call ti.ChkFindSym
+    call _findAnsStr
     or a, a
     sbc hl, hl
     ld a, (de)
@@ -426,8 +424,7 @@ findProg: ; det(33)
     ld a, (ti.OP1)
     cp a, ti.StrngObj
     jp nz, .setupFindAll
-    call ti.AnsName
-    call ti.ChkFindSym
+    call _findAnsStr
     or a, a
     sbc hl, hl
     ld a, (de)
@@ -495,10 +492,7 @@ findProg: ; det(33)
     call ti.ChkFindSym
     call nc, ti.DelVarArc
     pop hl
-    push hl
-    call ti.EnoughMem
-    jp c, PrgmErr.NOMEM
-    pop hl
+    call _checkMemory
     push hl
     call ti.CreateStrng
     ld hl, execHexLoc
@@ -588,9 +582,7 @@ ungroupFile: ; det(34)
     jp z, PrgmErr.INVALA
     ld hl, Str0
     call _findString
-    ld a, (de)
-    inc de
-    inc de
+    ld a, l
     ex de, hl
     call _convertChars.varName
     ld hl, prgmName + 1
@@ -647,8 +639,7 @@ ungroupFile: ; det(34)
     pop hl
     jr z, .writeEnd
     push hl
-    push ix
-    pop hl ; get VAT pointer
+    lea hl, ix ; get VAT pointer
     call ti.DelVarArc
 
 .create:
@@ -664,8 +655,7 @@ ungroupFile: ; det(34)
     push hl
     inc hl
     inc hl
-    call ti.EnoughMem
-    jp c, PrgmErr.NOMEM
+    call _checkMemory
     pop hl
     push hl
     call ti.CreateVar
@@ -711,9 +701,7 @@ ungroupFile: ; det(34)
 getGroup: ; det(35)
     ld hl, Str0
     call _findString
-    ld a, (de)
-    inc de
-    inc de
+    ld a, l
     ex de, hl
     call _convertChars.varName
     ld hl, prgmName + 1
@@ -807,6 +795,7 @@ getGroup: ; det(35)
     call ti.ChkFindSym
     call nc, ti.DelVarArc
     pop hl
+    call _checkMemory
     push hl
     call ti.CreateStrng
     ld hl, execHexLoc
@@ -822,9 +811,7 @@ extGroup: ; det(36)
     jp z, PrgmErr.INVALA
     ld hl, Str0
     call _findString
-    ld a, (de)
-    inc de
-    inc de
+    ld a, l
     ex de, hl
     call _convertChars.varName
     ld hl, prgmName + 1
@@ -877,8 +864,7 @@ extGroup: ; det(36)
     push hl
     inc hl
     inc hl
-    call ti.EnoughMem
-    jp c, PrgmErr.NOMEM
+    call _checkMemory
     pop hl
     push hl
     call ti.CreateVar
@@ -900,9 +886,7 @@ groupMem: ; det(37)
     jp z, PrgmErr.INVALA
     ld hl, Str0
     call _findString
-    ld a, (de)
-    inc de
-    inc de
+    ld a, l
     ex de, hl
     call _convertChars.varName
     ld hl, prgmName + 1
@@ -962,6 +946,7 @@ binRead: ; det(38)
     call ti.ChkFindSym
     call nc, ti.DelVarArc
     pop hl
+    call _checkMemory
     push hl
     call ti.CreateStrng
     inc de
@@ -1006,13 +991,8 @@ binWrite: ; det(39)
     push bc
     ld hl, Str9
     call _findString
-    ld bc, 0
-    ld a, (de)
-    ld c, a
-    inc de
-    ld a, (de)
-    ld b, a
-    inc de
+    push hl
+    pop bc
     push de
     push bc
     push bc
@@ -1020,8 +1000,7 @@ binWrite: ; det(39)
     srl h
     rr l
     jp c, PrgmErr.INVALS
-    call ti.EnoughMem
-    jp c, PrgmErr.NOMEM
+    call _checkMemory
     pop bc
     pop de
     pop hl
@@ -1167,8 +1146,7 @@ binDelete: ; det(40)
     jp return
 
 hexToBin: ; det(41)
-    call ti.AnsName
-    call ti.ChkFindSym
+    call _findAnsStr
     push de
     call ti.RclAns
     pop hl
@@ -1216,6 +1194,7 @@ hexToBin: ; det(41)
     call ti.ChkFindSym
     call nc, ti.DelVarArc
     pop hl
+    call _checkMemory
     push hl
     call ti.CreateStrng
     inc de
@@ -1231,8 +1210,7 @@ hexToBin: ; det(41)
     jr .storeLoop
 
 binToHex: ; det(42)
-    call ti.AnsName
-    call ti.ChkFindSym
+    call _findAnsStr
     push de
     call ti.RclAns
     pop de
@@ -1274,6 +1252,7 @@ binToHex: ; det(42)
     call ti.ChkFindSym
     call nc, ti.DelVarArc
     pop hl
+    call _checkMemory
     push hl
     call ti.CreateStrng
     inc de
@@ -1306,13 +1285,8 @@ edit1Byte: ; det(44)
     pop af
     ld (ti.OP1 + 2), a
     call _findString + 4
-    ex de, hl
-    ld bc, 0
-    ld c, (hl)
-    inc hl
-    ld b, (hl)
-    inc hl
-    ex de, hl
+    push hl
+    pop bc
     ld hl, (var2)
     or a, a
     sbc hl, bc
@@ -1340,8 +1314,7 @@ errorHandle: ; det(45)
     set showErrorOffset, (iy + celticFlags1)
 
 .skipOffsetFlag:
-    call ti.AnsName
-    call ti.ChkFindSym
+    call _findAnsStr
     push de
     call ti.RclAns
     pop hl
@@ -1375,10 +1348,7 @@ errorHandle: ; det(45)
     push bc
     push bc
     pop hl
-    ld bc, 128 ; for safety
-    add hl, bc
-    call ti.EnoughMem
-    jp c, PrgmErr.NOMEM
+    call _checkMemory
     ld hl, basicPrgmName
     call ti.Mov9ToOP1
     pop hl
@@ -1510,10 +1480,7 @@ errorHandle: ; det(45)
     push bc
     push bc
     pop hl
-    ld bc, 128 ; for safety
-    add hl, bc
-    call ti.EnoughMem
-    jp c, PrgmErr.NOMEM
+    call _checkMemory
     ld hl, basicPrgmName
     call ti.Mov9ToOP1
     pop hl
@@ -1540,6 +1507,9 @@ errorHandle: ; det(45)
     pop bc ; size of data
     dec bc
     dec bc ; remove Asm84CEPrgm from un-squished size
+    ld a, b
+    or a, c
+    jr z, .noData
     push bc
     push bc
 
@@ -1560,11 +1530,13 @@ errorHandle: ; det(45)
     pop hl ; un-squished size minus newlines
     ld a, h
     or a, l
+
+.noData:
     jp z, PrgmErr.NULLVAR
     bit 0, l
     jp nz, PrgmErr.INVALS
-    srl l
-	rr h
+    srl h
+    rr l
     ld (ti.asm_prgm_size), hl
     push hl
     ld de, ti.userMem
@@ -1664,7 +1636,7 @@ stringRead: ; det(46)
     ld (ti.OP1 + 2), a
     call _findString + 4
     ex de, hl
-    inc hl
+    dec hl
     ld de, (var2)
     add hl, de
     ex de, hl
@@ -1697,6 +1669,7 @@ stringRead: ; det(46)
     call ti.ChkFindSym
     call nc, ti.DelVarArc
     pop hl
+    call _checkMemory
     push hl
     call ti.CreateStrng
     inc de
@@ -1726,13 +1699,6 @@ stringRead: ; det(46)
     pop af
     ld (ti.OP1 + 2), a
     call _findString + 4
-    ex de, hl
-    ld bc, 0
-    ld c, (hl)
-    inc hl
-    ld b, (hl)
-    push bc
-    pop hl
     call _storeThetaHL
     jp return
 
@@ -1741,8 +1707,7 @@ hexToDec: ; det(47)
     ld a, (ti.OP1)
     cp a, ti.StrngObj
     jp nz, PrgmErr.SNTST
-    call ti.AnsName
-    call ti.ChkFindSym
+    call _findAnsStr
     ex de, hl
     ld bc, 0
     ld c, (hl)
@@ -1854,13 +1819,8 @@ editWord: ; det(49)
     pop af
     ld (ti.OP1 + 2), a
     call _findString + 4
-    ex de, hl
-    ld bc, 0
-    ld c, (hl)
-    inc hl
-    ld b, (hl)
-    inc hl
-    ex de, hl
+    push hl
+    pop bc
     ld hl, (var2)
     inc hl
     or a, a
@@ -1965,8 +1925,7 @@ getProgList: ; det(51)
     ld a, (ti.OP1)
     cp a, ti.StrngObj
     jp nz, PrgmErr.SNTST
-    call ti.AnsName
-    call ti.ChkFindSym
+    call _findAnsStr
     or a, a
     sbc hl, hl
     ld a, (de)
@@ -1997,8 +1956,7 @@ getProgList: ; det(51)
     ld a, (ti.OP1)
     cp a, ti.StrngObj
     jp nz, PrgmErr.SNTST
-    call ti.AnsName
-    call ti.ChkFindSym
+    call _findAnsStr
     or a, a
     sbc hl, hl
     ld a, (de)
@@ -2050,10 +2008,7 @@ getProgList: ; det(51)
     call ti.ChkFindSym
     call nc, ti.DelVarArc
     pop hl
-    push hl
-    call ti.EnoughMem
-    jp c, PrgmErr.NOMEM
-    pop hl
+    call _checkMemory
     push hl
     call ti.CreateStrng
     ld hl, execHexLoc

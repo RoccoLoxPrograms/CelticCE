@@ -8,30 +8,6 @@ This page contains a list of useful hex codes to be used with ExecHex. To use th
 Documentation
 ~~~~~~~~~~~~~
 
-.. function:: Turn Off LCD
-
-    Turns off the calculator's LCD::
-
-        "3E01321900E3C9"
-
-.. function:: Turn On LCD
-
-    Turns on the calculator's LCD::
-
-        "3E09321900E3C9"
-
-.. function:: Decrease Brightness
-    
-    Decrease the LCD brightness by 1::
-
-        "3A2400F63C322400F6C9"
-
-.. function:: Increase Brightness
-    
-    Increase the LCD brightness by 1::
-
-        "3A2400F63D322400F6C9"
-
 .. function:: Invert LCD (High contrast mode/Dark mode)
     
     Inverts the colors of the LCD. Also sometimes referred to as "High contrast mode" or "Dark mode"::
@@ -48,12 +24,6 @@ Documentation
     
     .. warning::
         Make sure to switch back to "program mode" when you're done by running the program again.
-
-.. function:: Quick Key
-    
-    Loads the most recent keycode into ``Ans``::
-
-        "3A8705D0CD080B02CD300F02C9"
 
 .. function:: Text Inverse
     
@@ -84,24 +54,6 @@ Documentation
     Clears the LCD::
 
         "CD101A02C9"
-
-.. function:: Clear LCD and Redraw Status Bar
-    
-    Same as Clear LCD, but redraws the Status Bar as well::
-
-        "CD101A02CD3C1A02C9"
-
-.. function:: Fill Screen with White
-    
-    Fills the screen with white::
-
-        "210000D436FFE5D11301FF5702EDB0C9"
-
-.. function:: Fill Screen with Black
-    
-    Fills the screen with black::
-
-        "210000D43600E5D11301FF5702EDB0C9"
 
 .. function:: Run Indicator Off
     

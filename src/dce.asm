@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 31, 2023
+; Last Built: December 24, 2023
 ;
 ;----------------------------------------
 
@@ -52,11 +52,8 @@ dispText: ; det(13)
     ld hl, Str9
     call _findString
     ex de, hl
-    ld bc, 0
-    ld c, (hl)
-    inc hl
-    ld b, (hl)
-    inc hl
+    push de
+    pop bc
     ld de, execHexLoc
 
 .storeText:
@@ -81,8 +78,7 @@ dispText: ; det(13)
     jp return
 
 execHex: ; det(14)
-    call ti.AnsName
-    call ti.ChkFindSym
+    call _findAnsStr
     push de
     call ti.RclAns
     pop hl
@@ -140,28 +136,30 @@ fillRect: ; det(15)
     jr z, .sevenArgs
     cp a, 6
     jp c, PrgmErr.INVALA
+    ld ix, var2
     ld a, (var1)
     or a, a
     jr z, .invertRect
     call _checkValidOSColor
     ld.sis (ti.fillRectColor and $FFFF), de
-    ld ix, var2
     jr .fillRect
 
 .invertRect:
-    ld hl, (var2)
-    ld de, (var4)
-    ; calculate bottom right x coord
+    ld hl, (ix)
+    push hl
+    ld de, (ix + 6)
+    ld a, d
+    or a, e
+    jr z, .return
     add hl, de
     dec hl
     ex de, hl
-    ld hl, (var2)
-    ld a, (var5)
-    ; calculate bottom right y coord
-    ld c, a
-    ld a, (var3)
-    ld b, a
-    add a, c
+    pop hl
+    ld b, (ix + 3)
+    ld a, (ix + 9)
+    or a, a
+    jr z, .return
+    add a, b
     dec a
     ld c, a
     call ti.InvertRect
@@ -198,6 +196,7 @@ fillRect: ; det(15)
     or a, a
     sbc hl, de
     ld (ix + 6), hl
+    jr .clipHeight
 
 .return:
     jp return

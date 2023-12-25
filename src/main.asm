@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 31, 2023
+; Last Built: December 24, 2023
 ;
 ;----------------------------------------
 
@@ -40,7 +40,7 @@ installPage:
     or a, a
     sbc hl, hl
     ld de, 319
-    ld b, 0
+    ld b, l
     ld c, 43
     call ti.FillRect
     ld hl, 107

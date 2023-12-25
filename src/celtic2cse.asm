@@ -4,18 +4,14 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 31, 2023
+; Last Built: December 24, 2023
 ;
 ;----------------------------------------
 
 readLine: ; det(0)
     ld hl, Str0
     call _getProgFromStr
-    push de
     call _getDataPtr
-    push de
-    call ti.OP1ToOP6
-    pop de
     or a, a
     sbc hl, hl
     ld a, (de)
@@ -24,113 +20,80 @@ readLine: ; det(0)
     ld a, (de)
     ld h, a
     inc de
-    push hl ; size of var
-    push de ; beginning of data
+    push de
+    push hl
     call ti.RclAns
     ld a, (ti.OP1)
     or a, a
-    jp nz, PrgmErr.NTREAL
-    call ConvOP1
+    jp nz, PrgmErr.INVALA
+    call _ConvOp1Check
     ld (ans), de
+    pop hl
+    pop de
+    call _getEOF
+    push de ; start of program
+    ld de, (ans)
     ld a, d
     or a, e
-    jp z, .getNumOfLines
-    ld hl, 1
-    or a, a
-    sbc hl, de
-    jr z, .readLineOne
-    pop de
-    pop hl
-    call _getEOF
-    push de
+    jr z, .getNumOfLines
+    dec de
+    ld a, d
+    or a, e
     pop bc
-    ld de, 1
+    push bc
+    jr z, .readLineOne
     ld ix, PrgmErr.LNTFN
+    ld de, 1
     call _searchLine
-    ld de, 0
+    inc bc
+
+.readLineOne:
     push bc
     pop hl
+    pop de
+    or a, a
+    sbc hl, de
+    dec bc
+    push hl ; offset to the line
+    ld de, 0
     call _getNextLine
     dec de
-    inc hl
-
-.createDataStr:
-    push hl ; start of data
-    push de ; bytes to read
+    ld a, d
+    or a, e
+    jp z, PrgmErr.NULLSTR
+    push de
     ld hl, Str9
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     call nc, ti.DelVarArc
     pop hl
-    push hl
+    call _checkMemory
+    push hl ; size of string
     call ti.CreateStrng
     inc de
     inc de
-    pop bc
-    pop hl
-    pop ix
-    push de ; start of string
-    push hl ; start address to read from
-    push ix ; start address of variable
-    push bc
-    call ti.OP6ToOP1
-    call ti.ChkFindSym
-    call c, _checkHidden
-    pop bc
-    pop hl
-    or a, a
-    sbc hl, de
-    ex de, hl
-    pop hl
-    or a, a
-    sbc hl, de
-    pop de
-    push hl
-    ld hl, 1
-    or a, a
-    sbc hl, bc
-    jr nc, .readOneOrZero
-    pop hl
-    ldir
-
-.return:
-    jp return
-
-.readLineOne:
-    pop de
-    pop hl
-    call _getEOF
     push de
+    ld hl, Str0
+    call _getProgFromStr
+    call _getDataPtr
+    inc de
+    inc de
+    ex de, hl
+    pop de
+    pop ix
     pop bc
-    ld de, 0
-    or a, a
-    sbc hl, de
-    jp z, PrgmErr.NULLSTR
-    push bc
-    pop hl
-    call _getNextLine
-    ld a, (hl)
-    cp a, ti.tEnter
-    jr nz, .createDataStr
+    add hl, bc
+    lea bc, ix
 
-.decrementLen:
-    dec de
-    jr .createDataStr
-
-.readOneOrZero:
+.copyLine:
     ld a, b
     or a, c
-    pop hl
-    jp z, PrgmErr.NULLSTR
+    jp z, return
     ldi
-    jr .return
+    jr .copyLine
 
 .getNumOfLines:
     pop bc
-    pop hl
-    push bc
-    pop de
-    call _getEOF
     ld de, 1 ; line counter
     ld ix, _decBCretZ
 
@@ -159,15 +122,8 @@ readLine: ; det(0)
 replaceLine: ; det(1)
     ld hl, Str9
     call _findString
-    or a, a
-    sbc hl, hl
-    ld a, (de)
-    ld l, a
-    inc de
-    ld a, (de)
-    ld h, a
-    call ti.EnoughMem
-    jp c, PrgmErr.NOMEM
+    inc hl
+    call _checkMemory
     set replaceLineRun, (iy + celticFlags2)
     jp deleteLine
 
@@ -175,19 +131,9 @@ insertLine: ; det(2)
     res insertLastLine, (iy + celticFlags2)
     ld hl, Str9
     call _findString
-    or a, a
-    sbc hl, hl
-    ld a, (de)
-    ld l, a
-    inc de
-    ld a, (de)
-    ld h, a
-    inc de
-    push hl ; size of string
-    push de ; start of string
     inc hl
-    call ti.EnoughMem
-    jp c, PrgmErr.NOMEM
+    call _checkMemory
+    push hl
     ld hl, Str0
     call _getProgFromStr
     call ti.ChkInRam
@@ -200,116 +146,102 @@ insertLine: ; det(2)
     ld a, (de)
     ld h, a
     inc de
-    call _getEOF
+    pop bc
+    add hl, bc
+    push bc
+    push hl
+    ld bc, 65505 ; max file size
+    or a, a
+    sbc hl, bc
+    jp nc, return
+    pop hl
+    pop bc
+    push hl ; size of file after insert
     push de ; start of program
+    push bc ; amount to insert
+    or a, a
+    sbc hl, bc
+    call _getEOF
+    push de
     call ti.RclAns
     ld a, (ti.OP1)
     or a, a
     jp nz, PrgmErr.NTREAL
-    call ConvOP1
-    ld (ans), de
+    call _ConvOp1Check
     ld a, d
     or a, e
     jp z, PrgmErr.LNTFN
+    ld (ans), de
+    dec de
+    ld a, d
+    or a, e
     pop bc
-    push bc
-    ld hl, 1
-    or a, a
-    sbc hl, de
     jr z, .insertMem
     ld de, 1
     ld ix, _decBCretNZ
     call _searchLine
-    call nz, .hitEOF
-    inc bc
-
-.insertMem:
-    pop ix
-    pop de
-    pop hl
-    push hl ; size of string
-    push de ; start of string
-    push bc
-    pop de
-    push de ; location of line
-    push ix ; start of program
-    inc hl
-    push hl
-    call ti.InsertMem
-    pop de
-    pop hl
-    dec hl
-    dec hl
-    ld bc, 0
-    ld c, (hl)
-    inc hl
-    ld b, (hl)
-    ex de, hl
-    add hl, bc
-    ex de, hl
-    dec hl
-    ld (hl), e
-    inc hl
-    ld (hl), d
-    pop de
-    pop hl
-    push de
-    ld hl, Str9
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    ex de, hl
-    inc hl
-    inc hl
-    pop de
-    pop bc
-    push hl
-    bit insertLastLine, (iy + celticFlags2)
-    jr nz, .insertLineBtm
-    ld hl, 1
-    or a, a
-    sbc hl, bc
-    jr z, .insertOneByte
-    pop hl
-    ldir
-    ld a, ti.tEnter
-    ld (de), a
-
-.return:
-    jp return
-
-.insertOneByte:
-    pop hl
-    ldi
-    ld a, ti.tEnter
-    ld (de), a
-    jr .return
-
-.insertLineBtm:
-    ld a, ti.tEnter
-    ld (de), a
-    inc de
-    ld hl, 1
-    or a, a
-    sbc hl, bc
-    jr z, .insertOneByteBtm
-    pop hl
-    ldir
-    jr .return
-
-.insertOneByteBtm:
-    pop hl
-    ldi
-    jr .return
-
-.hitEOF:
+    jr z, .notEOF
     set insertLastLine, (iy + celticFlags2)
     inc de
-    dec bc
     ld hl, (ans)
     or a, a
     sbc hl, de
-    ret z
-    jp PrgmErr.LNTFN
+    jp nz, PrgmErr.LNTFN
+    dec bc
+
+.notEOF:
+    inc bc
+
+.insertMem:
+    push bc
+    pop de
+    pop hl
+    push hl ; amount to insert
+    call ti.InsertMem
+    push de ; location to copy data to
+    ld hl, 6
+    add hl, sp
+    ld de, (hl)
+    inc hl
+    inc hl
+    inc hl
+    ld hl, (hl)
+    ex de, hl
+    dec hl
+    ld (hl), d
+    dec hl
+    ld (hl), e
+    pop de
+    pop bc
+    push de ; start of insert (save in case we're copying to the end of the file)
+    bit insertLastLine, (iy + celticFlags2)
+    jr z, $ + 3
+    inc de
+    push de
+    push bc
+    ld hl, Str9
+    call _findString
+    ex de, hl
+    pop bc
+    dec bc
+    pop de
+
+.copyLineData:
+    ld a, b
+    or a, c
+    jr z, .copyDone
+    ldi
+    jr .copyLineData
+
+.copyDone:
+    ex de, hl
+    bit insertLastLine, (iy + celticFlags2)
+    jr z, .return
+    pop hl
+
+.return:
+    ld (hl), ti.tEnter
+    jp return
 
 specialChars: ; det(3)
     ld hl, Str9
@@ -329,9 +261,7 @@ specialChars: ; det(3)
 createVar: ; det(4)
     ld hl, Str0
     call _findString
-    ld a, (de)
-    inc de
-    inc de
+    ld a, l
     ex de, hl
     call _convertChars.varName
     ld hl, prgmName + 1
@@ -395,11 +325,11 @@ deleteVar: ; det(6)
     jp return
 
 deleteLine: ; det(7)
+    res deleteLineOne, (iy + celticFlags1)
     ld hl, Str0
     call _getProgFromStr
     call ti.ChkInRam
     jp nz, PrgmErr.PGMARC
-    push de
     or a, a
     sbc hl, hl
     ld a, (de)
@@ -407,65 +337,81 @@ deleteLine: ; det(7)
     inc de
     ld a, (de)
     ld h, a
-    pop de
-    call _getEOF.deleteLine
-    push de
-    push hl
     inc de
+    call _getEOF
+    push hl
+    push hl
+    pop bc
     push de
+    push de
+    push bc
     call ti.RclAns
     ld a, (ti.OP1)
     or a, a
     jp nz, PrgmErr.NTREAL
-    call ConvOP1
+    call _ConvOp1Check
+    pop bc
     ld (ans), de
     ld a, d
     or a, e
     jp z, PrgmErr.LNTFN
-    or a, a
-    ld hl, 1
-    sbc hl, de
+    dec de
+    ld a, d
+    or a, e
     jr z, .delLineOne
     pop bc
     ld de, 1
     ld ix, PrgmErr.LNTFN
     call _searchLine
-    ld de, 0
+    jr .findNextLine
+
+.delLineOne:
+    set deleteLineOne, (iy + celticFlags1)
+    ld a, b
+    or a, c
+    jr z, .return
+    pop bc
+    ld a, (bc)
+    cp a, ti.tEnter
+    jr nz, .findNextLine
     push bc
     pop hl
-    call _getNextLine
+    inc de
+    jr .deleteLine
 
-.delete:
+.findNextLine:
+    push bc
+    pop hl
+    ld de, 0
+    call _getNextLine
+    jr z, .deleteLine
+    bit deleteLineOne, (iy + celticFlags1)
+    jr z, .deleteLine
+    inc de
+
+.deleteLine:
     push de
     call ti.DelMem
     pop de
+    pop ix
     pop hl
     or a, a
     sbc hl, de
-    pop ix
-    ld (ix), l
-    ld (ix + 1), h
+    ld (ix - 2), l
+    ld (ix - 1), h
+
+.return:
     bit replaceLineRun, (iy + celticFlags2)
     jp nz, insertLine
     jp return
 
-.delLineOne:
-    pop bc
-    ld de, 0
-    push bc
-    pop hl
-    call _getNextLine
-    jr nz, .delete
-    dec de
-    jr .delete
-
 varStatus: ; det(8)
     xor a, a
     ld (prgmName), a
+    res hidden, (iy + celticFlags2)
     ld hl, Str0
     call _getProgFromStr
     res archived, (iy + celticFlags2)
-    res hidden, (iy + celticFlags2)
     ; in case someone checked with a name that would be hidden
     ld a, (ti.OP1 + 1)
     cp a, ti.tA
@@ -488,19 +434,16 @@ varStatus: ; det(8)
     ex de, hl
     ld a, ti.t0
     call ti.MemSet
+    pop hl
     pop de
-    pop bc
-    push de
-    push bc
-    ex de, hl
+    push hl
     ld (hl), ti.tR
     inc hl
     ld (hl), ti.tV
     inc hl
     ld (hl), ti.tL
-    pop de
-    call ti.ChkInRam
     pop hl
+    call ti.ChkInRam
     jr z, .inRam
     set archived, (iy + celticFlags2)
     ld (hl), ti.tA
@@ -545,35 +488,20 @@ varStatus: ; det(8)
     call ti.FormEReal
     ld hl, ti.OP3
     call ti.StrLength
-    ld a, c
-    cp a, 1
-    jr z, .lengthOne
-    push bc
-    pop de
     ld hl, 5
     or a, a
-    sbc hl, de
-    ex de, hl
-    pop hl
+    sbc hl, bc
+    pop de
     add hl, de
     ex de, hl
     ld hl, ti.OP3
-    call ti.StrLength
-    ldir
 
-.return:
-    jp return
-
-.lengthOne:
-    pop hl
-    ld de, 4
-    add hl, de
-    ex de, hl
-    ld hl, ti.OP3
-    ld a, (hl)
-    ex de, hl
-    ld (hl), a
-    jr .return
+.copySize:
+    ldi
+    xor a, a
+    or a, c
+    jp z, return
+    jr .copySize
 
 bufSprite: ; det(9)
     ld a, (noArgs)
@@ -582,11 +510,6 @@ bufSprite: ; det(9)
     ld hl, Str9
     call _findString
     ex de, hl
-    ld de, 0
-    ld e, (hl)
-    inc hl
-    ld d, (hl)
-    inc hl
     push hl
     push de
     res ti.fullScrnDraw, (iy + ti.apiFlg4)
@@ -644,8 +567,7 @@ bufSprite: ; det(9)
 
 .checkLoop:
     push hl
-    push ix
-    pop hl
+    lea hl, ix
     ld bc, (var1)
     or a, a
     sbc hl, bc
@@ -699,8 +621,6 @@ bufSpriteSelect: ; det(10)
     ld hl, Str9
     call _findString
     ex de, hl
-    inc hl
-    inc hl
     ld de, (var4)
     add hl, de
     push hl
@@ -751,8 +671,7 @@ bufSpriteSelect: ; det(10)
 
 .checkLoop:
     push hl
-    push ix
-    pop hl
+    lea hl, ix
     ld bc, (var1)
     or a, a
     sbc hl, bc
@@ -880,9 +799,11 @@ execArcPrgm: ; det(11)
     ld a, (ti.OP1)
     cp a, ti.StrngObj
     jp nz, PrgmErr.SNTST
-    call ti.AnsName
-    call ti.ChkFindSym
-    call _getProgFromStr + 4
+    call _findAnsStr
+    ld a, (de)
+    inc de
+    inc de
+    call _getProgFromStr + 5
     call _getDataPtr
     push de
     call ti.OP1ToOP6
@@ -894,10 +815,7 @@ execArcPrgm: ; det(11)
     inc de
     ld a, (de)
     ld h, a
-    push hl ; size of program
-    call ti.EnoughMem
-    pop hl
-    jp c, PrgmErr.NOMEM
+    call _checkMemory
     push hl
     ld hl, xtempName
     call ti.Mov9ToOP1

@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 31, 2023
+; Last Built: December 24, 2023
 ;
 ;----------------------------------------
 
@@ -24,10 +24,8 @@ beginAinstall:
     pop de
     ld bc, $1B
     add hl, bc
-    ld hl, (hl)
-    add hl, de
-    push hl
-    pop ix
+    ld ix, (hl)
+    add ix, de
     ld hl, (ix + 2)
     call ti.SetCursorHook
     ld hl, (ix + 5)

@@ -30,8 +30,12 @@
 ; OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 ; OF THE POSSIBILITY OF SUCH DAMAGE.
 ;
+; ----------------------------------------------------------------------------------
+;
 ; Modified for Celtic CE by RoccoLox Programs.
 ; This will only convert positive, real integers.
+; Returns with the carry flag reset if an invalid number was passed.
+; Else returns with the carry flag set and the converted number in de.
 
 ConvOP1:
     call ti.TRunc
@@ -92,6 +96,10 @@ ConvOp1CL:
 ConvOp1CE:
     ex de, hl
     ld sp, (ans)
+    call ti.SetAToDEU
+    or a, a
+    ret nz
+    scf
     ret
 
 ConvOp1CT:

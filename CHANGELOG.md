@@ -2,6 +2,29 @@
 
 All notable changes to the Celtic CE library will be documented in this file.
 
+## [1.0.1] - 2023-12-dd
+
+### Added
+- Message after running Celtic installer saying to open the app to enable its features.
+
+### Chnaged
+- Several minor optimizations
+- Several additional checks in commands to prevent crashes
+- Rewrote the following commands:
+    - ReadLine
+    - ReplaceLine
+    - InsertLine
+    - DeleteLine
+
+### Fixed
+
+- Doors CE 9 Functions:
+    - FillRect will no longer exit when trying to clip a rectangle's width
+- OS Utility Functions:
+    - SearchFile will now work when the search string matches at the end of the file
+- Celtic will now catch strings that have a data size of zero
+- Celtic will now exit if a number that's greater than a 16-bit number is passed
+
 ## [1.0.0] - 2023-07-31
 
 ### Added
@@ -161,7 +184,8 @@ All notable changes to the Celtic CE library will be documented in this file.
 
 ### Fixed
 
-- Fixed HidePrgm command to work with archived programs
+- OS Utility Functions:
+    - Fixed HidePrgm command to work with archived programs
 
 ## [1.1.0-beta] - 2022-11-29
 
@@ -192,13 +216,15 @@ All notable changes to the Celtic CE library will be documented in this file.
 
 ### Changed
 
+- Doors CE 9 Functions:
+    - ExecHex command no longer has a restriction of 255 characters, instead it is limited to 8192
 - Temp storage now uses pixelShadow2 with an offset of 100 bytes instead of using pixelShadow
-- ExecHex command no longer has a restriction of 255 characters, instead it is limited to 8192
 - Preserve stack pointer when running a command and restore it when exiting to the OS
 
 ### Fixed
 
-- Potential error with VarStatus command when a hidden program name starts with a 'T'
+- Celtic 2 CSE Functions:
+    - Potential error with VarStatus command when a hidden program name starts with a 'T'
 
 ## [1.0.0-beta] - 2022-09-17
 

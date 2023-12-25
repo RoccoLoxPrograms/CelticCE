@@ -60,8 +60,6 @@ The system programs ``prgm#`` and ``prgm!`` are not supported, so if you attempt
 
 If a string is used, it must be in the RAM when the function is called.
 
-.. warning:: In almost all cases, Celtic will detect if you passed invalid arguments and return an error instead. However, in the (extremely) rare case that you tried to pass a string with the length of 0, it will not handle this. Don't worry, there shouldn't be any reason this would happen without you trying to make it happen.
-
 Returns
 ~~~~~~~
 Depending on the function, Celtic will return a value after it runs. For example, the ``SpecialChars`` command fills ``Str9`` with certain special characters.

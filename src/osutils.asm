@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 31, 2023
+; Last Built: December 24, 2023
 ;
 ;----------------------------------------
 
@@ -172,14 +172,11 @@ renameVar: ; det(23)
     inc de
     ld a, (de)
     ld h, a
+    call _checkMemory
     push hl
-    call ti.EnoughMem
-    jp c, PrgmErr.NOMEM
     ld hl, Str9
     call _findString
-    ld a, (de)
-    inc de
-    inc de
+    ld a, l
     ex de, hl
     call _convertChars.varName
     ld hl, prgmName + 1
@@ -243,9 +240,7 @@ lockPrgm: ; det(24)
     res archived, (iy + celticFlags2)
     ld hl, Str0
     call _findString
-    ld a, (de)
-    inc de
-    inc de
+    ld a, l
     ex de, hl
     call _convertChars.varName
     ld hl, prgmName + 1
@@ -292,9 +287,7 @@ hidePrgm: ; det(25)
     res archived, (iy + celticFlags2)
     ld hl, Str0
     call _findString
-    ld a, (de)
-    inc de
-    inc de
+    ld a, l
     ex de, hl
     call _convertChars.varName
     ld hl, prgmName + 1
@@ -335,9 +328,7 @@ prgmToStr: ; det(26)
     jp z, PrgmErr.INVALA
     ld hl, Str0
     call _findString
-    ld a, (de)
-    inc de
-    inc de
+    ld a, l
     ex de, hl
     call _convertChars.varName
     ld hl, prgmName + 1
@@ -361,9 +352,8 @@ prgmToStr: ; det(26)
     inc de
     ld a, (de)
     ld h, a
+    call _checkMemory
     push hl
-    call ti.EnoughMem
-    jp c, PrgmErr.NOMEM
     ld a, (var1)
     cp a, 10
     jp nc, PrgmErr.INVALA
@@ -420,9 +410,7 @@ prgmToStr: ; det(26)
 getPrgmType: ; det(27)
     ld hl, Str0
     call _findString
-    ld a, (de)
-    inc de
-    inc de
+    ld a, l
     ex de, hl
     call _convertChars.varName
     ld hl, prgmName + 1
@@ -525,13 +513,8 @@ searchFile: ; det(52)
     jp c, PrgmErr.ENTFN
     ld hl, Str9
     call _findString
-    ex de, hl
-    ld bc, 0
-    ld c, (hl)
-    inc hl
-    ld b, (hl)
-    inc hl
-    ex de, hl
+    push hl
+    pop bc
     pop hl
     push hl
     push de ; data for string
@@ -563,6 +546,7 @@ searchFile: ; det(52)
     push bc ; start of reading address
     push hl
     pop bc
+    dec bc
     ld ix, PrgmErr.ENTFN
     call _checkEOF
     push de
@@ -621,9 +605,11 @@ runAsmPrgm: ; det(70)
     ld a, (ti.OP1)
     cp a, ti.StrngObj
     jp nz, PrgmErr.SNTST
-    call ti.AnsName
-    call ti.ChkFindSym
-    call _getProgFromStr + 4
+    call _findAnsStr
+    ld a, (de)
+    inc de
+    inc de
+    call _getProgFromStr + 5
     call _getDataPtr
     ex de, hl
     ld bc, 0
@@ -641,8 +627,7 @@ runAsmPrgm: ; det(70)
     push bc
     push bc
     pop hl
-    call ti.EnoughMem
-    jp c, PrgmErr.NOMEM
+    call _checkMemory
     pop hl
     push hl
     ld (ti.asm_prgm_size), hl
@@ -817,9 +802,6 @@ turnCalcOff: ; det(74)
     ld (hl), a
     set ti.apdRunning, (iy + ti.apdFlags)
     ei
-    xor a, a
-    inc a
-    dec a
     jr getKey.return + 8
 
 backupString: ; det(75)
@@ -841,15 +823,11 @@ backupString: ; det(75)
     pop af
     ld (ti.OP1 + 2), a
     call _findString + 4
-    ld bc, 0
-    ld a, (de)
-    ld c, a
-    inc de
-    ld a, (de)
-    ld b, a
+    push hl
+    pop bc
+    ld a, b
     or a, c
     jp z, PrgmErr.INVALS
-    inc de
     ld hl, 256
     or a, a
     sbc hl, bc
@@ -894,10 +872,7 @@ restoreString: ; det(76)
     ld a, (stringLen)
     ld l, a
     inc hl
-    push hl
-    call ti.EnoughMem
-    jp c, PrgmErr.NOMEM
-    pop hl
+    call _checkMemory
     push hl
     call ti.CreateStrng
     inc de

@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 31, 2023
+; Last Built: December 24, 2023
 ;
 ;----------------------------------------
 
@@ -240,20 +240,22 @@ setPixel: ; det(18)
     ld ix, var3
 
 .getCoord:
-    ld l, (ix + 3)
+    ld hl, -ti.lcdHeight
+    ld bc, (ix + 3)
+    add hl, bc
+    jr c, .return
+    ld hl, -ti.lcdWidth
+    ld de, (ix)
+    add hl, de
+    jr c, .return
+    ld l, c
     ld h, ti.lcdWidth / 2
     mlt hl
     add hl, hl
-    ld de, (ix)
     add hl, de
     add hl, hl
     ld de, ti.vRam
     add hl, de
-    ex de, hl
-    ld hl, -ti.vRamEnd
-    add hl, de
-    ex de, hl
-    jr c, .return
     bit invertPixel, (iy + celticFlags2)
     jr nz, .invertColor
     pop de
@@ -344,6 +346,10 @@ putSprite: ; det(21)
     ld de, ti.vRam
     add hl, de
     push hl
+    ex de, hl
+    ld hl, -ti.vRamEnd
+    add hl, de
+    jp c, return
     ld hl, Str0
     call ti.Mov9ToOP1
     ld a, (var5)
@@ -357,8 +363,6 @@ putSprite: ; det(21)
     dec a
     ld (ti.OP1 + 2), a
     call _findString + 4
-    inc de
-    inc de
     ex de, hl
     ld bc, (var4)
     ld a, b
@@ -409,8 +413,7 @@ putSprite: ; det(21)
     inc ix
     ld hl, (var4)
     push bc
-    push ix
-    pop bc
+    lea bc, ix
     or a, a
     sbc hl, bc
     jr z, .return
@@ -434,8 +437,7 @@ getStringWidth: ; det(54)
     ld a, (noArgs)
     cp a, 2
     jp c, PrgmErr.INVALA
-    call ti.AnsName
-    call ti.ChkFindSym
+    call _findAnsStr
     push de
     call ti.RclAns
     pop hl
@@ -494,6 +496,10 @@ transSprite: ; det(55)
     ld de, ti.vRam
     add hl, de
     push hl
+    ex de, hl
+    ld hl, -ti.vRamEnd
+    add hl, de
+    jp c, return
     ld hl, Str0
     call ti.Mov9ToOP1
     ld a, (var6)
@@ -507,8 +513,6 @@ transSprite: ; det(55)
     dec a
     ld (ti.OP1 + 2), a
     call _findString + 4
-    inc de
-    inc de
     ex de, hl
     ld bc, (var4)
     ld a, b
@@ -582,10 +586,6 @@ scaleSprite: ; det(56)
     add hl, de
     push hl ; address of VRAM, ix + 18
     push hl ; address of start of row, ix + 15
-    ex de, hl
-    ld hl, -ti.vRamEnd
-    add hl, de
-    jp c, return
     ld hl, Str0
     call ti.Mov9ToOP1
     ld a, (var7)
@@ -599,8 +599,6 @@ scaleSprite: ; det(56)
     dec a
     ld (ti.OP1 + 2), a
     call _findString + 4
-    inc de
-    inc de
     push de ; address of string, ix + 12
     ld ix, var3
     ld hl, (ix)
@@ -727,10 +725,6 @@ scaleTSprite: ; det(57)
     add hl, de
     push hl ; address of VRAM, ix + 18
     push hl ; address of start of row, ix + 15
-    ex de, hl
-    ld hl, -ti.vRamEnd
-    add hl, de
-    jp c, return
     ld hl, Str0
     call ti.Mov9ToOP1
     ld a, (var8)
@@ -744,8 +738,6 @@ scaleTSprite: ; det(57)
     dec a
     ld (ti.OP1 + 2), a
     call _findString + 4
-    inc de
-    inc de
     push de ; address of string, ix + 12
     ld ix, var3
     ld hl, (ix)
@@ -811,13 +803,13 @@ scaleTSprite: ; det(57)
     inc hl
     ld (ix - 3), hl
     ld b, (ix + 3)
+    ld hl, (ix + 18)
 
 .skipLoop:
-    ld hl, (ix + 18)
     inc hl
     inc hl
-    ld (ix + 18), hl
     djnz .skipLoop
+    ld (ix + 18), hl
     jr .pixelDrawn
 
 shiftScreen: ; det(58)
@@ -848,7 +840,7 @@ shiftScreen: ; det(58)
     jr z, .shiftUp
     dec a ; 1
     jr z, .shiftDown
-    dec a ;  2
+    dec a ; 2
     jp z, .shiftLeft
     dec a ; 3
     jr z, .shiftRight
@@ -1069,7 +1061,6 @@ rgbto565: ; det(59)
     or a, a
     sbc hl, hl
     ld l, a
-    ld b, 3
     add hl, hl
     add hl, hl
     add hl, hl
@@ -1237,7 +1228,9 @@ drawCircle: ; det(61)
     inc hl
     ld (ix - 6), hl
     ld de, (ix - 9)
-    call ti.ChkDEIs0
+    or a, a
+    sbc hl, hl
+    sbc hl, de
     jr z, .Pis0orLess
     bit 7, (ix - 7) ; upper byte of perimeter
     jr z, .PisMoreThan0
@@ -1485,7 +1478,9 @@ fillCircle: ; det(62)
     inc hl
     ld (ix - 6), hl
     ld de, (ix - 9)
-    call ti.ChkDEIs0
+    or a, a
+    sbc hl, hl
+    sbc hl, de
     jr z, .Pis0orLess
     bit 7, (ix - 7) ; upper byte of perimeter
     jr z, .PisMoreThan0
@@ -2006,7 +2001,9 @@ drawArc: ; det(63)
     inc hl
     ld (ix - 6), hl
     ld de, (ix - 9)
-    call ti.ChkDEIs0
+    or a, a
+    sbc hl, hl
+    sbc hl, de
     jr z, .Pis0orLess
     bit 7, (ix - 7) ; upper byte of perimeter
     jr z, .PisMoreThan0
@@ -2266,11 +2263,8 @@ dispTransText: ; det(64)
     ld hl, Str9
     call _findString
     ex de, hl
-    ld bc, 0
-    ld c, (hl)
-    inc hl
-    ld b, (hl)
-    inc hl
+    push de
+    pop bc
     ld de, execHexLoc
 
 .storeText:

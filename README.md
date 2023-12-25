@@ -10,7 +10,7 @@ If you'd like a more detailed and complete documentation, you can view the onlin
 
 ## Installation
 
-1. Download the latest release of CelticCE [here](https://github.com/roccoloxprograms/celticce/releases/latest). To avoid confusion, this is the file with the `.8xp` file extension.
+1. Download the latest release of CelticCE [here](https://github.com/roccoloxprograms/celticce/releases/latest). To avoid confusion, the file that you really need is called `CelticCE.8xp`.
 2. Transfer the CelticCE installer that you just downloaded to your calculator using a linking program of your choice, such as [TI-Connect CE](https://education.ti.com/en/software/details/en/CA9C74CAD02440A69FDC7189D7E1B6C2/swticonnectcesoftware) or [TiLP](http://lpg.ticalc.org/prj_tilp/).
 3. Run the **CELTICCE** program on your calculator, which can be found under the <kbd>prgm</kbd> menu. If you are on an OS version 5.5 or greater, you will need to use the [arTIfiCE jailbreak](https://yvantt.github.io/arTIfiCE/).
 4. Finish running the installer by selecting whether or not to delete the installer program. It will not be needed unless you for some reason wish to reinstall the CelticCE app, so it is safe to delete.
@@ -21,7 +21,7 @@ If you'd like a more detailed and complete documentation, you can view the onlin
 
 CelticCE commands are called in TI-BASIC programs using the `det(` token followed by varying arguments. You can read more about the specifics in the Celtic docs under [General Syntax](https://roccoloxprograms.github.io/CelticCE/gensyntax.html).
 
-Along with the CelticCE app installer, you'll notice that there is another program, **AINSTALL**, which comes with Celtic. If you choose to send this to your calculator, running it will install Celtic's hooks outside of the app, as long as the app is present on your calculator. This can be useful if you want to install CelticCE when during the execution of another program. You can learn more about this in the [General Syntax](https://roccoloxprograms.github.io/CelticCE/gensyntax.html) section of CelticCE's documentation.
+Along with the CelticCE app installer, you'll notice that there is another program, **AINSTALL**, which comes with Celtic. If you choose to send this to your calculator, running it will install Celtic's hooks outside of the app, as long as the app is present on your calculator. This can be useful if you want to install CelticCE during the execution of another program. You can learn more about this in the [General Syntax](https://roccoloxprograms.github.io/CelticCE/gensyntax.html) section of CelticCE's documentation.
 
 CelticCE also has a few useful features which are added to the TI-OS editor when it is installed. The first of these is a command preview, which will display the basic syntax of a command on the status bar if the cursor is hovering over a valid Celtic command as seen below:
 

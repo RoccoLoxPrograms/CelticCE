@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 31, 2023
+; Last Built: December 24, 2023
 ;
 ;----------------------------------------
 
@@ -87,6 +87,8 @@ execHexLoc      equ ti.pixelShadow2 + 436 ; location for storing ExecHex code (m
 
 ;------------------------------------------------------------------------------------
 
+tempNameNum     := xtempName + 7
+
 x0 equ var1 ; used for the ChkRect command
 y0 equ var2
 w0 equ var3
@@ -108,7 +110,8 @@ searchAppvars   := 0
 largeFont       := 1
 isProgram       := 2
 showErrorOffset := 3
-showLineNum     := 4 ; this flag is flipped, it will be set to not show the line number and reset to show it
+deleteLineOne   := 4
+showLineNum     := 5 ; this flag is flipped, it will be set to not show the line number and reset to show it
 
 celticFlags2    := ti.asm_Flag2
 archived        := 0
@@ -119,7 +122,5 @@ insertLastLine  := 4
 replaceLineRun  := 5
 invertPixel     := 6
 imaginaryList   := 7
-
-tempNameNum     := xtempName + 7
 
 ;------------------------------------------------------------------------------------

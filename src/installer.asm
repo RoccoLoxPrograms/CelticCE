@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 31, 2023
+; Last Built: December 24, 2023
 ;
 ;----------------------------------------
 
@@ -14,7 +14,7 @@
     iconData
 
 description:
-    db "Celtic CE Installer - 1.0.0", 0
+    db "Celtic CE Installer - 1.0.1", 0
 
 installApp:
     call .clearScreen
@@ -22,7 +22,7 @@ installApp:
     ld hl, installingStr
     call ti.PutS
 
-    installer_ports.copy
+    installerPorts.copy
 
     call installer.port_setup
     or a, a
@@ -56,24 +56,22 @@ appInstalled:
     call ti.HomeUp
     ld hl, celticInstalledStr
     call ti.PutS
+    ld hl, 3
+    ld (ti.curRow), hl
     call ti.GetKey
-    call ti.NewLine
-    call ti.NewLine
     ld hl, deleteInstallerStr
     call ti.PutS
-    ld a, 4
+    ld a, 5
     ld (ti.curRow), a
-    ld hl, $FFFF
-    ld.sis (ti.fillRectColor and $FFFF), hl
     res ti.textInverse, (iy + ti.textFlags)
     call ti.PopOP1
 
 .updateDisplay:
     ld hl, 72
     ld de, 241
-    ld b, 117
-    ld c, 134
-    call ti.FillRect
+    ld b, 137
+    ld c, 154
+    call ti.ClearRect
     ld hl, 6
     ld.sis (ti.curCol and $FFFF), hl
     ld hl, optionYes
@@ -112,7 +110,7 @@ osInvalidStr:
     db "Cannot use this OS.", 0
 
 celticInstalledStr:
-    db " Celtic CE app installed.", 0
+    db " Celtic CE app installed. Open app to enable Celtic.", 0
 
 deleteInstallerStr:
     db " Delete Celtic installer?", 0
@@ -127,7 +125,7 @@ optionYes:
 optionNo:
     db " No ", 0
 
-relocate installer_ports, ti.saveSScreen
+relocate installerPorts, ti.saveSScreen
 define installer
 namespace installer
     include 'ports.asm'

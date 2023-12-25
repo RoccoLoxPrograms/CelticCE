@@ -25,6 +25,7 @@ Documentation
 
     Errors:
      * ``..NULLSTR`` if the line is empty.
+     * ``..NT:EN:M`` if there is not enough memory to complete the action.
 
 ------------
 
@@ -42,12 +43,13 @@ Documentation
 
     Errors:
      * ``..PGM:ARC`` if the file is archived.
+     * ``..NT:EN:M`` if there is not enough memory to complete the action.
 
 ------------
 
 .. function:: InsertLine: det(2); Str0 = variable name; Ans = line number; Str9 = contents
 
-    Insets a line into a program or AppVar. ``Ans`` refers to the line number to write to.
+    Inserts a line into a program or AppVar. ``Ans`` refers to the line number to write to.
 
     Parameters:
      * ``Str0``: Name of file to write to.
@@ -60,9 +62,6 @@ Documentation
     Errors:
      * ``..PGM:ARC`` if the file is archived.
      * ``..NT:EN:M`` if there is not enough memory to complete the action.
-
-.. note::
-    If your usage of InsertLine results in the program exceeding 65535 bytes (the maximum size of a file), it will result in loss of memory. Celtic does not check if you exceed this filesize, as there should be no reason anyone would do this in the first place.
 
 ------------
 
@@ -208,6 +207,7 @@ Documentation
 
     Errors:
      * ``..NT:EN:M`` if there is not enough memory to complete the action.
+     * ``..NT:EN:M`` if there is not enough memory to complete the action. (Only when creating an ``XTEMP`` program.)
 
 ------------
 

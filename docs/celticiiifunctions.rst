@@ -85,6 +85,7 @@ Documentation
 
     Errors:
      * ``..P:NT:FN`` if no files are found containing the specified search string.
+     * ``..NT:EN:M`` if there is not enough memory to complete the action.
 
 ------------
 
@@ -103,6 +104,7 @@ Documentation
     Errors:
      * ``..G:NT:FN`` if the group specified does not exist.
      * ``..P:NT:FN`` if no files in the group are able to be ungrouped (no programs or AppVars).
+     * ``..NT:EN:M`` if there is not enough memory to complete the action.
 
 ------------
 
@@ -120,6 +122,7 @@ Documentation
     Errors:
      * ``..G:NT:FN`` if the group specified does not exist.
      * ``..P:NT:FN`` if no files in the group are valid (no programs or AppVars).
+     * ``..NT:EN:M`` if there is not enough memory to complete the action.
 
 ------------
 
@@ -140,7 +143,8 @@ Documentation
     Errors:
      * ``..G:NT:FN`` if the group specified does not exist.
      * ``..E:NT:FN`` if the specified item did not exist.
-     * ``..P:IS:FN`` if the program already exists.
+     * ``..P:IS:FN`` if the program already exists
+     * ``..NT:EN:M`` if there is not enough memory to complete the action.
 
 ------------
 
@@ -237,6 +241,7 @@ Documentation
     
     Errors:
      * ``..INVAL:S`` if there is not an even number of characters in the string or an invalid hex character is present.
+     * ``..NT:EN:M`` if there is not enough memory to complete the action.
 
 ------------
 
@@ -254,6 +259,9 @@ Documentation
     
     Returns:
      * ``Str9``: The converted string.
+
+    Errors:
+     * ``..NT:EN:M`` if there is not enough memory to complete the action.
 
 ------------
 
@@ -305,6 +313,7 @@ Documentation
     Errors:
      * ``..NULLVAR`` if the program is empty.
      * ``..SUPPORT`` if the file is not a TI-BASIC program.
+     * ``..NT:EN:M`` if there is not enough memory to complete the action.
 
 ------------
 
@@ -320,6 +329,9 @@ Documentation
     Returns:
      * ``Str9``: The extracted substring.
      * ``Theta``: The size of the string in bytes, if ``start`` was 0.
+
+    Errors:
+     * ``..NT:EN:M`` if there is not enough memory to complete the action.
 
 ------------
 
@@ -431,3 +443,4 @@ Documentation
     Errors:
      * ``..S:NT:FN`` if ``Ans`` is not a string.
      * ``..P:NT:FN`` if no files were found containing the search string.
+     * ``..NT:EN:M`` if there is not enough memory to complete the action.

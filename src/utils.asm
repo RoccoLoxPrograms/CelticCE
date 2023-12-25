@@ -4,15 +4,13 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2023
 ; License: BSD 3-Clause License
-; Last Built: July 31, 2023
+; Last Built: December 24, 2023
 ;
 ;----------------------------------------
 
 _getProgFromStr: ; finds a variable with the name in a string
     call _findString
-    ld a, (de)
-    inc de
-    inc de
+    ld a, l
     ex de, hl
     call _convertChars.varName
     ld hl, prgmName + 1
@@ -52,7 +50,7 @@ _checkSysVar: ; checks if a user is trying to mess with one of the system progra
     pop hl
     ret nz
 
-return: ; all args are popped off and the OS continues parsing
+return: ; all args are popped off and the OS continues parsing (all commands should jump to this)
     call ti.RclAns
     ld sp, (stackPtr)
     ei
@@ -65,14 +63,12 @@ _decBCretNZ:
     or a, 1
     ret
 
-_searchLine: ; bc = address being read; de = line counter; ix = where to jump at EOF; hl is destroyed
+_searchLine: ; bc = address being read; de = line counter (set to 1); ix = where to jump at EOF; hl is destroyed
     call _checkEOF
     ld a, (bc)
     call ti.Isa2ByteTok
     jr nz, .not2byte
     inc bc
-    inc bc
-    jr _searchLine
 
 .not2byte:
     inc bc
@@ -91,23 +87,18 @@ _decBCretZ:
 
 _checkEOF: ; bc = current address being read; ix = where to jump back to; destroys hl
     ld hl, (EOF)
-    inc hl
     or a, a
     sbc hl, bc
+    ccf
+    sbc a, a
+    ccf
     ret nc
+    inc bc
     jp (ix)
 
 _getEOF: ; args: hl = size of var; de = start of variable; preserves both registers
     push hl
     dec hl
-    add hl, de
-    ld (EOF), hl
-    pop hl
-    ret
-
-.deleteLine: ; alter it slightly for DeleteLine command (I don't know why, but it works)
-    push hl
-    inc hl
     add hl, de
     ld (EOF), hl
     pop hl
@@ -277,10 +268,8 @@ _convertChars:
     ld hl, ti.OP3
 
 .loopDispText:
-    ld a, (hl)
-    ld (de), a
-    inc de
-    inc hl
+    ldi
+    inc bc
     djnz .loopDispText
     pop hl
     pop bc
@@ -306,8 +295,17 @@ _convertTokenToHex: ; a = token. token being either 0 - 9 or A - F
     sub a, 7
     ret
 
-_setArchivedFlag:
+_setArchivedFlag: ; this also checks if there's enough RAM to move the file to RAM
     set archived, (iy + celticFlags2)
+    call _getDataPtr
+    or a, a
+    sbc hl, hl
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    call _checkMemory
     call ti.Arc_Unarc
     call ti.OP6ToOP1
     call ti.ChkFindSym
@@ -563,7 +561,21 @@ _correctCoords: ; for when using os.FontDrawTransText
     push de
     ret
 
-_getDataPtr: ; corrects data pointer if not in RAM
+_checkMemory: ; checks if there's enough RAM to save a variable; size in hl
+    push hl
+    ld bc, 128 ; for safety
+    add hl, bc
+    call ti.EnoughMem
+    pop hl
+    ret nc
+    jp PrgmErr.NOMEM
+
+_ConvOp1Check: ; converts OP1 to an integer in de and exits with an error if an invalid number was passed
+    call ConvOP1
+    ret c
+    jp PrgmErr.INVALA
+
+_getDataPtr: ; corrects data pointer for files if not in RAM
     call ti.ChkInRam
     ret z
     ld hl, 10
@@ -575,13 +587,36 @@ _getDataPtr: ; corrects data pointer if not in RAM
     ex de, hl
     ret
 
-_findString: ; gets data pointer to a string
+_findString: ; gets data pointer to a string in de and the size in hl
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     jp c, PrgmErr.SNTFN
     call ti.ChkInRam
     jp nz, PrgmErr.SFLASH
-    ret
+    or a, a
+    sbc hl, hl
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    inc de
+    or a, l
+    ret nz
+    jp PrgmErr.INVALS
+
+_findAnsStr: ; finds Ans and makes sure the data size isn't zero
+    call ti.AnsName
+    call ti.ChkFindSym
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    dec de
+    or a, l
+    ret nz
+    jp PrgmErr.INVALS
 
 _checkValidOSColor: ; checks if a valid OS color was entered and returns the RGB565 color value
     cp a, 10

@@ -4,7 +4,7 @@
 # By RoccoLox Programs and TIny_Hacker
 # Copyright 2022 - 2023
 # License: BSD 3-Clause License
-# Last Built: July 31, 2023
+# Last Built: December 24, 2023
 #
 #----------------------------------------
 
@@ -22,19 +22,19 @@ FLAG_NOT_PRERELEASE = -i 'flag_prerelease := 0'
 Q = @
 
 all:
-	$(Q)echo Compiling AINSTALL...
+	$(Q)echo Building AINSTALL...
 	$(Q)fasmg $(AINST_SRC) $(AINST_NAME).8xp
-	$(Q)echo Compiling CelticCE...
+	$(Q)echo Building CelticCE...
 	$(Q)fasmg $(FLAG_NOT_PRERELEASE) $(SRC) $(NAME).8xp
 
 beta:
-	$(Q)echo Compiling AINSTALL...
+	$(Q)echo Building AINSTALL...
 	$(Q)fasmg $(AINST_SRC) $(AINST_NAME).8xp
-	$(Q)echo Compiling CelticCE...
+	$(Q)echo Building CelticCE...
 	$(Q)fasmg $(FLAG_PREREALEASE) $(SRC) $(NAME_BETA).8xp
 
 ainstall:
-	$(Q)echo Compiling AINSTALL...
+	$(Q)echo Building AINSTALL...
 	$(Q)fasmg $(AINST_SRC) $(AINST_NAME).8xp
 
 final: all

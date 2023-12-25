@@ -52,10 +52,10 @@ Documentation
 
     Errors:
      * ``..NT:EN:M`` depending on the amount of remaining memory and the size of the variable being renamed.
-    
+
 ------------
 
-.. function:: LockPrgm: det(24); Str0 = variable to lock
+.. function:: LockPrgm: det(24); Str0 = variable to lock / unlock
 
     Toggles the locked attribute of the program referenced by ``Str0``.
 
@@ -73,7 +73,7 @@ Documentation
 
 ------------
 
-.. function:: HidePrgm: det(25); Str0 = variable to hide
+.. function:: HidePrgm: det(25); Str0 = variable to hide / unhide
 
     Toggles the hidden attribute of the program referenced by ``Str0``.
 
@@ -315,6 +315,9 @@ Documentation
 
     Returns:
      * Copies the data backed up from the BackupString command into the user-specified string.
+
+    Errors:
+     * ``..NT:EN:M`` if there is not enough memory to complete the action.
 
 ------------
 
