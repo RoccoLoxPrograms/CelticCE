@@ -2,7 +2,7 @@
 
 All notable changes to the Celtic CE library will be documented in this file.
 
-## [1.0.1] - 2023-12-dd
+## [1.0.1] - 2023-12-24
 
 ### Added
 - Message after running Celtic installer saying to open the app to enable its features.
