@@ -7,7 +7,7 @@ All notable changes to the Celtic CE library will be documented in this file.
 ### Added
 - Message after running Celtic installer saying to open the app to enable its features.
 
-### Chnaged
+### Changed
 - Several minor optimizations
 - Several additional checks in commands to prevent crashes
 - Rewrote the following commands:
