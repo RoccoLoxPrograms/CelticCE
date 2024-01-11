@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Celtic CE'
-copyright = '2022 - 2023, RoccoLox Programs, TIny_Hacker'
+copyright = '2022 - 2024, RoccoLox Programs, TIny_Hacker'
 author = 'RoccoLox Programs, TIny_Hacker'
 
 # The short X.Y version
