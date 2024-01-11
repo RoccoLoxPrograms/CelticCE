@@ -2,9 +2,9 @@
 ;
 ; Celtic CE Source Code - celtic.asm
 ; By RoccoLox Programs and TIny_Hacker
-; Copyright 2022 - 2023
+; Copyright 2022 - 2024
 ; License: BSD 3-Clause License
-; Last Built: December 24, 2023
+; Last Built: January 11, 2024
 ;
 ;----------------------------------------
 
@@ -14,7 +14,7 @@ include 'installer.asm'
 
 ;--------------------------------------------------------------------------
 
-    app_start 'CelticCE', '(C)  2022-2023  RoccoLox  Programs', appIconLen
+    app_start 'CelticCE', '(C)  2022-2024  RoccoLox  Programs', appIconLen
 
 appIcon:
     db $01 ; icon byte
@@ -93,7 +93,7 @@ versionString:
     db "Version 1.0.1", 0
 
 copyright:
-    db "(c) 2022-2023", 0
+    db "(c) 2022-2024", 0
 
 creditsStr1:    db "Thank you to:", 0
 creditsStr2:    db "Iambian", 0
