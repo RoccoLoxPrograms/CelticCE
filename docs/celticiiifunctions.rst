@@ -181,7 +181,7 @@ Documentation
     Parameters:
      * ``byte_start``: The byte of the file to start reading from. It is 0-indexed, so the first byte of the file is 0, the second is 1, and so on.
      * ``number_of_bytes``: The number of bytes to read, starting at ``byte_start``. You can also read past the end of the file.
-     * ``Str0``: The name of the file to read from. For AppVars, the name should be preceded by the ``rowSwap(`` token.
+     * ``Str0``: The name of the file to read from. For AppVars, the name should be preceded by the ``rowSwap(`` token. Follow the format documented `here <gensyntax.html#argument-types>`__.
 
     Returns:
      * ``Str9``: Contains a text string of hex representing the bytes read.
@@ -195,7 +195,7 @@ Documentation
     Parameters:
      * ``byte_start``: The byte of the file to start writing to. It is 0-indexed, so the first byte of the file is 0, the second is 1, and so on.
      * ``Str9``: Contains a text string of hex representing the bytes to write.
-     * ``Str0``: The name of the file to write to. For AppVars, the name should be preceded by the ``rowSwap(`` token.
+     * ``Str0``: The name of the file to write to. For AppVars, the name should be preceded by the ``rowSwap(`` token. Follow the format documented `here <gensyntax.html#argument-types>`__.
 
     Returns:
      * Writes the bytes specified in ``Str9`` to the specified file.
@@ -214,7 +214,7 @@ Documentation
     Parameters:
      * ``byte_start``: The byte of the file to start deleting from. It is 0-indexed, so the first byte of the file is 0, the second is 1, and so on.
      * ``number_of_bytes``: The number of bytes to delete.
-     * ``Str0``: The name of the file to delete from. For AppVars, the name should be preceded by the ``rowSwap(`` token.
+     * ``Str0``: The name of the file to delete from. For AppVars, the name should be preceded by the ``rowSwap(`` token. Follow the format documented `here <gensyntax.html#argument-types>`__.
 
     Returns:
      * Deletes the specified number of bytes from the specified file.
@@ -303,7 +303,7 @@ Documentation
     .. note:: When using ErrorHandle from the homescreen, it will not run BASIC programs, though it can still run programs beginning with the Asm84CEPrgm token.
 
     Parameters:
-     * ``Ans``: The name of the program to run, or TI-BASIC code to be executed.
+     * ``Ans``: The name of the program to run, or TI-BASIC code to be executed. Note that this does not follow the syntax `here <gensyntax.html#argument-types>`__, and instead must begin with ``prgm``.
      * ``get_offset``: If ``get_offset`` is 1, ErrorHandle will return the byte offset the error occured at in ``Ans``. If it is 0, it will not. This only works with running programs, not strings.
 
     Returns:

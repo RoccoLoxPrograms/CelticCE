@@ -63,7 +63,7 @@ Documentation
         If you lock/unlock an archived program, Celtic un-archives it when running the function and then re-archives it when the function is complete. This means that it could result in a garbage collect.
 
     Parameters:
-     * ``Str0``: The name of the program to toggle the locked attribute of.
+     * ``Str0``: The name of the program to toggle the locked attribute of. Follow the format documented `here <gensyntax.html#argument-types>`__.
 
     Returns:
      * Toggles whether or not the specified program is locked.
@@ -81,7 +81,7 @@ Documentation
         If you hide/unhide an archived program, Celtic un-archives it when running the function and then re-archives it when the function is complete. This means that it could result in a garbage collect.
 
     Parameters:
-     * ``Str0``: The name of the program to toggle the hidden attribute of.
+     * ``Str0``: The name of the program to toggle the hidden attribute of. Follow the format documented `here <gensyntax.html#argument-types>`__.
 
     Returns:
      * Toggles whether or not the specified program is hidden.
@@ -124,7 +124,7 @@ Documentation
     ==== =============
 
     Parameters:
-     * ``Str0``: Name of the program to check. It cannot be an AppVar.
+     * ``Str0``: Name of the program to check. It cannot be an AppVar. Follow the format documented `here <gensyntax.html#argument-types>`__.
 
     Returns:
      * ``Theta``: Contains the number referencing the filetype. See the table above.
@@ -165,7 +165,7 @@ Documentation
 
     Parameters:
      * ``offset``: Byte offset in the file to start searching, with 0 being the first byte of the file.
-     * ``Str0``: Name of the file to search in.
+     * ``Str0``: Name of the file to search in. Follow the format documented `here <gensyntax.html#argument-types>`__.
      * ``Str9``: String to search for.
 
     Returns:
@@ -185,7 +185,7 @@ Documentation
         If the file is already archived, the command will not say that archiving it will cause a Garbage Collect, regardless of size.
 
     Parameters:
-     * ``Str0``: Name of variable to check for.
+     * ``Str0``: Name of variable to check for. Follow the format documented `here <gensyntax.html#argument-types>`__.
 
     Returns:
      * ``Ans``: 0 if a Garbage Collect will not occur, and 1 if it will.
@@ -197,7 +197,7 @@ Documentation
     This command works similarly to ErrorHandle, though for assembly programs instead of BASIC ones. This includes assembly programs, C programs, and (compiled) ICE programs. It can be useful in newer versions of TI-OS where assembly is blocked. Unlike ErrorHandle, ``Ans`` should not begin with the ``prgm`` token.
 
     Parameters:
-     * ``Ans``: Name of the ASM program to run.
+     * ``Ans``: Name of the ASM program to run. Follow the format documented `here <gensyntax.html#argument-types>`__.
 
     Returns:
      * ``Theta``: Contains the error code returned by the program, or 0 if no error occured.
@@ -214,7 +214,7 @@ Documentation
 
     Parameters:
      * ``line``: Line to get the byte offset of.
-     * ``Str0``: Name of the variable to search for the byte offset in.
+     * ``Str0``: Name of the variable to search for the byte offset in. Follow the format documented `here <gensyntax.html#argument-types>`__.
 
     Returns:
      * ``Theta``: Contains the byte offset of ``line``.
@@ -230,7 +230,7 @@ Documentation
 
     Parameters:
      * ``offset``: Byte offset to detect the line it occurs in.
-     * ``Str0``: Name of the variable to search for the line in.
+     * ``Str0``: Name of the variable to search for the line in. Follow the format documented `here <gensyntax.html#argument-types>`__.
 
     Returns:
      * ``Theta``: Line containing ``offset``.

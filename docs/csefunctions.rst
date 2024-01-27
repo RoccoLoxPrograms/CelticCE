@@ -16,7 +16,7 @@ Documentation
         If you attempt to read the line of an assembly program, there is a risk of a reset. If Celtic passes an invalid token to ``Str9``, it could cause a RAM clear.
 
     Parameters:
-     * ``Str0``: Name of program to read from.
+     * ``Str0``: Name of file to read from. Follow the format documented `here <gensyntax.html#argument-types>`__.
      * ``Ans``: Line number to read from, begins at 1.
 
     Returns:
@@ -34,7 +34,7 @@ Documentation
     Replaces (overwrites) a line in a program or AppVar. ``Ans`` refers to the line to replace.
 
     Parameters:
-     * ``Str0``: Name of file to read from.
+     * ``Str0``: Name of file to read from. Follow the format documented `here <gensyntax.html#argument-types>`__.
      * ``Ans``: Line number to replace, begins at 1.
      * ``Str9``: Contents to replace the line with.
 
@@ -52,7 +52,7 @@ Documentation
     Inserts a line into a program or AppVar. ``Ans`` refers to the line number to write to.
 
     Parameters:
-     * ``Str0``: Name of file to write to.
+     * ``Str0``: Name of file to write to. Follow the format documented `here <gensyntax.html#argument-types>`__.
      * ``Ans``: Line number to write to, begins at 1.
      * ``Str9``: Material to insert into a program. The line that was occupied is shifted down one line and this string is inserted into the resulting location.
 
@@ -79,7 +79,7 @@ Documentation
     Create a program or AppVar given a name.
 
     Parameters:
-     * ``Str0``: Name of program or AppVar to create.
+     * ``Str0``: Name of program or AppVar to create. Follow the format documented `here <gensyntax.html#argument-types>`__.
 
     Alternative method for appvars: ``det(4, HEADER), Str0 = variable name``
      * ``HEADER``: whether or not to include a header which allows `CEaShell <https://github.com/roccoloxprograms/shell>`__ to edit the appvar. This extra argument is optional. 1 to include the header, and 0 to not.
@@ -97,7 +97,7 @@ Documentation
     Archive/unarchive a program or AppVar given a name.
 
     Parameters:
-     * ``Str0``: Name of program or AppVar to move between Archive and RAM.
+     * ``Str0``: Name of program or AppVar to move between Archive and RAM. Follow the format documented `here <gensyntax.html#argument-types>`__.
 
     Returns:
      * Moves a program or AppVar into RAM if it was in Archive, or into Archive if it was in RAM.
@@ -109,7 +109,7 @@ Documentation
     Delete a program variable or an AppVar given a name.
 
     Parameters:
-     * ``Str0``: Name of program or AppVar to delete.
+     * ``Str0``: Name of program or AppVar to delete. Follow the format documented `here <gensyntax.html#argument-types>`__.
 
     Returns:
      * The indicated program or AppVar is deleted.
@@ -121,7 +121,7 @@ Documentation
     Deletes a line from a program or AppVar. ``Ans`` is the line to delete.
 
     Parameters:
-     * ``Str0``: Name of program or AppVar to delete from.
+     * ``Str0``: Name of program or AppVar to delete from. Follow the format documented `here <gensyntax.html#argument-types>`__.
      * ``Ans``: Line number to delete from, begins at 1.
 
     Returns:
@@ -134,7 +134,7 @@ Documentation
     Output a status string describing a program or AppVar's current state, including size, visibility, and more.
 
     Parameters:
-     * ``Str0``: Name of program or AppVar to examine.
+     * ``Str0``: Name of program or AppVar to examine. Follow the format documented `here <gensyntax.html#argument-types>`__.
 
     Returns:
      * ``Str9``: Contains a 9 byte output code.
@@ -200,7 +200,7 @@ Documentation
     Parameters:
      * ``function``: The requested behavior of the function. Can be 0, 1, or 2.
      * ``temp_prog_number``: The number of the ``XTEMP`` program to create/delete. This must be within 0 - 15.
-     * ``Ans``: Name of program to copy from.
+     * ``Ans``: Name of program to copy from. Follow the format documented `here <gensyntax.html#argument-types>`__.
 
     Returns:
      * Completes the specified function.
