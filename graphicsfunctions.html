@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graphics Functions &mdash; Celtic CE 1.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="OS Utility Functions" href="osutilityfunctions.html" />
+    <link rel="prev" title="Doors CE 9 Functions" href="dcefunctions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Celtic CE
+          </a>
+              <div class="version">
+                1.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to the Celtic CE docs!</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gensyntax.html">General Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="osintegrations.html">OS Editor Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="errorcodes.html">Error Codes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hexcodes.html">TI-84 Plus CE Hex Codes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="colors.html">Colors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convertsprites.html">Converting Sprites</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Function Syntax</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="csefunctions.html">Celtic 2 CSE Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcefunctions.html">Doors CE 9 Functions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Graphics Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="osutilityfunctions.html">OS Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="celticiiifunctions.html">Celtic III Functions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Celtic CE</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Graphics Functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/graphicsfunctions.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="graphics-functions">
+<h1>Graphics Functions<a class="headerlink" href="#graphics-functions" title="Permalink to this heading"></a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<p>These functions are related to graphical operations. This is not the only section containing graphical operations, as some are better categorized in other sections.</p>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FillScreen:</span> <span class="pre">det(16,</span> <span class="pre">low,</span> <span class="pre">high)</span></span></dt>
+<dd><p>This function fills the screen with the color specified. It is faster than using FillRect to draw a rectangle over the entire screen.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code>: Low byte of color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code>: High byte of color.</p></li>
+</ul>
+</dd>
+<dt>Alternative method: <code class="docutils literal notranslate"><span class="pre">det(16,</span> <span class="pre">os_color)</span></code></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">os_color</span></code>: Color from TI-OS Colors menu, like RED or BLUE or NAVY.</p></li>
+</ul>
+</dd>
+<dt>Colors:</dt><dd><ul class="simple">
+<li><p>A list of colors can be found <a class="reference external" href="colors.html">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Fills the screen with the specified color.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DrawLine:</span> <span class="pre">det(17,</span> <span class="pre">low,</span> <span class="pre">high,</span> <span class="pre">x1,</span> <span class="pre">y1,</span> <span class="pre">x2,</span> <span class="pre">y2)</span></span></dt>
+<dd><p>Draws a line of the specified color from (x1, y1) to (x2, y2).</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code>: Low byte of color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code>: High byte of color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x1</span></code>: x location to begin drawing the line from, beginning from the top-left corner of the screen. x has a range of 0 - 319.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y1</span></code>: y location to begin drawing the line from, beginning from the top-left corner of the screen. y has a range of 0 - 239.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x2</span></code>: x location to finish drawing the line at, beginning from the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y2</span></code>: y location to finish drawing the line at, beginning from the top-left corner of the screen.</p></li>
+</ul>
+</dd>
+<dt>Alternative method: <code class="docutils literal notranslate"><span class="pre">det(17,</span> <span class="pre">os_color,</span> <span class="pre">x1,</span> <span class="pre">y1,</span> <span class="pre">x2,</span> <span class="pre">y2)</span></code></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">os_color</span></code>: Color from TI-OS Colors menu, like RED or BLUE or NAVY.</p></li>
+</ul>
+</dd>
+<dt>Colors:</dt><dd><ul class="simple">
+<li><p>A list of colors can be found <a class="reference external" href="colors.html">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Draws a line of the specified color from (x1, y1) to (x2, y2).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">SetPixel:</span> <span class="pre">det(18,</span> <span class="pre">low,</span> <span class="pre">high,</span> <span class="pre">x,</span> <span class="pre">y)</span></span></dt>
+<dd><p>Sets the pixel located at (x, y) to the color specified.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code>: Low byte of color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code>: High byte of color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: x location of the pixel to set, beginning from the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: y location of the pixel to set, beginning from the top-left corner of the screen.</p></li>
+</ul>
+</dd>
+<dt>Alternative method: <code class="docutils literal notranslate"><span class="pre">det(17,</span> <span class="pre">os_color,</span> <span class="pre">x,</span> <span class="pre">y)</span></code></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">os_color</span></code>: Color from TI-OS Colors menu, like RED or BLUE or NAVY.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you use the alternative method and use 0 for <code class="docutils literal notranslate"><span class="pre">os_color</span></code>, it will invert the specified pixel instead of drawing a color.</p>
+</div>
+<dl class="simple">
+<dt>Colors:</dt><dd><ul class="simple">
+<li><p>A list of colors can be found <a class="reference external" href="colors.html">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Sets the pixel at (x, y) to the color specified, or inverts it if using the alternative method with <code class="docutils literal notranslate"><span class="pre">os_color</span></code> being 0.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">GetPixel:</span> <span class="pre">det(19,</span> <span class="pre">x,</span> <span class="pre">y)</span></span></dt>
+<dd><p>Returns a low and high byte representing the color of the pixel at (x, y) in <code class="docutils literal notranslate"><span class="pre">Ans</span></code> and <code class="docutils literal notranslate"><span class="pre">Theta</span></code> respectively.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: x location of the pixel to check, beginning from the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: y location of the pixel to check, beginning from the top-left corner of the screen.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: Low byte of the color of the pixel checked.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: High byte of the color of the pixel checked.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">PixelTestColor:</span> <span class="pre">det(20,</span> <span class="pre">row,</span> <span class="pre">column)</span></span></dt>
+<dd><p>This function works just like the OS function pxl-Test() does, however, it will return 0 if no pixel is present and the OS color of the pixel if one is present. This only applies to the graph screen, like pxl-Test().</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">row</span></code>: Row of the graphscreen that contains the pixel to test.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">column</span></code>: Column of the graphscreen that contains the pixel to test.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The arguments and functionality of this are identical to pxl-Test(), other than the fact that this returns the color of the pixel if one is present.</p>
+</div>
+<dl class="simple">
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: 0 if no pixel was present, otherwise will contain the OS color of the pixel tested.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">PutSprite:</span> <span class="pre">det(21,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">width,</span> <span class="pre">height,</span> <span class="pre">string)</span></span></dt>
+<dd><p>This function draws a sprite at (x, y) with a width of width and a height of height, using data specified by string. For example, if the user specifies the string as 0, it will read the data from Str0. It is designed to be fast, and so it does not have as much error checking, meaning that it will display a sprite of the given width and height regardless of the length of the given sprite data. The sprite data is made up of hex values referring to xLIBC colors, which can be found <a class="reference external" href="https://roccoloxprograms.github.io/XlibcColorPicker/">here</a>. The data is stored left to right and top to bottom. For example, take a sprite that looks like this:</p>
+<div class="figure align-center" id="id1">
+<img alt="A sample sprite, being a basic face. Nobody knows what expression the face is making, since there weren't enough pixels in an 8x8 square to convey emotion." src="_images/sampleSprite.png" />
+<p class="caption"><span class="caption-text">A sample sprite.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</div>
+<p>We’ll convert it into a matrix, where each pixel is replaced with the hex equivalent of its xLIBC color:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">FF</span><span class="p">,</span> <span class="n">FF</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="n">FF</span><span class="p">,</span> <span class="n">FF</span>
+ <span class="n">FF</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="n">E6</span><span class="p">,</span> <span class="n">E6</span><span class="p">,</span> <span class="n">E6</span><span class="p">,</span> <span class="n">E6</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="n">FF</span>
+ <span class="mi">00</span><span class="p">,</span> <span class="n">E6</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="n">E6</span><span class="p">,</span> <span class="n">E6</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="n">E6</span><span class="p">,</span> <span class="mi">00</span>
+ <span class="mi">00</span><span class="p">,</span> <span class="n">E6</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="n">E6</span><span class="p">,</span> <span class="mi">00</span>
+ <span class="mi">00</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="mi">00</span>
+ <span class="mi">00</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="mi">00</span>
+ <span class="n">FF</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="n">E5</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="n">FF</span>
+ <span class="n">FF</span><span class="p">,</span> <span class="n">FF</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="n">FF</span><span class="p">,</span> <span class="n">FF</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Then, to make it into a string that we can use in a program, we’ll remove the newlines and commas, like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;FFFF00000000FFFFFF00E6E6E6E600FF00E600E6E600E60000E600E5E500E60000E5E5E5E5E5E50000E5E50000E5E500FF00E5E5E5E500FFFFFF00000000FFFF&quot;</span> <span class="o">-&gt;</span> <span class="n">Str9</span>
+</pre></div>
+</div>
+<p>More detailed instructions on converting sprites can be found <a class="reference external" href="convertsprites.html">here</a>.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: x location to draw the sprite, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: y location to draw the sprite, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code>: Width of the sprite in pixels.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">height</span></code>: Height of the sprite in pixels.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">string</span></code>: Which string variable to read the data from, 0-9.</p></li>
+</ul>
+</dd>
+<dt>Colors:</dt><dd><ul class="simple">
+<li><p>Uses hex codes referring to the xLIBC colors. A good resource for the xLIBC palette can be found <a class="reference external" href="https://roccoloxprograms.github.io/XlibcColorPicker/">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Draws a sprite of the specified width and height at (x, y).</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Keep in mind that the function will not check if your string is long enough for the provided width and height. If your string is an incorrect size, it will still draw a sprite of the specified width and height, though parts of the drawn sprite could be garbage.</p>
+</div>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">GetStringWidth:</span> <span class="pre">det(54,</span> <span class="pre">font);</span> <span class="pre">Ans</span> <span class="pre">=</span> <span class="pre">string</span></span></dt>
+<dd><p>Gets the width of a string in pixels. This command works with both the OS large and small fonts.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">font</span></code>: Whether to use the OS large or small font. 0 for small font, 1 for large font.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: Contains the string to be checked.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: Contains the width of the string in pixels.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..S:NT:ST</span></code> if <code class="docutils literal notranslate"><span class="pre">Ans</span></code> is not a string.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">TransSprite:</span> <span class="pre">det(55,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">width,</span> <span class="pre">height,</span> <span class="pre">transparency,</span> <span class="pre">string)</span></span></dt>
+<dd><p>Draws a sprite where the user specifies the color to be interpreted as transparency. The rest of the functionality is identical to the PutSprite command.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: x location to draw the sprite, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: y location to draw the sprite, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code>: Width of the sprite in pixels.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">height</span></code>: Height of the sprite in pixels.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">transparency</span></code>: Color in the sprite to be interpreted as transparency (0-255).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">string</span></code>: Which string variable to read the data from, 0-9.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Draws a sprite with transparency of the specified width and height at (x, y).</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Keep in mind that the function will not check if your string is long enough for the provided width and height. If your string is an incorrect size, it will still draw a sprite of the specified width and height, though parts of the drawn sprite could be garbage.</p>
+</div>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ScaleSprite:</span> <span class="pre">det(56,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">width,</span> <span class="pre">height,</span> <span class="pre">scale_x,</span> <span class="pre">scale_y,</span> <span class="pre">string)</span></span></dt>
+<dd><p>Draws a scaled sprite where the user can specify the scale value of both X and Y. The rest of the functionality is identical to the PutSprite command.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: x location to draw the sprite, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: y location to draw the sprite, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code>: Unscaled width of the sprite in pixels.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">height</span></code>: Unscaled height of the sprite in pixels.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scale_x</span></code>: Width scaling value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scale_y</span></code>: Height scaling value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">string</span></code>: Which string variable to read the data from, 0-9.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Draws a scaled sprite of the specified (scaled) width and height at (x, y).</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Keep in mind that the function will not check if your string is long enough for the provided width and height. If your string is an incorrect size, it will still draw a sprite of the specified width and height, though parts of the drawn sprite could be garbage.</p>
+</div>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ScaleTSprite:</span> <span class="pre">det(57,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">width,</span> <span class="pre">height,</span> <span class="pre">scale_x,</span> <span class="pre">scale_y,</span> <span class="pre">transparency,</span> <span class="pre">string)</span></span></dt>
+<dd><p>Draws a scaled sprite where the user specifies the color to be interpreted as transparency. The rest of the functionality is identical to the PutSprite command.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: x location to draw the sprite, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: y location to draw the sprite, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code>: Unscaled width of the sprite in pixels.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">height</span></code>: Unscaled height of the sprite in pixels.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scale_x</span></code>: Width scaling value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scale_y</span></code>: Height scaling value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">transparency</span></code>: Color in the sprite to be interpreted as transparency (0-255).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">string</span></code>: Which string variable to read the data from, 0-9.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Draws a scaled sprite with transparency of the specified (scaled) width and height at (x, y).</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Keep in mind that the function will not check if your string is long enough for the provided width and height. If your string is an incorrect size, it will still draw a sprite of the specified width and height, though parts of the drawn sprite could be garbage.</p>
+</div>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ShiftScreen:</span> <span class="pre">det(58,</span> <span class="pre">direction,</span> <span class="pre">amount,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">width,</span> <span class="pre">height)</span></span></dt>
+<dd><p>Shifts the pixels within a user-specified region of the screen a specified amount of pixels in a specified direction. The following directions and corresponding values are below:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Value</p></th>
+<th class="head"><p>Direction</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>Up</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>Down</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>Left</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>Right</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">direction</span></code>: Direction to move the screen in, as seen in the table above.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">amount</span></code>: The amount of pixels to move the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: Starting X position of the region of the screen to shift, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: Starting Y position of the region of the screen to shift, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code>: Width of the region of the screen to shift.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">height</span></code>: Height of the region of the screen to shift.</p></li>
+</ul>
+</dd>
+<dt>Alternative method: <code class="docutils literal notranslate"><span class="pre">det(58,</span> <span class="pre">direction,</span> <span class="pre">amount)</span></code></dt><dd><p>This alternative method acts as a shorthand way to shift the entire screen, rather than a specified region.</p>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Moves the screen in the specified direction.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">RGBto565:</span> <span class="pre">det(59,</span> <span class="pre">r,</span> <span class="pre">g,</span> <span class="pre">b)</span></span></dt>
+<dd><p>Converts an RGB color to a high and low byte that can be used in other Celtic functions.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">r</span></code>: Red color value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">g</span></code>: Green color value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">b</span></code>: Blue color value.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: Low byte of the color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: High byte of the color.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DrawRect:</span> <span class="pre">det(60,</span> <span class="pre">low,</span> <span class="pre">high,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">width,</span> <span class="pre">height)</span></span></dt>
+<dd><p>Draws an unfilled rectangle of user-specified color, location, and size.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code>: Low byte of color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code>: High byte of color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: x location to begin drawing the rectangle, starting at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: y location to begin drawing the rectangle, starting at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code>: Width of the rectangle to draw.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">height</span></code>: Height of the rectangle to draw.</p></li>
+</ul>
+</dd>
+<dt>Alternative method: <code class="docutils literal notranslate"><span class="pre">det(60,</span> <span class="pre">os_color,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">width,</span> <span class="pre">height)</span></code></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">os_color</span></code>: Color from TI-OS Colors menu, like RED or BLUE or NAVY.</p></li>
+</ul>
+</dd>
+<dt>Colors:</dt><dd><ul class="simple">
+<li><p>A list of colors can be found <a class="reference external" href="colors.html">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Draws the unfilled rectangle.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DrawCircle:</span> <span class="pre">det(61,</span> <span class="pre">low,</span> <span class="pre">high,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">radius)</span></span></dt>
+<dd><p>Draws an unfilled circle with the user specified color. The <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> arguments refer to the center point of the circle.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code>: Low byte of color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code>: High byte of color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: x location of the center of the circle, starting at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: y location of the center of the circle, starting at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">radius</span></code>: Radius of the circle.</p></li>
+</ul>
+</dd>
+<dt>Alternative method: <code class="docutils literal notranslate"><span class="pre">det(61,</span> <span class="pre">os_color,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">radius)</span></code></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">os_color</span></code>: Color from TI-OS Colors menu, like RED or BLUE or NAVY.</p></li>
+</ul>
+</dd>
+<dt>Colors:</dt><dd><ul class="simple">
+<li><p>A list of colors can be found <a class="reference external" href="colors.html">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Draws the unfilled circle.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FillCircle:</span> <span class="pre">det(62,</span> <span class="pre">low,</span> <span class="pre">high,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">radius)</span></span></dt>
+<dd><p>Draws a filled circle with the user specified color. The <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> arguments refer to the center point of the circle.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code>: Low byte of color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code>: High byte of color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: x location of the center of the circle, starting at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: y location of the center of the circle, starting at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">radius</span></code>: Radius of the circle.</p></li>
+</ul>
+</dd>
+<dt>Alternative method: <code class="docutils literal notranslate"><span class="pre">det(62,</span> <span class="pre">os_color,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">radius)</span></code></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">os_color</span></code>: Color from TI-OS Colors menu, like RED or BLUE or NAVY.</p></li>
+</ul>
+</dd>
+<dt>Colors:</dt><dd><ul class="simple">
+<li><p>A list of colors can be found <a class="reference external" href="colors.html">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Draws the filled circle.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DrawArc:</span> <span class="pre">det(63,</span> <span class="pre">low,</span> <span class="pre">high,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">radius,</span> <span class="pre">start_angle,</span> <span class="pre">end_angle)</span></span></dt>
+<dd><p>Draws the outline of a circular arc. The <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> arguments refer to the center of the arc, which begins at <code class="docutils literal notranslate"><span class="pre">start_angle</span></code> and ends at <code class="docutils literal notranslate"><span class="pre">end_angle</span></code>. Angle values go from 0-360, and the end angle must be greater than the start angle. 0 degrees is the right most part of the circle, and goes counter-clockwise.</p>
+<div class="figure align-center" id="id2">
+<img alt="A diagram showing various points along the circle." src="_images/circlePoints.png" />
+<p class="caption"><span class="caption-text">A diagram showing various points along the circle.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code>: Low byte of color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code>: High byte of color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: x location of the center of the arc, starting at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: y location of the center of the arc, starting at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">radius</span></code>: Radius of the arc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start_angle</span></code>: Angle to begin drawing the arc at.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">end_angle</span></code>: Angle to finish drawing the arc at.</p></li>
+</ul>
+</dd>
+<dt>Alternative method: <code class="docutils literal notranslate"><span class="pre">det(63,</span> <span class="pre">os_color,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">radius,</span> <span class="pre">start_angle,</span> <span class="pre">end_angle)</span></code></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">os_color</span></code>: Color from TI-OS Colors menu, like RED or BLUE or NAVY.</p></li>
+</ul>
+</dd>
+<dt>Colors:</dt><dd><ul class="simple">
+<li><p>A list of colors can be found <a class="reference external" href="colors.html">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Draws the user-specified arc.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DispTransText:</span> <span class="pre">det(64,</span> <span class="pre">font,</span> <span class="pre">low,</span> <span class="pre">high,</span> <span class="pre">x,</span> <span class="pre">y);</span> <span class="pre">Str9</span> <span class="pre">=</span> <span class="pre">string</span> <span class="pre">to</span> <span class="pre">display</span></span></dt>
+<dd><p>Draws colored text with a transparent background in either the OS large or small font.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">font</span></code>: Whether to use the OS large or small font. 0 for small font, 1 for large font.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code>: Low byte of color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code>: High byte of color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: x location to begin drawing the text at, starting at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: y location to begin drawing the text at, starting at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Str9</span></code>: String to display.</p></li>
+</ul>
+</dd>
+<dt>Alternative method: <code class="docutils literal notranslate"><span class="pre">det(64,</span> <span class="pre">font,</span> <span class="pre">os_color,</span> <span class="pre">x,</span> <span class="pre">y)</span></code></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">os_color</span></code>: Color from TI-OS Colors menu, like RED or BLUE or NAVY.</p></li>
+</ul>
+</dd>
+<dt>Colors:</dt><dd><ul class="simple">
+<li><p>A list of colors can be found <a class="reference external" href="colors.html">here</a>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ChkRect:</span> <span class="pre">det(65,</span> <span class="pre">x0,</span> <span class="pre">y0,</span> <span class="pre">width0,</span> <span class="pre">height0,</span> <span class="pre">x1,</span> <span class="pre">y1,</span> <span class="pre">width1,</span> <span class="pre">height1)</span></span></dt>
+<dd><p>Checks if a rectangle intersects with another rectangle.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x0</span></code>: x coordinate of rectangle 0, starting at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y0</span></code>: y coordinate of rectangle 0, starting at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">width0</span></code>: Width of rectangle 0.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">height0</span></code>: Height of rectangle 0.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x1</span></code>: x coordinate of rectangle 1, starting at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y1</span></code>: y coordinate of rectangle 1, starting at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">width1</span></code>: Width of rectangle 1.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">height1</span></code>: Height of rectangle 1.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: 0 if the rectangles do not intersect, and 1 if they do.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">PutChar:</span> <span class="pre">det(66,</span> <span class="pre">font,</span> <span class="pre">fg_low,</span> <span class="pre">fg_high,</span> <span class="pre">bg_low,</span> <span class="pre">bg_high,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">char)</span></span></dt>
+<dd><p>Displays a character specified by the user at <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>, with a user-specified background color as well. <code class="docutils literal notranslate"><span class="pre">char</span></code> can range from 0 - 255. In order to figure out the <code class="docutils literal notranslate"><span class="pre">char</span></code> value for your preferred character, you can use the handy images below. Simply take the X and Y values on the chart and add them together.</p>
+<div class="figure align-center" id="id3">
+<img alt="Chart for determining the code of a specific character (Small font)" src="_images/fontMapSmall.png" />
+<p class="caption"><span class="caption-text">Small Font</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+</div>
+<div class="figure align-center" id="id4">
+<img alt="Chart for determining the code of a specific character (Large font)" src="_images/fontMapLarge.png" />
+<p class="caption"><span class="caption-text">Large Font</span><a class="headerlink" href="#id4" title="Permalink to this image"></a></p>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">font</span></code>: Whether to use the OS large or small font. 0 for the small font and 1 for the large font.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fg_low</span></code>: Low byte of the foreground color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fg_high</span></code>: High byte of the foreground color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bg_low</span></code>: Low byte of the background color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bg_high</span></code>: High byte of the background color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: X coordinate to display the character at, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: Y coordinate to display the character at, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">char</span></code>: The numeric code associated with the character to display. See images above for more info.</p></li>
+</ul>
+</dd>
+<dt>Alternative method: <code class="docutils literal notranslate"><span class="pre">det(66,</span> <span class="pre">font,</span> <span class="pre">fg_os,</span> <span class="pre">bg_os,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">char)</span></code></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fg_os</span></code>: Foreground color from TI-OS Colors menu, like RED or BLUE or NAVY.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bg_os</span></code>: Background color from TI-OS Colors menu, like RED or BLUE or NAVY.</p></li>
+</ul>
+</dd>
+<dt>Colors:</dt><dd><ul class="simple">
+<li><p>A list of colors can be found <a class="reference external" href="colors.html">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Displays the specified character.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">PutTransChar:</span> <span class="pre">det(67,</span> <span class="pre">font,</span> <span class="pre">low,</span> <span class="pre">high,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">char)</span></span></dt>
+<dd><p>Displays a character specified by the user at <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>, with a transparent background. See the above command for information on character codes.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">font</span></code>: Whether to use the OS large or small font. 0 for the small font and 1 for the large font.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code>: Low byte of the color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code>: High byte of the color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: X coordinate to display the character at, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: Y coordinate to display the character at, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">char</span></code>: The numeric code associated with the character to display. See images above for more info.</p></li>
+</ul>
+</dd>
+<dt>Alternative method: <code class="docutils literal notranslate"><span class="pre">det(67,</span> <span class="pre">font,</span> <span class="pre">os_color,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">char)</span></code></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">os_color</span></code>: Color from TI-OS Colors menu, like RED or BLUE or NAVY.</p></li>
+</ul>
+</dd>
+<dt>Colors:</dt><dd><ul class="simple">
+<li><p>A list of colors can be found <a class="reference external" href="colors.html">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Displays the specified character.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">HorizLine:</span> <span class="pre">det(68,</span> <span class="pre">low,</span> <span class="pre">high,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">length)</span></span></dt>
+<dd><p>Draws a horizontal line beginning at <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>, with a length of <code class="docutils literal notranslate"><span class="pre">length</span></code>.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code>: Low byte of the color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code>: High byte of the color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: X coordinate to begin drawing the line at, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: Y coordinate to begin drawing the line at, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">length</span></code>: The length of the horizontal line.</p></li>
+</ul>
+</dd>
+<dt>Alternative method: <code class="docutils literal notranslate"><span class="pre">det(68,</span> <span class="pre">os_color,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">length)</span></code></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">os_color</span></code>: Color from TI-OS Colors menu, like RED or BLUE or NAVY.</p></li>
+</ul>
+</dd>
+<dt>Colors:</dt><dd><ul class="simple">
+<li><p>A list of colors can be found <a class="reference external" href="colors.html">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Draws a horizontal line <code class="docutils literal notranslate"><span class="pre">length</span></code> pixels long, beginning at <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">VertLine:</span> <span class="pre">det(69,</span> <span class="pre">low,</span> <span class="pre">high,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">length)</span></span></dt>
+<dd><p>Draws a vertical line beginning at <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>, with a length of <code class="docutils literal notranslate"><span class="pre">length</span></code>.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code>: Low byte of the color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code>: High byte of the color.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: X coordinate to begin drawing the line at, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: Y coordinate to begin drawing the line at, beginning at the top-left corner of the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">length</span></code>: The length of the vertical line.</p></li>
+</ul>
+</dd>
+<dt>Alternative method: <code class="docutils literal notranslate"><span class="pre">det(69,</span> <span class="pre">os_color,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">length)</span></code></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">os_color</span></code>: Color from TI-OS Colors menu, like RED or BLUE or NAVY.</p></li>
+</ul>
+</dd>
+<dt>Colors:</dt><dd><ul class="simple">
+<li><p>A list of colors can be found <a class="reference external" href="colors.html">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Draws a vertical line <code class="docutils literal notranslate"><span class="pre">length</span></code> pixels long, beginning at <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="dcefunctions.html" class="btn btn-neutral float-left" title="Doors CE 9 Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="osutilityfunctions.html" class="btn btn-neutral float-right" title="OS Utility Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022 - 2024, RoccoLox Programs, TIny_Hacker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

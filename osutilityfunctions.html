@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OS Utility Functions &mdash; Celtic CE 1.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Celtic III Functions" href="celticiiifunctions.html" />
+    <link rel="prev" title="Graphics Functions" href="graphicsfunctions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Celtic CE
+          </a>
+              <div class="version">
+                1.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to the Celtic CE docs!</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gensyntax.html">General Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="osintegrations.html">OS Editor Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="errorcodes.html">Error Codes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hexcodes.html">TI-84 Plus CE Hex Codes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="colors.html">Colors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convertsprites.html">Converting Sprites</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Function Syntax</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="csefunctions.html">Celtic 2 CSE Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcefunctions.html">Doors CE 9 Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphicsfunctions.html">Graphics Functions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">OS Utility Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="celticiiifunctions.html">Celtic III Functions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Celtic CE</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>OS Utility Functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/osutilityfunctions.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="os-utility-functions">
+<h1>OS Utility Functions<a class="headerlink" href="#os-utility-functions" title="Permalink to this heading"></a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<p>These functions perform various actions related to the OS and its various features.</p>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">GetMode:</span> <span class="pre">det(22,</span> <span class="pre">mode)</span></span></dt>
+<dd><p>Checks a specified mode, from 0 to 14. A table containing the information on the modes and possible outcomes is below.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 5%" />
+<col style="width: 18%" />
+<col style="width: 77%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Input</p></td>
+<td><p>Mode</p></td>
+<td><p>Possible Returns</p></td>
+</tr>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>Mathprint</p></td>
+<td><p>0 if not enabled, 1 if enabled.</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>Notation</p></td>
+<td><p>0 for Normal, 1 for Scientific, 2 for Engineering.</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>Trig Mode</p></td>
+<td><p>0 for Radian, 1 for Degree.</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>Graph Mode</p></td>
+<td><p>0 for Function, 1 for Parametric, 2 for Polar, 3 for Sequence.</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>Graph Equations</p></td>
+<td><p>0 for Sequential, 1 for Simultaneous.</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>Numeric Format</p></td>
+<td><p>0 for Real, 1 for a + bi mode, 2 for re^(Thetai). Theta is the theta token.</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p>Window Mode</p></td>
+<td><p>0 for Full, 1 for Horizontal, 2 for Graph-Table.</p></td>
+</tr>
+<tr class="row-odd"><td><p>7</p></td>
+<td><p>Coordinate Mode</p></td>
+<td><p>0 for Rectangular coordinates, 1 for Polar coordinates</p></td>
+</tr>
+<tr class="row-even"><td><p>8</p></td>
+<td><p>Grid Mode</p></td>
+<td><p>0 if the grid is off, 1 if the grid is on.</p></td>
+</tr>
+<tr class="row-odd"><td><p>9</p></td>
+<td><p>Axis Mode</p></td>
+<td><p>0 if the axis is off, 1 if it is on.</p></td>
+</tr>
+<tr class="row-even"><td><p>10</p></td>
+<td><p>Axis Labels</p></td>
+<td><p>0 if the axis labels are off, 1 if they are on.</p></td>
+</tr>
+<tr class="row-odd"><td><p>11</p></td>
+<td><p>Detect Asymptotes</p></td>
+<td><p>0 if Asymptotes are off, 1 if they are on.</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p>Stat Wizards</p></td>
+<td><p>0 if Stat Wizards are off, 1 if they are on.</p></td>
+</tr>
+<tr class="row-odd"><td><p>13</p></td>
+<td><p>Mixed Fractions</p></td>
+<td><p>0 if Mixed Fractions are off, 1 if they are on.</p></td>
+</tr>
+<tr class="row-even"><td><p>14</p></td>
+<td><p>Decimal Answers</p></td>
+<td><p>0 for Auto Answers, 1 for Decimal Answers.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mode</span></code>: Which mode to check. Refer to the table above. Must be between 0 and 14.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: Varies based on the specified mode. See table above.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">RenameVar:</span> <span class="pre">det(23);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">variable</span> <span class="pre">to</span> <span class="pre">rename;</span> <span class="pre">Str9</span> <span class="pre">=</span> <span class="pre">new</span> <span class="pre">name</span></span></dt>
+<dd><p>Renames the variable specified in <code class="docutils literal notranslate"><span class="pre">Str0</span></code> with a new name specified in <code class="docutils literal notranslate"><span class="pre">Str9</span></code>. For appvars, the name in <code class="docutils literal notranslate"><span class="pre">Str0</span></code> must be preceeded with the <code class="docutils literal notranslate"><span class="pre">rowSwap(</span></code> token, however, the new name does not need the <code class="docutils literal notranslate"><span class="pre">rowSwap(</span></code> token. Renaming a program will result in the program being locked.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Str0</span></code>: The name of the variable you wish to rename. If it is an appvar, it must be preceeded by the <code class="docutils literal notranslate"><span class="pre">rowSwap(</span></code> token.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Str9</span></code>: The new name that you wish to rename the specified file to. It does not need to be preceeded by the <code class="docutils literal notranslate"><span class="pre">rowSwap(</span></code> token, regardless of whether it is a program or appvar.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Renames the variable specified in <code class="docutils literal notranslate"><span class="pre">Str0</span></code> with the new name specified in <code class="docutils literal notranslate"><span class="pre">Str9</span></code>.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:EN:M</span></code> depending on the amount of remaining memory and the size of the variable being renamed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">LockPrgm:</span> <span class="pre">det(24);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">variable</span> <span class="pre">to</span> <span class="pre">lock</span> <span class="pre">/</span> <span class="pre">unlock</span></span></dt>
+<dd><p>Toggles the locked attribute of the program referenced by <code class="docutils literal notranslate"><span class="pre">Str0</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If you lock/unlock an archived program, Celtic un-archives it when running the function and then re-archives it when the function is complete. This means that it could result in a garbage collect.</p>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Str0</span></code>: The name of the program to toggle the locked attribute of. Follow the format documented <a class="reference external" href="gensyntax.html#argument-types">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Toggles whether or not the specified program is locked.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..SUPPORT</span></code> if you attempt to use this function on an appvar.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">HidePrgm:</span> <span class="pre">det(25);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">variable</span> <span class="pre">to</span> <span class="pre">hide</span> <span class="pre">/</span> <span class="pre">unhide</span></span></dt>
+<dd><p>Toggles the hidden attribute of the program referenced by <code class="docutils literal notranslate"><span class="pre">Str0</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If you hide/unhide an archived program, Celtic un-archives it when running the function and then re-archives it when the function is complete. This means that it could result in a garbage collect.</p>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Str0</span></code>: The name of the program to toggle the hidden attribute of. Follow the format documented <a class="reference external" href="gensyntax.html#argument-types">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Toggles whether or not the specified program is hidden.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..SUPPORT</span></code> if you attempt to use this function on an appvar.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">PrgmToStr:</span> <span class="pre">det(26,</span> <span class="pre">string_number);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">variable</span> <span class="pre">to</span> <span class="pre">read</span></span></dt>
+<dd><p>Copies the contents of a file specified in <code class="docutils literal notranslate"><span class="pre">Str0</span></code> to the string specified by <code class="docutils literal notranslate"><span class="pre">string_number</span></code>. If you wish to read the contents of an appvar, you must preceed the name with the <code class="docutils literal notranslate"><span class="pre">rowSwap(</span></code> token in <code class="docutils literal notranslate"><span class="pre">Str0</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Using this command on ASM programs and AppVars could cause the string to contain invalid tokens, resulting in a crash. Keep this in mind when using the command and ensure that you do not accidentally try to get invalid tokens.</p>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">string_number</span></code>: The number of the string to copy to. Can be from 0 to 9. 0 means <code class="docutils literal notranslate"><span class="pre">Str0</span></code>, 1 means <code class="docutils literal notranslate"><span class="pre">Str1</span></code> and so on.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Str0</span></code>: Name of the variable to copy. The name must be preceeded by the <code class="docutils literal notranslate"><span class="pre">rowSwap(</span></code> token if you wish to read an appvar.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>The contents of the specified variable in the string specified by <code class="docutils literal notranslate"><span class="pre">string_number</span></code>.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:EN:M</span></code> if there is not enough memory to create the string with the contents of the specified variable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..NULLVAR</span></code> if the specified file contains no data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">GetPrgmType:</span> <span class="pre">det(27);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">program</span> <span class="pre">to</span> <span class="pre">check</span></span></dt>
+<dd><p>Gets the type of program specified in <code class="docutils literal notranslate"><span class="pre">Str0</span></code>. This is not the OS type, it is the actual program type (C, ASM, etc). A table with the return codes and filetypes they signify is below.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 76%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Code</p></td>
+<td><p>Filetype</p></td>
+</tr>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>eZ80 Assembly</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>C</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>TI-BASIC</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>ICE</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>ICE Source</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Str0</span></code>: Name of the program to check. It cannot be an AppVar. Follow the format documented <a class="reference external" href="gensyntax.html#argument-types">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: Contains the number referencing the filetype. See the table above.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..INVAL:S</span></code> if you attempt to use this function on an AppVar.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">GetBatteryStatus:</span> <span class="pre">det(28)</span></span></dt>
+<dd><p>Gets the current status of the battery, as a number between 0 and 4, 0 being no charge and 4 being fully charged. If the battery is charging, 10 will be added. For example, a battery that is partially charged and also actively charging would return 12.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: Current status of the battery.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">SetBrightness:</span> <span class="pre">det(29,</span> <span class="pre">brightness)</span></span></dt>
+<dd><p>Sets the LCD to the specified <code class="docutils literal notranslate"><span class="pre">brightness</span></code>. The brightness can be between 0 and 255, with 0 being the brightest and 255 being the darkest. If no argument is passed for the brightness, it will instead return the current brightness of the screen.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The brightness will not persist after the calculator is turned off. Instead, it will go back to what it was previously.</p>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">brightness</span></code>: The level of brightness to set the screen to, between 0 and 255. No brightness argument will instead return the current level of brightness.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: If no brightness argument is passed, <code class="docutils literal notranslate"><span class="pre">Theta</span></code> will contain the current brightness.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">brightness</span></code> is between 0 and 255, it will instead set the screen to the specified brightness, with 0 being the lightest and 255 the darkest.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">SearchFile:</span> <span class="pre">det(52,</span> <span class="pre">offset);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">file</span> <span class="pre">name,</span> <span class="pre">Str9</span> <span class="pre">=</span> <span class="pre">search</span> <span class="pre">string</span></span></dt>
+<dd><p>Searches a program or AppVar specified by <code class="docutils literal notranslate"><span class="pre">file</span> <span class="pre">name</span></code>, for a <code class="docutils literal notranslate"><span class="pre">search</span> <span class="pre">string</span></code>, beginning at the user-specified (0-indexed) <code class="docutils literal notranslate"><span class="pre">offset</span></code>.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">offset</span></code>: Byte offset in the file to start searching, with 0 being the first byte of the file.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Str0</span></code>: Name of the file to search in. Follow the format documented <a class="reference external" href="gensyntax.html#argument-types">here</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Str9</span></code>: String to search for.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: The byte offset of the located string.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..E:NT:FN</span></code> if the string is not located.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..INVAL:S</span></code> if the string is bigger than the file to search for.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CheckGC:</span> <span class="pre">det(53);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">variable</span> <span class="pre">name</span></span></dt>
+<dd><p>Checks if the archiving of the file specified by <code class="docutils literal notranslate"><span class="pre">variable</span> <span class="pre">name</span></code> will trigger a Garbage Collect.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the file is already archived, the command will not say that archiving it will cause a Garbage Collect, regardless of size.</p>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Str0</span></code>: Name of variable to check for. Follow the format documented <a class="reference external" href="gensyntax.html#argument-types">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: 0 if a Garbage Collect will not occur, and 1 if it will.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">RunAsmPrgm:</span> <span class="pre">det(70);</span> <span class="pre">Ans</span> <span class="pre">=</span> <span class="pre">variable</span> <span class="pre">name</span></span></dt>
+<dd><p>This command works similarly to ErrorHandle, though for assembly programs instead of BASIC ones. This includes assembly programs, C programs, and (compiled) ICE programs. It can be useful in newer versions of TI-OS where assembly is blocked. Unlike ErrorHandle, <code class="docutils literal notranslate"><span class="pre">Ans</span></code> should not begin with the <code class="docutils literal notranslate"><span class="pre">prgm</span></code> token.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: Name of the ASM program to run. Follow the format documented <a class="reference external" href="gensyntax.html#argument-types">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: Contains the error code returned by the program, or 0 if no error occured.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..SUPPORT</span></code> if the program name in <code class="docutils literal notranslate"><span class="pre">Ans</span></code> is not an assembly program.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:EN:M</span></code> if there is not enough free RAM to execute the program.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">LineToOffset:</span> <span class="pre">det(71,</span> <span class="pre">line);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">variable</span> <span class="pre">name</span></span></dt>
+<dd><p>Gets the byte offset of a newline in the program or AppVar specified by <code class="docutils literal notranslate"><span class="pre">Str0</span></code>. Lines begin at 1 and bytes begin at 0.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">line</span></code>: Line to get the byte offset of.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Str0</span></code>: Name of the variable to search for the byte offset in. Follow the format documented <a class="reference external" href="gensyntax.html#argument-types">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: Contains the byte offset of <code class="docutils literal notranslate"><span class="pre">line</span></code>.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..L:NT:FN</span></code> if the line is not found in the file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">OffsetToLine:</span> <span class="pre">det(72,</span> <span class="pre">offset);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">variable</span> <span class="pre">name</span></span></dt>
+<dd><p>Gets the line at which a specific byte (specified by <code class="docutils literal notranslate"><span class="pre">offset</span></code>) occurs in the program or AppVar specified by <code class="docutils literal notranslate"><span class="pre">Str0</span></code>. Lines begin at 1 and bytes begin at 0.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">offset</span></code>: Byte offset to detect the line it occurs in.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Str0</span></code>: Name of the variable to search for the line in. Follow the format documented <a class="reference external" href="gensyntax.html#argument-types">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: Line containing <code class="docutils literal notranslate"><span class="pre">offset</span></code>.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..E:NT:FN</span></code> if the offset does not exist in the file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">GetKey:</span> <span class="pre">det(73)</span></span></dt>
+<dd><p>This command acts as a faster version of the TI-OS GetKey command, though it returns different keycodes, including keycodes for diagonal keypresses and other combinations of arrow keys. A map with the keycodes for different keys (returned in <code class="docutils literal notranslate"><span class="pre">Ans</span></code>) is below:</p>
+<div class="figure align-center" id="id1">
+<img alt="A map of buttons and their corresponding keycodes" src="_images/keycodes.png" />
+<p class="caption"><span class="caption-text">A map of buttons and their corresponding keycodes</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</div>
+<p>There are also a few “unofficial” combinations of arrow keys with codes as well:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keycode</p></th>
+<th class="head"><p>Keys</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>57</p></td>
+<td><p>Left / Right</p></td>
+</tr>
+<tr class="row-odd"><td><p>58</p></td>
+<td><p>Left / Right / Down</p></td>
+</tr>
+<tr class="row-even"><td><p>59</p></td>
+<td><p>Up / Down</p></td>
+</tr>
+<tr class="row-odd"><td><p>60</p></td>
+<td><p>Up / Left / Down</p></td>
+</tr>
+<tr class="row-even"><td><p>61</p></td>
+<td><p>Up / Right / Down</p></td>
+</tr>
+<tr class="row-odd"><td><p>62</p></td>
+<td><p>Up / Right / Left</p></td>
+</tr>
+<tr class="row-even"><td><p>63</p></td>
+<td><p>All arrow keys</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="simple">
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: The keycode of the key(s) pressed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">TurnCalcOff:</span> <span class="pre">det(74)</span></span></dt>
+<dd><p>This command turns the calculator off. When the user presses the [on] key, it will resume program execution after the command.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>See above.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">BackupString:</span> <span class="pre">det(75,</span> <span class="pre">string_number)</span></span></dt>
+<dd><p>Backs up the contents of a string to be restored later with the RestoreString command. <code class="docutils literal notranslate"><span class="pre">string_number</span></code> refers to the string to back up, with 0 being <code class="docutils literal notranslate"><span class="pre">Str0</span></code>, 1 being <code class="docutils literal notranslate"><span class="pre">Str1</span></code>, and so on. Keep in mind that if the string being backed up is greater than 256 bytes in size, only the first 256 bytes will be backed up by the command. If a string has previously been backed up, backing up a new string will overwrite the old one.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">string_number</span></code>: Which string to back up, with 0 being <code class="docutils literal notranslate"><span class="pre">Str0</span></code>, 1 being <code class="docutils literal notranslate"><span class="pre">Str1</span></code>, and so on. This number can range between 0 - 9.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Backs up the string specified by the user to be restored at a future time in the program.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..INVAL:S</span></code> if the string being backed up has a length of 0.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">RestoreString:</span> <span class="pre">det(76,</span> <span class="pre">string_number)</span></span></dt>
+<dd><p>Restores the contents of a string backed up by the BackupString command. <code class="docutils literal notranslate"><span class="pre">string_number</span></code> refers to the string to copy the backup into. This does not need to be the same string as the one previously backed up.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It is advised to not restore a string if no string has previously been backed up, as you could end up loading invalid tokens into the string and corrupting it.</p>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">string_number</span></code>: Which string to restore to, with 0 being <code class="docutils literal notranslate"><span class="pre">Str0</span></code>, 1 being <code class="docutils literal notranslate"><span class="pre">Str1</span></code>, and so on. This number can range between 0 - 9.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Copies the data backed up from the BackupString command into the user-specified string.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:EN:M</span></code> if there is not enough memory to complete the action.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">BackupReal:</span> <span class="pre">det(77,</span> <span class="pre">variable)</span></span></dt>
+<dd><p>This command functions similarly to BackupString, though it backs up a real number instead. <code class="docutils literal notranslate"><span class="pre">variable</span></code> is a number referencing the variable to be backed up, and can range from 1 to 27, with 1 being <code class="docutils literal notranslate"><span class="pre">A</span></code>, 2 being <code class="docutils literal notranslate"><span class="pre">B</span></code>, and so on up until 27 which represents <code class="docutils literal notranslate"><span class="pre">Theta</span></code>. This command will only allow you to back up variables with real values.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">variable</span></code>: A number referencing the variable to back up, with 1 being <code class="docutils literal notranslate"><span class="pre">A</span></code>, 2 being <code class="docutils literal notranslate"><span class="pre">B</span></code>, and so on until 27, which is <code class="docutils literal notranslate"><span class="pre">Theta</span></code>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Backs up the variable specified by the user, which can be restored into a variable later with RestoreReal.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:REAL</span></code>: If the value of the variable being backed up is not a real number.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">RestoreReal:</span> <span class="pre">det(78,</span> <span class="pre">variable)</span></span></dt>
+<dd><p>This command functions similarly to RestoreString, though it restores a real number instead. <code class="docutils literal notranslate"><span class="pre">variable</span></code> is a number referencing the variable to copy the backed up value into, and can range from 1 to 27, with 1 being <code class="docutils literal notranslate"><span class="pre">A</span></code>, 2 being <code class="docutils literal notranslate"><span class="pre">B</span></code>, and so on up until 27 which represents <code class="docutils literal notranslate"><span class="pre">Theta</span></code>. The variable restored to does not need to be the same one previously backed up.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It is advised to not restore a variable if no variable has previously been backed up, as you could end up corrupting it like RestoreString.</p>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">variable</span></code>: A number referencing the variable to restore to, with 1 being <code class="docutils literal notranslate"><span class="pre">A</span></code>, 2 being <code class="docutils literal notranslate"><span class="pre">B</span></code>, and so on until 27, which is <code class="docutils literal notranslate"><span class="pre">Theta</span></code>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Copies the value backed up by BackupReal into a variable specified by the user.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:REAL</span></code>: If the value of the currently backed up number is not a real number.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">SetParseLine:</span> <span class="pre">det(79,</span> <span class="pre">line)</span></span></dt>
+<dd><p>This command jumps to a specific line in the program that is currently being executed. This can save space in your program by avoiding the need of Labels and Gotos. This makes it a useful command for optimizing programs or creating a “function-like” structure in your programs as well. It will also return the line that is currently being parsed (The one with the jump command) in <code class="docutils literal notranslate"><span class="pre">Theta</span></code> before jumping, making returning to the previous location much easier, as seen in this example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span><span class="p">:</span> <span class="n">Disp</span> <span class="s2">&quot;PROGRAM START&quot;</span>
+<span class="mi">2</span><span class="p">:</span> <span class="n">det</span><span class="p">(</span><span class="mi">79</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span> <span class="o">//</span> <span class="n">Jump</span> <span class="n">to</span> <span class="n">the</span> <span class="n">fifth</span> <span class="n">line</span> <span class="n">of</span> <span class="n">the</span> <span class="n">program</span>
+<span class="mi">3</span><span class="p">:</span> <span class="n">Disp</span> <span class="s2">&quot;PROGRAM FINISH&quot;</span>
+<span class="mi">4</span><span class="p">:</span> <span class="n">Return</span>
+<span class="mi">5</span><span class="p">:</span> <span class="n">Disp</span> <span class="s2">&quot;PROGRAM MIDDLE&quot;</span>
+<span class="mi">6</span><span class="p">:</span> <span class="n">det</span><span class="p">(</span><span class="mi">79</span><span class="p">,</span><span class="n">Theta</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">Jump</span> <span class="n">to</span> <span class="n">the</span> <span class="n">line</span> <span class="n">after</span> <span class="n">the</span> <span class="n">previous</span> <span class="n">jump</span><span class="p">,</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">case</span><span class="p">,</span> <span class="n">line</span> <span class="mi">3</span>
+</pre></div>
+</div>
+<p>To make using this command easier, you can view the line number of the line your cursor is currently on in the editor by pressing <kbd class="kbd docutils literal notranslate">2nd</kbd> + <kbd class="kbd docutils literal notranslate">enter</kbd> if Celtic is installed. This will display the current line number in the status bar, along with the current byte offset and size of the program in bytes as well.</p>
+<dl class="simple">
+<dt>Alternative method: <code class="docutils literal notranslate"><span class="pre">det(79)</span></code> OR <code class="docutils literal notranslate"><span class="pre">det(79,</span> <span class="pre">0)</span></code></dt><dd><p>If no line argument is included or you attempt to jump to line 0, Celtic will only return the current line offset without jumping.</p>
+</dd>
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">line</span></code>: The line of the program currently being executed to jump to.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: The line of the program that the SetParseLine command was ran on.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..L:NT:FN</span></code> if the line being attempted to jump to does not exist in the currently running program.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">SetParseByte:</span> <span class="pre">det(80,</span> <span class="pre">offset)</span></span></dt>
+<dd><p>This command jumps to a specific byte offset in the program currently being executed. It acts essentially the same as SetParseLine, other than working with byte offsets instead of lines. This also means that the command will run faster. It will also return the byte offset after the command in <code class="docutils literal notranslate"><span class="pre">Theta</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the byte offset specified is past the end of program, SetParseByte will simply jump to the end of the program, which will end the program.</p>
+</div>
+<p>To make using this command easier, you can view the current offset in your program of the byte your cursor is currently on in the editor by pressing <kbd class="kbd docutils literal notranslate">2nd</kbd> + <kbd class="kbd docutils literal notranslate">enter</kbd> if Celtic is installed. This will display the current byte offset in the status bar, along with the current line number and size of the program in bytes as well.</p>
+<dl class="simple">
+<dt>Alternative method: <code class="docutils literal notranslate"><span class="pre">det(80)</span></code></dt><dd><p>If you do not include an offset argument, SetParseByte will only return the byte offset after the SetParseByte command without jumping.</p>
+</dd>
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">offset</span></code>: Byte offset in the currently executing program to jump to.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: Contains the byte offset after the SetParseByte command.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">SwapFileType:</span> <span class="pre">det(81);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">variable</span> <span class="pre">name</span></span></dt>
+<dd><p>This command swaps the type of a given file from program to AppVar, or vice versa. For example, if used on the AppVar “FOOBAR”, it will change said AppVar’s file type to a program. If used again, this time on the program “FOOBAR”, it will change the program’s file type to become an AppVar. Swapping an AppVar to a program type will swap to a locked program, for safety purposes.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If you swap the file type of a file in the archive, Celtic un-archives it when running the function and then re-archives it when the function is complete. This means that it could result in a garbage collect.</p>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Str0</span></code>: The name of the variable to run the operation on. Like other Celtic commands, AppVar names must be prefaced with the <code class="docutils literal notranslate"><span class="pre">rowSwap(</span></code> token.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Swaps the file type between AppVar and program.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ResetScreen:</span> <span class="pre">det(82)</span></span></dt>
+<dd><p>This command clears the screen, restores the status bar, and essentially resets / cleans up the entire screen. You can think of it like ClrHome, but applying to the entire screen as well.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>See above.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="graphicsfunctions.html" class="btn btn-neutral float-left" title="Graphics Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="celticiiifunctions.html" class="btn btn-neutral float-right" title="Celtic III Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022 - 2024, RoccoLox Programs, TIny_Hacker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
