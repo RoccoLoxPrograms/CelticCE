@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Error Codes &mdash; Celtic CE 1.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="TI-84 Plus CE Hex Codes" href="hexcodes.html" />
+    <link rel="prev" title="OS Editor Integrations" href="osintegrations.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Celtic CE
+          </a>
+              <div class="version">
+                1.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to the Celtic CE docs!</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gensyntax.html">General Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="osintegrations.html">OS Editor Integrations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Error Codes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#celtic-errors">Celtic Errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ti-os-errors">TI-OS Errors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hexcodes.html">TI-84 Plus CE Hex Codes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="colors.html">Colors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convertsprites.html">Converting Sprites</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Function Syntax</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="csefunctions.html">Celtic 2 CSE Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcefunctions.html">Doors CE 9 Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphicsfunctions.html">Graphics Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="osutilityfunctions.html">OS Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="celticiiifunctions.html">Celtic III Functions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Celtic CE</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Error Codes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/errorcodes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="error-codes">
+<h1>Error Codes<a class="headerlink" href="#error-codes" title="Permalink to this heading"></a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<p>Celtic does its best to prevent errors. However, if something goes wrong with running a function, Celtic will return an error code. This can be from lack of memory, an incorrect argument, or something else.
+Keep in mind that Celtic might not always detect the exact error, or realize that there is one in the first place. You can use the error codes to help with the debugging process.
+This page also contains TI-OS errors and the corresponding values returned in the ErrorHandle command.</p>
+</div>
+<div class="section" id="celtic-errors">
+<h2>Celtic Errors<a class="headerlink" href="#celtic-errors" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 91%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Error Code</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>..P:IS:FN</p></td>
+<td><p>A program already exists, and Celtic will not overwrite it.</p></td>
+</tr>
+<tr class="row-odd"><td><p>..NUMSTNG</p></td>
+<td><p>The specified line is past end of file. Used when getting the amount of lines in a program.</p></td>
+</tr>
+<tr class="row-even"><td><p>..NULLVAR</p></td>
+<td><p>The specified variable did not contain useful data.</p></td>
+</tr>
+<tr class="row-odd"><td><p>..L:NT:FN</p></td>
+<td><p>The specified line in the program does not exist.</p></td>
+</tr>
+<tr class="row-even"><td><p>..S:NT:FN</p></td>
+<td><p>The specified string was not found.</p></td>
+</tr>
+<tr class="row-odd"><td><p>..S:FLASH</p></td>
+<td><p>The specified string is archived.</p></td>
+</tr>
+<tr class="row-even"><td><p>..S:NT:ST</p></td>
+<td><p>The input is not a string, but Celtic expects a string.</p></td>
+</tr>
+<tr class="row-odd"><td><p>..NT:EN:M</p></td>
+<td><p>There is not enough memory to complete the requested action.</p></td>
+</tr>
+<tr class="row-even"><td><p>..P:NT:FN</p></td>
+<td><p>The specified program or appvar was not found.</p></td>
+</tr>
+<tr class="row-odd"><td><p>..PGM:ARC</p></td>
+<td><p>The specified program or appvar is archived, so it cannot be modified.</p></td>
+</tr>
+<tr class="row-even"><td><p>..NULLSTR</p></td>
+<td><p>The specified line exists, but is empty.</p></td>
+</tr>
+<tr class="row-odd"><td><p>..NT:REAL</p></td>
+<td><p>The input was not a real number, but Celtic expects a real number.</p></td>
+</tr>
+<tr class="row-even"><td><p>..INVAL:A</p></td>
+<td><p>An invalid argument was entered. This error code could refer to various issues.</p></td>
+</tr>
+<tr class="row-odd"><td><p>..INVAL:S</p></td>
+<td><p>An invalid string was entered.</p></td>
+</tr>
+<tr class="row-even"><td><p>..2:M:ARG</p></td>
+<td><p>More arguments were entered than Celtic is able to handle.</p></td>
+</tr>
+<tr class="row-odd"><td><p>..NT:A:LS</p></td>
+<td><p>The argument was not a list, but Celtic expects a list.</p></td>
+</tr>
+<tr class="row-even"><td><p>..E:NT:FN</p></td>
+<td><p>The entry was not found in the list specified.</p></td>
+</tr>
+<tr class="row-odd"><td><p>..G:NT:FN</p></td>
+<td><p>The specified group was not found.</p></td>
+</tr>
+<tr class="row-even"><td><p>..NT:A:GP</p></td>
+<td><p>The file specified was not a group.</p></td>
+</tr>
+<tr class="row-odd"><td><p>..SUPPORT</p></td>
+<td><p>Whatever happened was not supported by Celtic.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="ti-os-errors">
+<h2>TI-OS Errors<a class="headerlink" href="#ti-os-errors" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 69%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Value</p></th>
+<th class="head"><p>Error</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>No Error</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>Overflow</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>DivBy0</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>SingularMat</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>Domain</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>Increment</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p>Break</p></td>
+</tr>
+<tr class="row-odd"><td><p>7</p></td>
+<td><p>NonReal</p></td>
+</tr>
+<tr class="row-even"><td><p>8</p></td>
+<td><p>Syntax</p></td>
+</tr>
+<tr class="row-odd"><td><p>9</p></td>
+<td><p>DataType</p></td>
+</tr>
+<tr class="row-even"><td><p>10</p></td>
+<td><p>Argument</p></td>
+</tr>
+<tr class="row-odd"><td><p>11</p></td>
+<td><p>DimMismatch</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p>Dimension</p></td>
+</tr>
+<tr class="row-odd"><td><p>13</p></td>
+<td><p>Undefined</p></td>
+</tr>
+<tr class="row-even"><td><p>14</p></td>
+<td><p>Memory</p></td>
+</tr>
+<tr class="row-odd"><td><p>15</p></td>
+<td><p>Invalid</p></td>
+</tr>
+<tr class="row-even"><td><p>16</p></td>
+<td><p>IllegalNest</p></td>
+</tr>
+<tr class="row-odd"><td><p>17</p></td>
+<td><p>Bound</p></td>
+</tr>
+<tr class="row-even"><td><p>18</p></td>
+<td><p>GraphRange</p></td>
+</tr>
+<tr class="row-odd"><td><p>19</p></td>
+<td><p>Zoom</p></td>
+</tr>
+<tr class="row-even"><td><p>20</p></td>
+<td><p>Label</p></td>
+</tr>
+<tr class="row-odd"><td><p>21</p></td>
+<td><p>Stat</p></td>
+</tr>
+<tr class="row-even"><td><p>22</p></td>
+<td><p>Solver</p></td>
+</tr>
+<tr class="row-odd"><td><p>23</p></td>
+<td><p>Singularity</p></td>
+</tr>
+<tr class="row-even"><td><p>24</p></td>
+<td><p>SignChange</p></td>
+</tr>
+<tr class="row-odd"><td><p>25</p></td>
+<td><p>Iterations</p></td>
+</tr>
+<tr class="row-even"><td><p>26</p></td>
+<td><p>BadGuess</p></td>
+</tr>
+<tr class="row-odd"><td><p>27</p></td>
+<td><p>StatPlot</p></td>
+</tr>
+<tr class="row-even"><td><p>28</p></td>
+<td><p>TolTooSmall</p></td>
+</tr>
+<tr class="row-odd"><td><p>29</p></td>
+<td><p>Reserved</p></td>
+</tr>
+<tr class="row-even"><td><p>30</p></td>
+<td><p>Mode</p></td>
+</tr>
+<tr class="row-odd"><td><p>31</p></td>
+<td><p>LnkErr</p></td>
+</tr>
+<tr class="row-even"><td><p>32</p></td>
+<td><p>LnkMemErr</p></td>
+</tr>
+<tr class="row-odd"><td><p>33</p></td>
+<td><p>LnkTransErr</p></td>
+</tr>
+<tr class="row-even"><td><p>34</p></td>
+<td><p>LnkDupErr</p></td>
+</tr>
+<tr class="row-odd"><td><p>35</p></td>
+<td><p>LnkMemFull</p></td>
+</tr>
+<tr class="row-even"><td><p>36</p></td>
+<td><p>Unknown</p></td>
+</tr>
+<tr class="row-odd"><td><p>37</p></td>
+<td><p>Scale</p></td>
+</tr>
+<tr class="row-even"><td><p>38</p></td>
+<td><p>IdNotFound</p></td>
+</tr>
+<tr class="row-odd"><td><p>39</p></td>
+<td><p>NoMode</p></td>
+</tr>
+<tr class="row-even"><td><p>40</p></td>
+<td><p>Validation</p></td>
+</tr>
+<tr class="row-odd"><td><p>41</p></td>
+<td><p>Length</p></td>
+</tr>
+<tr class="row-even"><td><p>42</p></td>
+<td><p>Application</p></td>
+</tr>
+<tr class="row-odd"><td><p>43</p></td>
+<td><p>AppErr1</p></td>
+</tr>
+<tr class="row-even"><td><p>44</p></td>
+<td><p>AppErr2</p></td>
+</tr>
+<tr class="row-odd"><td><p>45</p></td>
+<td><p>ExpiredApp</p></td>
+</tr>
+<tr class="row-even"><td><p>46</p></td>
+<td><p>BadAddr</p></td>
+</tr>
+<tr class="row-odd"><td><p>47</p></td>
+<td><p>Archived</p></td>
+</tr>
+<tr class="row-even"><td><p>48</p></td>
+<td><p>Version</p></td>
+</tr>
+<tr class="row-odd"><td><p>49</p></td>
+<td><p>ArchFull</p></td>
+</tr>
+<tr class="row-even"><td><p>50</p></td>
+<td><p>Variable</p></td>
+</tr>
+<tr class="row-odd"><td><p>51</p></td>
+<td><p>Duplicate</p></td>
+</tr>
+<tr class="row-even"><td><p>52</p></td>
+<td><p>Date</p></td>
+</tr>
+<tr class="row-odd"><td><p>53</p></td>
+<td><p>UnknownCmd</p></td>
+</tr>
+<tr class="row-even"><td><p>54</p></td>
+<td><p>OverLimit</p></td>
+</tr>
+<tr class="row-odd"><td><p>55</p></td>
+<td><p>Disabled</p></td>
+</tr>
+<tr class="row-even"><td><p>56</p></td>
+<td><p>Xmit</p></td>
+</tr>
+<tr class="row-odd"><td><p>57</p></td>
+<td><p>MemFull</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="osintegrations.html" class="btn btn-neutral float-left" title="OS Editor Integrations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hexcodes.html" class="btn btn-neutral float-right" title="TI-84 Plus CE Hex Codes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022 - 2024, RoccoLox Programs, TIny_Hacker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Celtic III Functions &mdash; Celtic CE 1.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="OS Utility Functions" href="osutilityfunctions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Celtic CE
+          </a>
+              <div class="version">
+                1.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to the Celtic CE docs!</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gensyntax.html">General Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="osintegrations.html">OS Editor Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="errorcodes.html">Error Codes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hexcodes.html">TI-84 Plus CE Hex Codes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="colors.html">Colors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convertsprites.html">Converting Sprites</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Function Syntax</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="csefunctions.html">Celtic 2 CSE Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcefunctions.html">Doors CE 9 Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphicsfunctions.html">Graphics Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="osutilityfunctions.html">OS Utility Functions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Celtic III Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Celtic CE</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Celtic III Functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/celticiiifunctions.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="celtic-iii-functions">
+<h1>Celtic III Functions<a class="headerlink" href="#celtic-iii-functions" title="Permalink to this heading"></a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<p>Essentially all of the functions from Celtic III are included in Celtic CE.</p>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">GetListElem:</span> <span class="pre">det(30,</span> <span class="pre">list_element);</span> <span class="pre">Ans</span> <span class="pre">=</span> <span class="pre">list</span> <span class="pre">name</span></span></dt>
+<dd><p>Gets a value at <code class="docutils literal notranslate"><span class="pre">list_element</span></code> in the list specified. For example, with <code class="docutils literal notranslate"><span class="pre">Ans</span></code> equal to “<sub>L</sub>FOO” (Where <sub>L</sub> is the list token found in <span class="menuselection">List ‣ OPS</span>). This is useful if the list being accessed is archived, for example.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">list_element</span></code>: Element of the list to access, beginning at 1. Accessing 0 will return the dimension of the list.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: Name of the list to access. The data in <code class="docutils literal notranslate"><span class="pre">Ans</span></code> must be a string beginning with the <sub>L</sub> token found in the <span class="menuselection">List ‣ OPS</span> (<kbd class="kbd docutils literal notranslate">2nd</kbd> + <kbd class="kbd docutils literal notranslate">stat</kbd> + <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">left</kbd> <kbd class="kbd docutils literal notranslate">arrow</kbd></kbd> + <kbd class="kbd docutils literal notranslate">alpha</kbd> + <kbd class="kbd docutils literal notranslate">apps</kbd>), unless you are using a default OS list such as L <sub>1</sub>. When using default OS lists, simply use the corresponding list name token, such as L <sub>1</sub>or L <sub>2</sub>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: The number at the element of the list accessed, or the dimension of the list if <code class="docutils literal notranslate"><span class="pre">list_element</span></code> was 0.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:A:LS</span></code> if the user did not specify a valid list.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..E:NT:FN</span></code> if the entry was not found in the list specified.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">GetArgType:</span> <span class="pre">det(31);</span> <span class="pre">Ans</span> <span class="pre">=</span> <span class="pre">argument</span> <span class="pre">to</span> <span class="pre">check</span></span></dt>
+<dd><p>Outputs a real number depicting the type of argument in <code class="docutils literal notranslate"><span class="pre">Ans</span></code>.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: Argument to check the type of.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: The number corresponding to the argument’s type. A table with the possible types is below.</p></li>
+</ul>
+</dd>
+</dl>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 60%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Number</p></td>
+<td><p>Type</p></td>
+</tr>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>Real</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>List</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>Matrix</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>String</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p>Complex</p></td>
+</tr>
+<tr class="row-odd"><td><p>13</p></td>
+<td><p>Cplx List</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ChkStats:</span> <span class="pre">det(32,</span> <span class="pre">function)</span></span></dt>
+<dd><p>This is a multi-purpose command used to read various system statuses. The output will vary based on the specified function. A table with the possible functions and their resulting outputs is below.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 91%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Function</p></td>
+<td><p>Output</p></td>
+</tr>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>Total free RAM (In <code class="docutils literal notranslate"><span class="pre">Str9</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>Total free ROM (Also in <code class="docutils literal notranslate"><span class="pre">Str9</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>Bootcode (Also in <code class="docutils literal notranslate"><span class="pre">Str9</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>OS Version (Also in <code class="docutils literal notranslate"><span class="pre">Str9</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>Hardware version: 0 for 84 Plus CE, 1 for 83 Premium CE (Returns in <code class="docutils literal notranslate"><span class="pre">Theta</span></code>)</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">function</span></code>: Function to complete.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Varies based on input.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FindProg:</span> <span class="pre">det(33,</span> <span class="pre">type);</span> <span class="pre">Ans</span> <span class="pre">=</span> <span class="pre">search</span> <span class="pre">string</span></span></dt>
+<dd><p>This does not search for file names, instead it searches for file contents. The search string checks for the beginning contents of a program. Type refers to the type of file to search, with 0 being programs and 1 being appvars. The function will return a string containing the names of the files containing the search phrase, with each name separated by a space.
+For example, to look for all the programs beginning with “:DCS”, your code would look something like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;:DCS</span>
+<span class="n">det</span><span class="p">(</span><span class="mi">33</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code>: Type of file to search. 0 for programs, 1 for appvars.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: Content string to search for. If <code class="docutils literal notranslate"><span class="pre">Ans</span></code> does not contain a string, it will return a complete list of all the files of the specified type.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Str9</span></code>: Contains a list with the names of files containing the search string, separated by spaces. If <code class="docutils literal notranslate"><span class="pre">Ans</span></code> was not a string, it returns a list of all files of the specified type.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..P:NT:FN</span></code> if no files are found containing the specified search string.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:EN:M</span></code> if there is not enough memory to complete the action.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">UngroupFile:</span> <span class="pre">det(34,</span> <span class="pre">overwrite);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">group</span> <span class="pre">name</span></span></dt>
+<dd><p>This function ungroups the programs and AppVars from a group file specified in <code class="docutils literal notranslate"><span class="pre">Str0</span></code>. It will only apply to files that are programs and AppVars, not other types like lists. If <code class="docutils literal notranslate"><span class="pre">overwrite</span></code> is true (not 0), files which already exist will be overwritten. If it is false (0), files will be preserved.
+The group name (in <code class="docutils literal notranslate"><span class="pre">Str0</span></code>) must be preceded by the <code class="docutils literal notranslate"><span class="pre">*row(</span></code> token, as specified in <a class="reference external" href="gensyntax.html#argument-types">General Syntax</a>.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">overwrite</span></code>: Whether or not to overwrite files that already exist when extracting.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Str0</span></code>: Contains the name of the specified group. The name must be preceded by the <code class="docutils literal notranslate"><span class="pre">*row(</span></code> token.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Ungroups all programs and AppVars from the specified group.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..G:NT:FN</span></code> if the group specified does not exist.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..P:NT:FN</span></code> if no files in the group are able to be ungrouped (no programs or AppVars).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:EN:M</span></code> if there is not enough memory to complete the action.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">GetGroup:</span> <span class="pre">det(35);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">group</span> <span class="pre">name</span></span></dt>
+<dd><p>Puts the names of all program and AppVar files present in the specified group into <code class="docutils literal notranslate"><span class="pre">Str9</span></code>, separated by spaces. The names will be in the same order in the string as they are found in the group.
+The group name (in <code class="docutils literal notranslate"><span class="pre">Str0</span></code>) must be preceded by the <code class="docutils literal notranslate"><span class="pre">*row(</span></code> token, as specified in <a class="reference external" href="gensyntax.html#argument-types">General Syntax</a>.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Str0</span></code>: Contains the name of the specified group. The name must be preceded by the <code class="docutils literal notranslate"><span class="pre">*row(</span></code> token.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Str9</span></code>: Contains a list of the names of all programs and AppVars in the group, separated by spaces.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..G:NT:FN</span></code> if the group specified does not exist.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..P:NT:FN</span></code> if no files in the group are valid (no programs or AppVars).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:EN:M</span></code> if there is not enough memory to complete the action.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ExtGroup:</span> <span class="pre">det(36,</span> <span class="pre">item);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">group</span> <span class="pre">name</span></span></dt>
+<dd><p>Extracts the program or AppVar specified by <code class="docutils literal notranslate"><span class="pre">item</span></code> from the group specified in <code class="docutils literal notranslate"><span class="pre">Str0</span></code>. If <code class="docutils literal notranslate"><span class="pre">item</span></code> is 1, it extracts the first program or AppVar, 2 extracts the second, and so on. This can be useful paired with <code class="docutils literal notranslate"><span class="pre">GetGroup</span></code> to figure out the order of the files in the group. If the file already exists with the same name, it will not be overwritten.
+The group name (in <code class="docutils literal notranslate"><span class="pre">Str0</span></code>) must be preceded by the <code class="docutils literal notranslate"><span class="pre">*row(</span></code> token, as specified in <a class="reference external" href="gensyntax.html#argument-types">General Syntax</a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code class="docutils literal notranslate"><span class="pre">item</span></code> only counts programs and AppVars, and ignores other types, like lists. If <code class="docutils literal notranslate"><span class="pre">item</span></code> is 2, it refers to the second <strong>valid</strong> file, not necessarily the second file including all types.</p>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">item</span></code>: The item in the group to extract. Only applies to programs and AppVars, and begins at 1.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Extracts the specified program or AppVar from the group.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..G:NT:FN</span></code> if the group specified does not exist.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..E:NT:FN</span></code> if the specified item did not exist.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..P:IS:FN</span></code> if the program already exists</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:EN:M</span></code> if there is not enough memory to complete the action.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">GroupMem:</span> <span class="pre">det(37,</span> <span class="pre">item);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">group</span> <span class="pre">name</span></span></dt>
+<dd><p>Returns the size of the program or AppVar specfied by <code class="docutils literal notranslate"><span class="pre">item</span></code> from the group specified in <code class="docutils literal notranslate"><span class="pre">Str0</span></code>. <code class="docutils literal notranslate"><span class="pre">item</span></code> behaves the same way as in <code class="docutils literal notranslate"><span class="pre">ExtGroup</span></code>.
+The group name (in <code class="docutils literal notranslate"><span class="pre">Str0</span></code>) must be preceded by the <code class="docutils literal notranslate"><span class="pre">*row(</span></code> token, as specified in <a class="reference external" href="gensyntax.html#argument-types">General Syntax</a>.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">item</span></code>: The item in the group to extract. Only applies to programs and AppVars, and begins at 1.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">theta</span></code>: The size of the specified program or AppVar from the group.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..G:NT:FN</span></code> if the group specified does not exist.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..E:NT:FN</span></code> if the specified item did not exist.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">BinRead:</span> <span class="pre">det(38,</span> <span class="pre">byte_start,</span> <span class="pre">number_of_bytes);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">file</span> <span class="pre">name</span></span></dt>
+<dd><p>Reads the contents of a file starting at <code class="docutils literal notranslate"><span class="pre">byte_start</span></code> for <code class="docutils literal notranslate"><span class="pre">number_of_bytes</span></code> bytes. <code class="docutils literal notranslate"><span class="pre">byte_start</span></code> is 0-indexed, meaning that the first byte of the program is 0, the second is 1, and so on. The output will be a hex string representing the bytes. For example, if the following bytes were in memory:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Byte</p></td>
+<td><p>0</p></td>
+<td><p>1</p></td>
+<td><p>2</p></td>
+<td><p>3</p></td>
+<td><p>4</p></td>
+</tr>
+<tr class="row-even"><td><p>Data</p></td>
+<td><p>EF</p></td>
+<td><p>7B</p></td>
+<td><p>66</p></td>
+<td><p>6F</p></td>
+<td><p>6F</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">Str9</span></code> would contain this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">EF7B666F6F</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">byte_start</span></code>: The byte of the file to start reading from. It is 0-indexed, so the first byte of the file is 0, the second is 1, and so on.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">number_of_bytes</span></code>: The number of bytes to read, starting at <code class="docutils literal notranslate"><span class="pre">byte_start</span></code>. You can also read past the end of the file.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Str0</span></code>: The name of the file to read from. For AppVars, the name should be preceded by the <code class="docutils literal notranslate"><span class="pre">rowSwap(</span></code> token. Follow the format documented <a class="reference external" href="gensyntax.html#argument-types">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Str9</span></code>: Contains a text string of hex representing the bytes read.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">BinWrite:</span> <span class="pre">det(39,</span> <span class="pre">byte_start);</span> <span class="pre">Str9</span> <span class="pre">=</span> <span class="pre">hex</span> <span class="pre">string</span> <span class="pre">to</span> <span class="pre">write;</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">file</span> <span class="pre">name</span></span></dt>
+<dd><p>Writes the hex bytes represented in <code class="docutils literal notranslate"><span class="pre">Str9</span></code> to the file specified by <code class="docutils literal notranslate"><span class="pre">Str0</span></code>, starting at <code class="docutils literal notranslate"><span class="pre">byte_start</span></code>. <code class="docutils literal notranslate"><span class="pre">byte_start</span></code> is 0-indexed, meaning that the first byte of the program is 0, the second is 1, and so on.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">byte_start</span></code>: The byte of the file to start writing to. It is 0-indexed, so the first byte of the file is 0, the second is 1, and so on.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Str9</span></code>: Contains a text string of hex representing the bytes to write.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Str0</span></code>: The name of the file to write to. For AppVars, the name should be preceded by the <code class="docutils literal notranslate"><span class="pre">rowSwap(</span></code> token. Follow the format documented <a class="reference external" href="gensyntax.html#argument-types">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Writes the bytes specified in <code class="docutils literal notranslate"><span class="pre">Str9</span></code> to the specified file.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..E:NT:FN</span></code> if <code class="docutils literal notranslate"><span class="pre">byte_start</span></code> is past the end of the file.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..INVAL:S</span></code> if there is not an even number of characters in the string or an invalid hex character is present.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:EN:M</span></code> if there is not enough memory to complete the write.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">BinDelete:</span> <span class="pre">det(40,</span> <span class="pre">byte_start,</span> <span class="pre">number_of_bytes);</span> <span class="pre">Str0</span> <span class="pre">=</span> <span class="pre">file</span> <span class="pre">name</span></span></dt>
+<dd><p>Deletes <code class="docutils literal notranslate"><span class="pre">number_of_bytes</span></code> bytes from the file specified by <code class="docutils literal notranslate"><span class="pre">Str0</span></code>, starting at <code class="docutils literal notranslate"><span class="pre">byte_start</span></code>. <code class="docutils literal notranslate"><span class="pre">byte_start</span></code> is 0-indexed, meaning that the first byte of the program is 0, the second is 1, and so on.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">byte_start</span></code>: The byte of the file to start deleting from. It is 0-indexed, so the first byte of the file is 0, the second is 1, and so on.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">number_of_bytes</span></code>: The number of bytes to delete.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Str0</span></code>: The name of the file to delete from. For AppVars, the name should be preceded by the <code class="docutils literal notranslate"><span class="pre">rowSwap(</span></code> token. Follow the format documented <a class="reference external" href="gensyntax.html#argument-types">here</a>.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Deletes the specified number of bytes from the specified file.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..E:NT:FN</span></code> if <code class="docutils literal notranslate"><span class="pre">byte_start</span></code> is past the end of the file, or the number of bytes deleted would exceed the end of the file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">HexToBin:</span> <span class="pre">det(41);</span> <span class="pre">Ans</span> <span class="pre">=</span> <span class="pre">hex</span> <span class="pre">string</span></span></dt>
+<dd><p>Outputs the binary equivalent of the input string in <code class="docutils literal notranslate"><span class="pre">Ans</span></code>. For example, if you did this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">:</span><span class="s2">&quot;464F4F424152</span>
+<span class="p">:</span><span class="n">det</span><span class="p">(</span><span class="mi">41</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The result would be <code class="docutils literal notranslate"><span class="pre">&quot;FOOBAR&quot;</span></code>.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: Hex string to convert.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Str9</span></code>: The converted string.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..INVAL:S</span></code> if there is not an even number of characters in the string or an invalid hex character is present.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:EN:M</span></code> if there is not enough memory to complete the action.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">BinToHex:</span> <span class="pre">det(42);</span> <span class="pre">Ans</span> <span class="pre">=</span> <span class="pre">token</span> <span class="pre">string</span></span></dt>
+<dd><p>Outputs the hex equivalent of the input string in <code class="docutils literal notranslate"><span class="pre">Ans</span></code>. For example, if you did this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">:</span><span class="s2">&quot;FOOBAR</span>
+<span class="p">:</span><span class="n">det</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The result would be <code class="docutils literal notranslate"><span class="pre">&quot;464F4F424152&quot;</span></code>.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: Binary string to convert.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Str9</span></code>: The converted string.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:EN:M</span></code> if there is not enough memory to complete the action.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">GraphCopy:</span> <span class="pre">det(43)</span></span></dt>
+<dd><p>Copies the graph buffer to the screen.</p>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">Edit1Byte:</span> <span class="pre">det(44,</span> <span class="pre">string_number,</span> <span class="pre">target_byte,</span> <span class="pre">replace_byte)</span></span></dt>
+<dd><p>Replaces the byte at <code class="docutils literal notranslate"><span class="pre">target_byte</span></code> of the specified string with the byte specified by <code class="docutils literal notranslate"><span class="pre">replace_byte</span></code>. <code class="docutils literal notranslate"><span class="pre">target_byte</span></code> is 0-indexed, meaning that the first byte of the program is 0, the second is 1, and so on. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">:</span><span class="n">det</span><span class="p">(</span><span class="mi">44</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This code will replace byte 0 of <code class="docutils literal notranslate"><span class="pre">Str0</span></code> with the byte 255 in decimal, or 0xFF in hex.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">string_number</span></code>: The string to modify. 0 is <code class="docutils literal notranslate"><span class="pre">Str0</span></code>, 1 is <code class="docutils literal notranslate"><span class="pre">Str1</span></code>, and so on.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">target_byte</span></code>: The byte of the string to modify. It is 0-indexed, so the first byte of the file is 0, the second is 1, and so on.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">replace_byte</span></code>: The byte to replace the target byte with, in decimal format. Can be 0 - 255 (0x00 - 0xFF).</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Replaces the target byte of a string with the specified replacement byte.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..E:NT:FN</span></code> if the target byte does not exist in the string.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ErrorHandle:</span> <span class="pre">det(45,</span> <span class="pre">get_offset);</span> <span class="pre">Ans</span> <span class="pre">=</span> <span class="pre">program</span> <span class="pre">to</span> <span class="pre">run</span></span></dt>
+<dd><p>Executes BASIC code with an error handler installed. That means the code you execute can do anything it wants including divide by zero, and it will simply end the execution but an obvious system error will not trigger. Instead, this command will return with a value that indicates the error condition. This command has two different modes. If <code class="docutils literal notranslate"><span class="pre">Ans</span></code> contains a program name (beginning with the <code class="docutils literal notranslate"><span class="pre">prgm</span></code> token), it will run that program. If <code class="docutils literal notranslate"><span class="pre">Ans</span></code> contains program code, it will execute that code instead. This will also work with programs beginning with the <code class="docutils literal notranslate"><span class="pre">Asm84CEPrgm</span></code> token.</p>
+<p>A list of return values and their corresponding errors can be found in the <a class="reference external" href="errorcodes.html#ti-os-errors">error codes</a> section, under TI-OS Errors.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>ErrorHandle cannot be used recursively. This means that if you attempt to run ErrorHandle on a program and then run ErrorHandle again inside that second program, the ErrorHandle command in that second program will be ignored.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When using ErrorHandle from the homescreen, it will not run BASIC programs, though it can still run programs beginning with the Asm84CEPrgm token.</p>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: The name of the program to run, or TI-BASIC code to be executed. Note that this does not follow the syntax <a class="reference external" href="gensyntax.html#argument-types">here</a>, and instead must begin with <code class="docutils literal notranslate"><span class="pre">prgm</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_offset</span></code>: If <code class="docutils literal notranslate"><span class="pre">get_offset</span></code> is 1, ErrorHandle will return the byte offset the error occured at in <code class="docutils literal notranslate"><span class="pre">Ans</span></code>. If it is 0, it will not. This only works with running programs, not strings.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: Contains the error code returned by the program, or 0 if no error occured.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: Contains the byte offset the error occured at, if <code class="docutils literal notranslate"><span class="pre">get_offset</span></code> 1 and an error occured. Otherwise <code class="docutils literal notranslate"><span class="pre">Ans</span></code> is not modified.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..NULLVAR</span></code> if the program is empty.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..SUPPORT</span></code> if the file is not a TI-BASIC program.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:EN:M</span></code> if there is not enough memory to complete the action.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">StringRead:</span> <span class="pre">det(46,</span> <span class="pre">string,</span> <span class="pre">start,</span> <span class="pre">bytes);</span></span></dt>
+<dd><p>Works almost identically to BASIC’s sub() command, except that the output will be in hexadecimal and two-byte tokens will read as two instead of one byte. It is particularly useful for extracting data from a string that may contain nonsensical data that simply needs to be manipulated. If you allow the start point to be zero, the size of the string in bytes is returned instead. For data manipulation, you should use the Edit1Byte command.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">string</span></code>: Which string variable to read from, where 0 = Str0, 9 = Str9, and so on.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start</span></code>: The byte of the string to begin reading at.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code>: How many bytes to read.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Str9</span></code>: The extracted substring.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: The size of the string in bytes, if <code class="docutils literal notranslate"><span class="pre">start</span></code> was 0.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:EN:M</span></code> if there is not enough memory to complete the action.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">HexToDec:</span> <span class="pre">det(47);</span> <span class="pre">Ans</span> <span class="pre">=</span> <span class="pre">hex</span></span></dt>
+<dd><p>Converts up to 4 hex digits back to decimal. If you pass a string longer than 4 digits, only the first four are read.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: Hex string to convert.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: Decimal integer converted from hex string.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..INVAL:S</span></code> if an invalid hex digit is passed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DecToHex:</span> <span class="pre">det(48,</span> <span class="pre">number,</span> <span class="pre">override)</span></span></dt>
+<dd><p>Converts a number between 0 and 65535 to its hexadecimal equivalent. The number of hexadecimal output to the string will have its leading zeroes stripped so inputting 15 will result in “F” and 16 will result in “10”. If override is 1, it will output all leading zeroes, which may be useful for routines that require four hex digits at all times but cannot spend the memory/time whipping up a BASIC solution to fill the missing zeroes.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">number</span></code>: Decimal integer to convert.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">override</span></code>: 1 to output all leading zeroes, or 0 to not.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Str9</span></code>: Hex string converted from decimal integer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">EditWord:</span> <span class="pre">det(49,</span> <span class="pre">string,</span> <span class="pre">start,</span> <span class="pre">word)</span></span></dt>
+<dd><p>This command, otherwise, works just like Edit1Byte. Its documentation is rewritten here for convenience. Replaces a word in some string variable, Str0 to Str9, with a replacement value 0 through 65535 starting at some specified byte (start is at 0). The string supplied is edited directly so there’s no output. See Edit1Byte for more details.</p>
+<p>The replacement is written in little-endian form and if the number is between 0 and 255, the second byte is written in as a zero.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note: A “word” in this sense is two bytes. Useful for editing a binary string which entries are all two bytes in length, such as a special string tilemap. You’re required, however, to specify offset in bytes. Also know that all words are stored little-endian. That means that the least significant byte is stored before the most significant byte is.</p>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">string</span></code>: Which string variable to read from, where 0 = Str0, 9 = Str9, and so on.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start</span></code>: The byte to start editing in the string.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">word</span></code>: The two bytes to rewrite.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>Modifies the string with the specified word.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..E:NT:FN</span></code> If the offset is past the end of the string.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">BitOperate:</span> <span class="pre">det(50,</span> <span class="pre">value1,</span> <span class="pre">value2,</span> <span class="pre">function)</span></span></dt>
+<dd><p>Performs a bitwise operation between value1 and value2 using a supplied function value. It will only work with up to 16-bit numbers.</p>
+<p>The different functions are below:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 69%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Value</p></th>
+<th class="head"><p>Operation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>NONE</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>AND</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>OR</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>XOR</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>Left Shift</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>Right Shift</p></td>
+</tr>
+</tbody>
+</table>
+<p>This command really helps mask out hex digits but if you use strings to store those digits, you’ll need to use the HexToDec command for each value you need.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">value1</span></code>: First value to perform bit operation with.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value2</span></code>: Second value to perform bit operation with.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">function</span></code>: Which operation to perform, as seen in the table above.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Theta</span></code>: Result of the bit operation.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">GetProgList:</span> <span class="pre">det(51,</span> <span class="pre">type);</span> <span class="pre">Ans</span> <span class="pre">=</span> <span class="pre">search</span> <span class="pre">string</span></span></dt>
+<dd><p>This function will return a space-delimited string consisting of the names of programs, appvars, or groups whose names partially match the search string. Which is to say:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;TEMP</span>
+<span class="n">det</span><span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>would return all program names that start with the characters “TEMP”, which may be something like “TEMP001 ” or “TEMP001 TEMP002 TEMP003 “, etc.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Value</p></th>
+<th class="head"><p>File Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>Programs</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>AppVars</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>Groups</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This command is NOT to be confused with FindProg, which outputs a string consisting of files whose CONTENTS starts with the specified string. Also use the fact that the final name in the list is terminated with a space to make extracting names from the list easier. It also will not find hidden variables.</p>
+</div>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code>: The type of file to search for, as seen above.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Ans</span></code>: String to find in file names.</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Str9</span></code>: Filtered list of files.</p></li>
+</ul>
+</dd>
+<dt>Errors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..S:NT:FN</span></code> if <code class="docutils literal notranslate"><span class="pre">Ans</span></code> is not a string.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..P:NT:FN</span></code> if no files were found containing the search string.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..NT:EN:M</span></code> if there is not enough memory to complete the action.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="osutilityfunctions.html" class="btn btn-neutral float-left" title="OS Utility Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022 - 2024, RoccoLox Programs, TIny_Hacker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
