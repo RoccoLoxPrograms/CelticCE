@@ -9,4 +9,4 @@ Some Celtic functions allow RGB 565 colors. A list of pre-defined colors can be 
 Colors
 ~~~~~~
 
-Refer to the DCS wiki for a `list of pre-defined colors <https://dcs.cemetech.net/index.php?title=DCSE:BasicLibs:DispColor>`__.
+Refer to the DCS wiki for a `list of pre-defined colors <https://dcs.cemetech.net/SDK/CSE/BASIC/Libraries/Celtic/DispColor/>`__.

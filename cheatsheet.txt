@@ -1,0 +1,310 @@
+Celtic CE cheat sheet created by TIFreak8x (https://www.cemetech.net/users/tifreak8x)
+
+Use “rowSwap(” before variable name to indicate AppVar
+Use “*row(” before variable name to indicate Group
+
+ReadLine                det(0)
+|   Str0 – Var name
+|   Ans – Line Number
+
+ReplaceLine             det(1)
+|   Str0 – Var name
+|   Ans – Line Number
+|   Str9 – Info to replace with
+
+InsertLine              det(2)
+|   Str0 – Var name
+|   Ans – Line Number
+|   Str9 – Contents of line
+
+SpecialChars            det(3)
+|   Str9 – Stores → and “ into Str9 as first 2 characters
+
+CreateVar               det(4)
+|   Str0 – Var name
+|   Str9 – May contain error codes
+
+ArcUnarcVar             det(5)
+|   Str0 – Var name
+
+DeleteVar               det(6)
+|   Str0 – Var name to delete
+
+DeleteLine              det(7)
+|   Str0 – Var name
+|   Ans – Line number
+|   Str9 – Error Codes
+
+VarStatus               det(8)
+|   Str0 – Var name
+|   Str9 – 1 A/R 2V/H 3 L/W 4 _ 5 Size
+
+BufSprite               det(9, width, x, y)
+|   Str9 – Sprite Data in ASCII hex (1-F, colors out of VARS menu, G goes to next line)
+
+BufSpriteSelect         det(10, width, x, y, start, length)
+|   Str9 – Sprite Data
+
+ExecArcPrgm             det(11, function, temp_prog_#)
+|   Ans – prgm to copy
+|   Function 0: Copies prgm to xtemp 1: deletes xtemp# 2: Delete All
+
+DispColor               det(12, fg_low, fg_high, bg_low, bg_high)
+|   det(12, 300) disables
+|   det(12,fg_OS,BG_OS) use OS color commands
+
+DispText                det(13, LgFont, fg_low, fg_high, bg_low, bg_high, x, y)
+|   Str9 – Text
+|   det(13, LgFont, fg_OS, bg_OS, x, y) alternative use
+
+ExecHex                 det(14)
+|   Ans – hex code
+|   Must be under 8,192 char, must be even amount of char.
+
+FillRect                det(15, low, high, x, y, width, height)
+|   det(15, OS_Color, x, y, width, height) Alt usage
+
+FillScreen              det(16, low, high)
+
+DrawLine                det(17, low, high, x1, y1, x2, y2)
+|   det(17, OS_Color, x1, y1, x2, y2)
+
+SetPixel                det(18, low, high, x, y)
+|   det(18, OS_Color, x, y)
+|   Using 0 for OS_Color inverts pixel
+
+GetPixel                det(19, x, y)
+|   Ans – low byte of pixel
+|   theta – high byte of pixel
+
+PixelTestColor          det(20, row, column)
+|   Ans – 0 if no pixel, contains OS color otherwise
+
+PutSprite               det(21, x, y, width, height, string)
+|   Use xlibc colors for string data, string is 0-9, for Str# var
+
+GetMode                 det(22, mode)
+|   theta = returns value on mode status, 0-14 for mode, refer to page 35 of manual
+
+RenameVar               det(23)
+|   Str0 – Var to rename
+|   Str9 – New name
+
+LockPrgm                det(24)
+|   Str0 – Name of var to lock/unlock
+
+HidePrgm                det(25)
+|   Str0 – Name of var to hide/unhide
+
+PrgmToStr               det(26, Str_Number)
+|   Str0 – Name of var to copy
+
+GetPrgmType             det(27)
+|   Str0 – Name of Prgm to check
+|   0 ASM, 1 C, 2 BASIC, 3 ICE, 4 ICE Src
+
+GetBatteryStatus        det(28)
+|   Theta – Battery status, 0-4. +10 if battery charging
+
+SetBrightness           det(29, Brightness)
+|   Brightness = 0-255, bright ↔ dark
+|   det(29) returns brightness level to theta
+
+GetListElem             det(30, list_element)
+|   Ans – List name
+|   0 – dimension of list, 1+ list element
+
+GetArgType              det(31)
+|   Ans – Arg to check
+|   Returns theta, 0 real, 1 list, 2 matrix, 4 string, 12 complex, 13 cpx list
+
+ChkStats                det(32, function)
+|   Function: 0 Free RAM, 1 Free ROM, 2 Bootcode, 3 OS version, 4 Hardware version, Str9 1-3, theta 4
+
+FindProg                det(33, type)
+|   Ans = search string, search contents in beginning of prog
+|   Type 0 prog, 1 appvar
+
+UnGroupFile             det(34, overwrite)
+|   Str0 – Group name
+|   overwrite: 1 Yes, 0 No
+
+GetGroup                det(35)
+|   Str0 – group name
+|   Str9 – Returns names of prgms/appvars in group
+
+ExtGroup                det(36, item)
+|   Str0 – Group name
+|   Item is numerical, based off list in GetGroup
+
+GroupMem                det(37, item)
+|   Str0 – Group name
+|   theta – size of prgm/appvar depicted via item
+
+BinRead                 det(38, byte_start, number of bytes)
+|   Str0 – File name
+|   Str9 – text string, hex of bytes read
+
+BinWrite                det(39, byte_start)
+|   Str0 – File name
+|   Str9 – string to write
+
+BinDelete               det(40, byte_start, number_of_bytes)
+|   Str0 – File name
+
+HexToBin                det(41)
+|   Ans – Hex string
+|   Str9 – Converted data
+
+BinToHex                det(42)
+|   Ans – Token string
+|   Str9 – Converted data
+
+GraphCopy               det(43)
+|   No vars needed
+|   Copies graph buffer to screen
+
+EditByte                det(44, Str#, target_byte, replace_byte)
+|   Str# - 0-9
+|   First byte of file is 0
+
+ErrorHandle             det(45, get_offset)
+|   Ans – Prgm to run
+|   get_offset is 1, returns byte_offset where error occurred
+
+StringRead              det(46, Str#, start, bytes)
+|   Str# - 0-9 Str var
+|   Str9 – extracted substring | theta – size of string
+
+HexToDec                det(47)
+|   Ans – Hex string to convert
+|   theta – converted decimal integer.
+
+DecToHex                det(48, number, override)
+|   Str9 – Hex String from Decimal
+|   override – 1 all leading zeroes
+
+EditWord                det(49, Str#, start, word)
+|   Str# - Which string variable to read
+|   Page 50 in the manual for more information
+
+BitOperate              det(50, value1, value2, function)
+|   function – 0 None, 1 And, 2 Or, 3 Xor, 4 Left shift, 5 Right shift
+|   theta – Result of Op
+
+GetProgList             det(51, type)
+|   Ans – Partial name to search
+|   type – 0 Programs, 1 AppVars, 2 Groups
+
+SearchFile              det(52, offset)
+|   Str0 – File name
+|   Str9 – Search string
+|   theta – byte offset of located string
+
+CheckGC                 det(53)
+|   Str0 – File name
+|   Ans – 0 if Garbage collect will trigger, 1 if not
+
+GetStringWidth          det(54, font)
+|   Ans – String data to check
+|   font – 0 small font, 1 large font
+
+TransSprite             det(55, x, y, width, height, transparency, Str#)
+|   transparency – 0-255 color
+|   Str# - String variable 0-9
+
+ScaleSprite             det(56, x, y, width, height, scale_x, scale_y, Str#)
+|   Str# - String variable 0-9
+
+ScaleTSprite            det(57, x, y, width, height, scale_x, scale_y, transparency, Str#)
+|   Str# - String variable 0-9
+|   transparency – 0-255 color value
+
+ShiftScreen             det(58, direction, amount, x, y, width, height)
+|   direction – 0 up, 1 down, 2 left, 3 right
+|   Alt: det(58, direction, amount)
+
+RGBto565                det(59, r, g, b)
+|   Ans – Low byte color
+|   theta – High byte color
+
+DrawRect                det(60, low, high, x, y, width, height)
+|   Alt: det(60, os_color, x, y, width, height)
+
+DrawCircle              det(61, low, high, x, y, radius)
+|   Alt: det(61, os_color, x, y, radius)
+
+FillCircle              det(62, low, high, x, y, radius)
+|   Alt: det(62, os_color, x, y, radius)
+
+DrawArc                 det(63, low, high, x, y, radius, start_angle, end_angle)
+|   Alt: det(63, os_color, x, y, start_angle, end_angle)
+
+DispTransText           det(64, font, low, high, x, y)
+|   font – 0 small, 1 large
+|   Str9 – text to display
+|   Alt: det(64, font, os_color, x, y)
+
+ChkRect                 det(65, x0, y0, width0, height0, x1, y1, width1, height1)
+|   Ans – 0 rectangle does not intersect, 1 if intersection occurred
+
+PutChar                 det(66, font, fg_low, fg_high, bg_low, bg_high, x, y, char)
+|   Refer to pages 31 and 32 for charts
+
+PutTransChar            det(67, font, low, high, x, y, char)
+|   Alt: det(67, font, os_color, x, y, char)
+|   font 0 small, 1 large
+
+HorizLine               det(68, low, high, x, y, length)
+|   Alt: det(68, os_color, x, y, length)
+
+VertLine                det(69, low, high, x, y, length)
+|   Alt: det(69, os_color, x, y, length)
+
+RunAsmPrgm              det(70)
+|   Ans – Name of program to run
+|   theta – error code returned or 0 if none
+
+LineToOffset            det(71, line)
+|   Str0 – Var name
+|   theta – Returns byte offset of line
+
+OffsetToLine            det(72, offset)
+|   Str0 – Var name
+|   theta – Returns line containing offset
+
+GetKey                  det(73)
+|   Ans – Returns key value
+|   Refer to page 39 for key table
+
+TurnCalcOff             det(74)
+
+BackUpString            det(75, Str#)
+|   Str# - 0-9
+|   Does backup of Str# to be restored later
+
+RestoreString           det(76, Str#)
+|   Str# - 0-9
+|   Use only after using BackUpString!
+
+BackUpReal              det(77, variable)
+|   Variable – 1 A, 2 B, … 27 theta
+
+RestoreReal             det(78, variable)
+|   Variable – 1 A, 2 B, … 27 theta
+|   Use only after using BackUpReal!
+
+SetParseLine            det(79, line)
+|   theta – Line jumped from
+|   Jumps to line in prgm, think Goto w/out Lbl
+
+SetParseByte            det(80, byte)
+|   theta – Byte jumped from
+|   Jumps to byte offset in prgm, similar to SetParseLine
+
+SwapFileType            det(81)
+|   Str0 – Variable name
+|   Swaps variable between program and appvar
+
+PrgmCleanUp             det(82)
+|   Clears screen, fixes status bar

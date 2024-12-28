@@ -42,6 +42,9 @@ Documentation
     .. warning::
         ``Ans`` must be under (not including) 8192 characters. It also must be an even number of characters.
 
+    .. note::
+        When executing the hex code, the bytes are executed at the address `$D0547A` in memory, or `pixelShadow2 + 436`.
+
     Parameters:
      * ``Ans``: hex code to execute.
 

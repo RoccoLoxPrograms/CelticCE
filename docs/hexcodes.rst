@@ -16,6 +16,12 @@ Documentation
 
     Credit: MateoConLechuga
 
+.. function:: Uninvert LCD
+    
+    Does the opposite of the previous command and sets the LCD colors back to normal::
+
+        "211808F874364436206C3601C9"
+
 .. function:: Toggle Program mode
     
     When used in a program, it allows you to use ``Archive`` and ``UnArchive`` on other programs::
