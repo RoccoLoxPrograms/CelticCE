@@ -2,9 +2,9 @@
 ;
 ; Celtic CE Source Code - celtic.asm
 ; By RoccoLox Programs and TIny_Hacker
-; Copyright 2022 - 2024
+; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: January 11, 2024
+; Last Built: February 18, 2026
 ;
 ;----------------------------------------
 
@@ -14,7 +14,7 @@ include 'installer.asm'
 
 ;--------------------------------------------------------------------------
 
-    app_start 'CelticCE', '(C)  2022-2024  RoccoLox  Programs', appIconLen
+    app_start 'CelticCE', '(C)  2022-2026  RoccoLox  Programs', appIconLen
 
 appIcon:
     db $01 ; icon byte
@@ -30,7 +30,7 @@ hookPointers:
 
     celticMain.run
 
-relocate celticMain, ti.cursorImage
+relocate celticMain, ti.saveSScreen
     include 'main.asm'
 end relocate
 
@@ -44,6 +44,11 @@ end relocate
     include 'convop1.asm'
     include 'error.asm'
     include 'rodata.asm'
+
+    include 'xLIBCE/xlibce.asm'
+    include 'xLIBCE/utils.asm'
+    include 'xLIBCE/largefont.asm'
+    include 'xLIBCE/smallfont.asm'
 
 ;--------------------------------------------------------------------------
 
@@ -89,25 +94,29 @@ aboutScrnLine2:
 aboutScrnLine3:
     db "and TIny_Hacker", 0
 
+aboutScrnLine4:
+    db "xLIBCE originally by", 0
+
 versionString:
-    db "Version 1.0.1", 0
+    db "Version 1.1.0", 0
 
 copyright:
-    db "(c) 2022-2024", 0
+    db "(c) 2022-2026", 0
 
 creditsStr1:    db "Thank you to:", 0
-creditsStr2:    db "Iambian", 0
-creditsStr3:    db "PT_", 0
-creditsStr4:    db "Kerm Martian", 0
-creditsStr5:    db "MateoC", 0
-creditsStr6:    db "jacobly", 0
-creditsStr7:    db "DJ_O", 0
-creditsStr8:    db "NoahK", 0
-creditsStr9:    db "Oxiti8", 0
+creditsStr2:    db "tr1p1ea", 0
+creditsStr3:    db "Iambian", 0
+creditsStr4:    db "PT_", 0
+creditsStr5:    db "Kerm Martian", 0
+creditsStr6:    db "MateoC", 0
+creditsStr7:    db "jacobly", 0
+creditsStr8:    db "DJ_O", 0
+creditsStr9:    db "NoahK", 0
+creditsStr10:   db "Oxiti8", 0
 
 easterEgg:
     db "EASTER", ti.tSpace, "EGG", ti.tFact
-easterEggLen := $ - easterEgg
+.length := $ - easterEgg
 
 if flag_prerelease
 

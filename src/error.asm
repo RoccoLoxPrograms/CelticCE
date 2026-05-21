@@ -2,9 +2,9 @@
 ;
 ; Celtic CE Source Code - error.asm
 ; By RoccoLox Programs and TIny_Hacker
-; Copyright 2022 - 2024
+; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: January 11, 2024
+; Last Built: February 18, 2026
 ;
 ;----------------------------------------
 
@@ -100,6 +100,10 @@ PrgmErr:
 .NTAGP:
     call PrgmErr
     db "::NT>A>GP"
+
+.NTAMT:
+    call PrgmErr
+    db "::NT>A>MT"
 
 .SUPPORT:
     call PrgmErr

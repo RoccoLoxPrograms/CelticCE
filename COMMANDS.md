@@ -76,6 +76,7 @@ This file contains a simplified list of all commands in CelticCE, sorted by cate
 - SetParseByte (80)
 - SwapFileType (81)
 - ResetScreen (82)
+- GetMatrixElem (83)
 
 ### [Celtic III](https://roccoloxprograms.github.io/CelticCE/celticiiifunctions.html)
 

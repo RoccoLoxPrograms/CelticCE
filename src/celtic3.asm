@@ -2,9 +2,9 @@
 ;
 ; Celtic CE Source Code - celtic3.asm
 ; By RoccoLox Programs and TIny_Hacker
-; Copyright 2022 - 2024
+; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: January 11, 2024
+; Last Built: February 18, 2026
 ;
 ;----------------------------------------
 
@@ -170,6 +170,8 @@ chkStats: ; det(32)
     ld a, (var1)
     cp a, 4
     jp z, .checkCalcVer
+    cp a, 5
+    jp z, .checkFlash
     ld hl, Str9
     call ti.Mov9ToOP1
     call ti.ChkFindSym
@@ -372,13 +374,45 @@ chkStats: ; det(32)
     ldir ; store in a safe location
     jp .storeInfo
 
+.checkFlash: ; thanks calc84maniac!
+    ld hl, $E00005
+    ld a, (hl)
+    inc (hl) ; try to increment wait states by 1
+    cp a, (hl)
+    jr z, .newFlash
+    ld (hl), a
+    xor a, a
+    jr $ + 4
+
+.newFlash:
+    ld a, 1
+    call _storeThetaA
+    jp return
+
 .checkCalcVer:
     call ti.os.GetSystemInfo
     inc hl
     inc hl
     inc hl
     inc hl
-    ld a, (hl)
+    ld b, (hl)
+    push bc
+    ld de, $0330
+    call ti.FindFirstCertField
+    jr nz, .notPython
+    call ti.GetFieldSizeFromType
+    ld de, $0430
+    call ti.FindField
+    jr nz, .notPython
+    call ti.GetFieldSizeFromType
+    jr c, .notPython
+    pop bc
+    inc b
+    inc b
+    push bc
+
+.notPython:
+    pop af
     call _storeThetaA
     jp return
 
@@ -1353,7 +1387,8 @@ errorHandle: ; det(45)
     call ti.Mov9ToOP1
     pop hl
     push hl
-    call ti.CreateProtProg
+    ld a, ti.TempProgObj
+    call ti.CreateVar
     inc de
     inc de
     push de
@@ -1426,10 +1461,53 @@ errorHandle: ; det(45)
     bit showErrorOffset, (iy + celticFlags1)
     jr z, .skipStoOffsetChk
     push hl
+    ld hl, ti.basic_prog
+    call ti.Mov9ToOP1
+    ld de, (ti.begPC)
     ld hl, (ti.curPC)
-    ld bc, (ti.begPC)
     or a, a
-    sbc hl, bc
+    sbc hl, de
+
+.loop:
+    ld (ans), hl
+    ld a, (ti.OP1 + 1)
+    cp a, $24
+    jr nz, .notTempParser
+    call ti.FindSym
+    ex de, hl
+    inc hl
+    inc hl
+    ld a, (hl)
+    or a, a
+    jr z, .done
+    inc hl
+    push af
+    push hl
+    call ti.ZeroOP1
+    pop hl
+    ld b, (hl)
+    ld c, b
+    inc hl
+    ld de, ti.OP1
+    pop af
+    ld (de), a
+    inc de
+
+.loadName:
+    ldi
+    djnz .loadName
+    ld e, (hl)
+    inc hl
+    ld d, (hl)
+    ld hl, (ans)
+    add.sil hl, de
+    jr .loop
+
+.notTempParser:
+    ld (ans), hl
+
+.done:
+    ld hl, (ans)
     call ti.SetxxxxOP2
     call ti.OP2ToOP1
     call ti.StoAns
@@ -1856,7 +1934,6 @@ bitOperate: ; det(50)
     ; right shifting
     ld a, (var2)
     ld b, a
-    ld hl, (var1)
 
 .rightShiftLoop:
     srl h

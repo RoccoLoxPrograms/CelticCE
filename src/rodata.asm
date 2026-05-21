@@ -2,9 +2,9 @@
 ;
 ; Celtic CE Source Code - rodata.asm
 ; By RoccoLox Programs and TIny_Hacker
-; Copyright 2022 - 2024
+; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: January 11, 2024
+; Last Built: February 18, 2026
 ;
 ;----------------------------------------
 
@@ -116,6 +116,7 @@ C79:    db "SetParseLine(LINE#) : NA : [", 0
 C80:    db "SetParseByte(OFFSET) : NA : [", 0
 C81:    db "SwapFileType() : Str0", 0
 C82:    db "ResetScreen()", 0
+C83:    db "GetMatrixElem(ROW,COLUMN) : Ans : Ans, [", 0
 
 ; additional rodata
 
@@ -125,7 +126,7 @@ celticCommandsPtrs:
     dl C32, C33, C34, C35, C36, C37, C38, C39, C40, C41, C42, C43, C44, C45, C46, C47
     dl C48, C49, C50, C51, C52, C53, C54, C55, C56, C57, C58, C59, C60, C61, C62, C63
     dl C64, C65, C66, C67, C68, C69, C70, C71, C72, C73, C74, C75, C76, C77, C78, C79
-    dl C80, C81, C82
+    dl C80, C81, C82, C83
 
 arrowKeysLUT: ; equates for different arrow key press combos
     db 00 ; none
@@ -165,4 +166,4 @@ relocate tempPrgmName, xtempName
 end relocate
 
 basicPrgmName:
-    db ti.ProgObj, "celticex", 0
+    db ti.TempProgObj, "celticex", 0

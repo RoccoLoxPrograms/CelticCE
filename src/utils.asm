@@ -2,9 +2,9 @@
 ;
 ; Celtic CE Source Code - utils.asm
 ; By RoccoLox Programs and TIny_Hacker
-; Copyright 2022 - 2024
+; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: January 11, 2024
+; Last Built: February 18, 2026
 ;
 ;----------------------------------------
 
@@ -572,7 +572,11 @@ _checkMemory: ; checks if there's enough RAM to save a variable; size in hl
 
 _ConvOp1Check: ; converts OP1 to an integer in de and exits with an error if an invalid number was passed
     call ConvOP1
-    ret c
+    jr nc, .error
+    bit negative, (iy + celticFlags1)
+    ret z
+
+.error:
     jp PrgmErr.INVALA
 
 _getDataPtr: ; corrects data pointer for files if not in RAM
@@ -624,8 +628,7 @@ _checkValidOSColor: ; checks if a valid OS color was entered and returns the RGB
     cp a, 25
     jp nc, PrgmErr.INVALA
     sub a, 9
-    call ti.GetColorValue
-    ret
+    jp ti.GetColorValue
 
 _storeThetaA:
     push af

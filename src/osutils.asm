@@ -2,9 +2,9 @@
 ;
 ; Celtic CE Source Code - osutils.asm
 ; By RoccoLox Programs and TIny_Hacker
-; Copyright 2022 - 2024
+; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: January 11, 2024
+; Last Built: February 18, 2026
 ;
 ;----------------------------------------
 
@@ -1083,3 +1083,94 @@ resetScreen: ; det(82)
     call ti.HomeUp
     call ti.DrawStatusBar
     jp return
+
+getMatrixElem: ; det(83)
+    call ti.RclAns
+    ld a, (ti.OP1)
+    cp a, ti.StrngObj
+    jp nz, PrgmErr.SNTST
+    ld a, (noArgs)
+    cp a, 1
+    jr z, $ + 8
+    cp a, 3
+    jp c, PrgmErr.INVALA
+    call _findAnsStr
+    inc de
+    inc de
+    ld a, (de)
+    cp a, ti.tVarMat
+    jp nz, PrgmErr.NTAMT
+    ld hl, ti.OP1
+    ld (hl), ti.MatObj
+    inc hl
+    ex de, hl
+    ldi
+    ldi
+    ld (hl), 0
+    call ti.ChkFindSym
+    jp c, PrgmErr.PNTFN
+    call ti.ChkInRam
+    ex de, hl
+    jr z, $ + 7
+    ld de, 12
+    add hl, de
+    ld a, (var1)
+    or a, a
+    jr z, .getDim
+    ld a, (var2)
+    or a, a
+    jr z, .getDim
+    ld a, (noArgs)
+    cp a, 1
+    jr z, .getDim
+    ld ix, var1
+    ld a, (hl)
+    cp a, (ix + 3)
+    jp c, PrgmErr.ENTFN
+    inc hl
+    ld a, (hl)
+    cp a, (ix)
+    jp c, PrgmErr.ENTFN
+    dec hl
+    ld d, (ix) ; row
+    dec d
+    ld e, (hl)
+    mlt de
+    ex de, hl
+    inc de
+    inc de
+    ld bc, 0
+    ld c, (ix + 3) ; column
+    dec c
+    add hl, bc
+    push hl
+    pop bc
+    add hl, hl
+    add hl, hl
+    add hl, hl
+    add hl, bc
+    add hl, de
+    push hl
+    ld hl, Theta
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    call nc, ti.DelVar
+    call ti.CreateReal
+    pop hl
+    ld bc, 9
+    ldir
+
+.return:
+    jp return
+
+.getDim:
+    ld a, (hl)
+    inc hl
+    ld c, (hl)
+    push bc
+    call _storeThetaA
+    pop bc
+    ld a, c
+    call ti.SetxxOP1
+    call ti.StoAns
+    jr .return

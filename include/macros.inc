@@ -2,9 +2,9 @@
 ;
 ; Celtic CE Source Code - macros.inc
 ; By RoccoLox Programs and TIny_Hacker
-; Copyright 2022 - 2024
+; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: January 11, 2024
+; Last Built: February 18, 2026
 ;
 ;----------------------------------------
 
@@ -38,6 +38,19 @@ macro relocate? name, address* ; macro by MateoConLechuga
         purge end?.relocate?
         end macro
 end macro
+
+macro spi cmd, params& ; macro by jacobly
+    ld a, cmd
+    call _spiCmd
+    match any, params
+        iterate param, any
+            ld a, param
+            call _spiParam
+        end iterate
+    end match
+end macro
+
+spiValid := 8
 
 macro iconData?
     db $10, $10
@@ -80,10 +93,57 @@ currentWidth    equ ti.pixelShadow2 + 143 ; ""
 xtempName       equ ti.pixelShadow2 + 146 ; XTEMP000 name
 prgmName        equ ti.pixelShadow2 + 156 ; used to store a variable name
 stackPtr        equ ti.pixelShadow2 + 167 ; used to preserve the stack pointer
-realBackup      equ ti.pixelShadow2 + 170 ; location for Real var backup
-stringLen       equ ti.pixelShadow2 + 179 ; length byte for backup string
-stringBackup    equ ti.pixelShadow2 + 180 ; loaction for string var backup (max of 256 bytes)
-execHexLoc      equ ti.pixelShadow2 + 436 ; location for storing ExecHex code (max size of 4096 bytes) (used for undefined, temp storage size in various commands)
+xlibColorOffset equ ti.pixelShadow2 + 170 ; color offset stored for xlibc
+currentGram     equ ti.pixelShadow2 + 171 ; current GRAM buffer to draw at
+halfresOn       equ ti.pixelShadow2 + 172 ; 1 if half-res is turned on
+realBackup      equ ti.pixelShadow2 + 173 ; location for Real var backup
+stringLen       equ ti.pixelShadow2 + 182 ; length byte for backup string
+stringBackup    equ ti.pixelShadow2 + 183 ; loaction for string var backup (max of 256 bytes)
+execHexLoc      equ ti.pixelShadow2 + 439 ; location for storing ExecHex code (max size of 4096 bytes) (used for undefined, temp storage size in various commands)
+
+xlibc0          equ ti.pixelShadow2 + 500 ; start storing xlibc vars here
+xlibc1          equ ti.pixelShadow2 + 509 ; 
+xlibc2          equ ti.pixelShadow2 + 518 ; 
+xlibc3          equ ti.pixelShadow2 + 527 ; 
+xlibc4          equ ti.pixelShadow2 + 536 ; 
+xlibc5          equ ti.pixelShadow2 + 545 ; 
+xlibc6          equ ti.pixelShadow2 + 554 ; 
+xlibc7          equ ti.pixelShadow2 + 563 ; 
+xlibc8          equ ti.pixelShadow2 + 572 ; 
+xlibc9          equ ti.pixelShadow2 + 581 ; 
+xlibc10         equ ti.pixelShadow2 + 590 ; 
+xlibc11         equ ti.pixelShadow2 + 599 ; 
+xlibc12         equ ti.pixelShadow2 + 608 ; 
+xlibc13         equ ti.pixelShadow2 + 617 ; 
+xlibc14         equ ti.pixelShadow2 + 626 ; 
+xlibc15         equ ti.pixelShadow2 + 635 ; 
+xlibc16         equ ti.pixelShadow2 + 644 ; 
+xlibc17         equ ti.pixelShadow2 + 653 ; 
+xlibc18         equ ti.pixelShadow2 + 662 ; 
+xlibc19         equ ti.pixelShadow2 + 671 ; max of 20 arguments can be passed
+xlibcInt0       equ ti.pixelShadow2 + 680 ; integer values of commands
+xlibcInt1       equ ti.pixelShadow2 + 683 ; 
+xlibcInt2       equ ti.pixelShadow2 + 686 ; 
+xlibcInt3       equ ti.pixelShadow2 + 689 ; 
+xlibcInt4       equ ti.pixelShadow2 + 692 ; 
+xlibcInt5       equ ti.pixelShadow2 + 695 ; 
+xlibcInt6       equ ti.pixelShadow2 + 698 ; 
+xlibcInt7       equ ti.pixelShadow2 + 701 ; 
+xlibcInt8       equ ti.pixelShadow2 + 704 ; 
+xlibcInt9       equ ti.pixelShadow2 + 707 ; 
+xlibcInt10      equ ti.pixelShadow2 + 710 ; 
+xlibcInt11      equ ti.pixelShadow2 + 713 ; 
+xlibcInt12      equ ti.pixelShadow2 + 716 ; 
+xlibcInt13      equ ti.pixelShadow2 + 719 ; 
+xlibcInt14      equ ti.pixelShadow2 + 722 ; 
+xlibcInt15      equ ti.pixelShadow2 + 725 ; 
+xlibcInt16      equ ti.pixelShadow2 + 728 ; 
+xlibcInt17      equ ti.pixelShadow2 + 731 ; 
+xlibcInt18      equ ti.pixelShadow2 + 734 ; 
+xlibcInt19      equ ti.pixelShadow2 + 737 ; max of 20 args
+xlibcFont       equ ti.pixelShadow2 + 740 ; which font is selected
+randSeed        equ ti.pixelShadow2 + 741 ; holds temp random seed
+drawStringTemp  equ ti.pixelShadow2 + 742 ; temp storage for string conversion
 
 ;------------------------------------------------------------------------------------
 
@@ -103,6 +163,13 @@ YStart equ execHexLoc + 3
 XEnd   equ execHexLoc + 6
 YEnd   equ execHexLoc + 9
 
+; xlibce uservars
+uservars equ ti.plotSScreen ; uservars start here. There are 256 of them, spaced out by 9 bytes
+picSlot0 equ ti.plotSScreen + (9 * 256) ; sprite/map data starts here
+
+; misc equates for commands
+vBuffer equ ti.vRam + ti.lcdWidth
+
 ;------------------------------------------------------------------------------------
 
 celticFlags1    := ti.asm_Flag1 ; Celtic flags
@@ -112,6 +179,7 @@ isProgram       := 2
 showErrorOffset := 3
 deleteLineOne   := 4
 showLineNum     := 5 ; this flag is flipped, it will be set to not show the line number and reset to show it
+negative        := 6
 
 celticFlags2    := ti.asm_Flag2
 archived        := 0

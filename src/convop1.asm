@@ -33,15 +33,22 @@
 ; ----------------------------------------------------------------------------------
 ;
 ; Modified for Celtic CE by RoccoLox Programs.
-; This will only convert positive, real integers.
+; This will only convert real numbers.
 ; Returns with the carry flag reset if an invalid number was passed.
 ; Else returns with the carry flag set and the converted number in de.
 
 ConvOP1:
     call ti.TRunc
     di
-    ld hl, ti.OP1 + 1
+    ld hl, ti.OP1
     ld de, 0
+    res negative, (iy + celticFlags1)
+    ld a, (hl)
+    bit 7, a
+    jr z, $ + 6
+    set negative, (iy + celticFlags1)
+    res 7, a
+    inc hl
     ld a, -$7F
     add a, (hl)
     ret nc
@@ -94,11 +101,23 @@ ConvOp1CL:
     jr nz, ConvOp1CL
 
 ConvOp1CE:
+    bit negative, (iy + celticFlags1)
+    jr z, .postive
+    ld a, h
+    cpl
+    ld h, a
+    ld a, l
+    cpl
+    ld l, a
+    ld a, $FF
+    ld (ti.scrapMem), hl
+    ld (ti.scrapMem + 2), a
+    ld hl, (ti.scrapMem)
+    inc hl
+
+.postive:
     ex de, hl
     ld sp, (ans)
-    call ti.SetAToDEU
-    or a, a
-    ret nz
     scf
     ret
 

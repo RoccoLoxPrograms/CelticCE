@@ -2,9 +2,9 @@
 ;
 ; Celtic CE Source Code - hooks.asm
 ; By RoccoLox Programs and TIny_Hacker
-; Copyright 2022 - 2024
+; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: January 11, 2024
+; Last Built: February 18, 2026
 ;
 ;----------------------------------------
 
@@ -18,9 +18,16 @@ celticStart:
     jr nz, chain
     ld a, ti.tDet ; det( token
     cp a, b
+    jr nz, maybeChain
+    cp a, c
+    jr z, hookTriggeredDet
+
+maybeChain:
+    ld a, $8A ; check for real( token
+    cp a, b
     jr nz, chain
     cp a, c
-    jr z, hookTriggered
+    jp z, hookTriggeredReal
 
 chain:
     ld a, (ti.helpHookPtr + 2)
@@ -57,7 +64,7 @@ matrixType:
     ld a, (de)
     cp a, $20
     jr nz, popReturnOS
-    ld a, 90 ; Celtic version indentifier
+    ld a, 91 ; Celtic version identifier
     call ti.SetxxOP1
     pop bc
     pop hl
@@ -70,7 +77,7 @@ popReturnOS:
     cp a, a
     ret
 
-hookTriggered:
+hookTriggeredDet:
     pop af
     ld (stackPtr), sp
     ld (noArgs), hl
@@ -105,6 +112,8 @@ popArgs:
     jr nz, removeAllArgs
     call ConvOP1
     jr nc, removeAllArgs
+    bit negative, (iy + celticFlags1)
+    jr nz, removeAllArgs
     pop hl
     ld (hl), de
     dec hl ; go down one var
@@ -112,8 +121,6 @@ popArgs:
     dec hl
     pop bc ; restore so djnz can use it
     djnz popArgs
-
-hookTriggeredCont:
     ld a, (var0)
     cp a, (celticTableEnd - celticTableBegin) / 3
     jp nc, PrgmErr.SUPPORT
@@ -140,6 +147,131 @@ removeAllArgs:
 
 .argsPopped:
     jp PrgmErr.INVALA
+
+hookTriggeredReal:
+    push hl
+    ld hl, -1
+    ld (hl), 2
+    pop hl
+    ld (noArgs), hl
+    dec l
+    jp z, .oneArg
+    pop af
+    ld (stackPtr), sp
+    inc l
+    ld a, l
+    cp a, 21
+    jp nc, return
+    push hl
+    call ti.PushOP1
+    ld hl, xlibc0 ; set all args to zero by default
+    ld bc, (20 * 9) + (20 * 3)
+    call ti.MemClear
+    ld hl, xlibc0 + 1
+    ld de, 9
+    ld b, 20
+
+.zeroAllArgs:
+    ld (hl), $80
+    add hl, de
+    djnz .zeroAllArgs
+    pop hl
+    ld b, l
+    dec l
+    ld h, 9
+    mlt hl
+    ld de, xlibc0
+    add hl, de
+    ex de, hl
+
+.popLoop:
+    push bc
+    push de
+    call ti.PopOP1
+    pop de
+    ld hl, ti.OP1
+    ld a, (hl)
+    res 7, a
+    or a, a
+    jr nz, removeAllArgs + 1
+    ld bc, 9
+    ldir
+    ex de, hl
+    ld de, -18
+    add hl, de
+    ex de, hl
+    pop bc
+    djnz .popLoop
+    ld hl, xlibc0
+    call _convertArg
+    jp nc, return
+    bit negative, (iy + celticFlags1)
+    jp nz, return
+    ld (xlibcInt0), de
+    push de
+    ld hl, xlibc1
+    call _convertArg
+    jp nc, return
+    bit negative, (iy + celticFlags1)
+    jp nz, return
+    ld (xlibcInt1), de
+    ld a, (noArgs)
+    dec a
+    dec a
+    jr z, .allArgsPopped
+    ld b, a
+    ld hl, xlibc2
+    ld de, xlibcInt2
+
+.convertLoop:
+    push bc
+    push hl
+    push de
+    call _convertArg
+    pop hl
+    ld (hl), de
+    inc hl
+    inc hl
+    inc hl
+    ld bc, 9
+    ex de, hl
+    pop hl
+    add hl, bc
+    pop bc
+    djnz .convertLoop
+
+.allArgsPopped:
+    pop de
+    ld a, e
+    cp a, (xlibTableEnd - xlibTableStart) / 3
+    jp nc, return
+    ld l, a
+    ld h, 3
+    mlt hl
+    ld de, xlibTableStart
+    add hl, de
+    ld hl, (hl)
+    jp (hl)
+
+.oneArg:
+    ld a, (ti.OP1)
+    or a, a
+    jr nz, .runNormal
+    call ConvOP1
+    ld hl, 9
+    or a, a
+    sbc hl, de
+    jr nz, .runNormal
+    pop af
+    ld (stackPtr), sp
+    jp updateLCD
+
+.runNormal:
+    pop af
+    ld hl, (noArgs) ; restore these
+    ld bc, $8A8A
+    cp a, a
+    ret
 
 celticTableBegin:
     dl readLine ; det(0)
@@ -225,7 +357,21 @@ celticTableBegin:
     dl setParseByte
     dl swapFileType
     dl resetScreen ; det(82)
+    dl getMatrixElem
 celticTableEnd:
+
+xlibTableStart:
+    dl xlibcSetup ; real(0)
+    dl userVariables ; real(1)
+    dl getKeyXlibc ; and so on...
+    dl drawMap
+    dl drawSprite
+    dl managePic
+    dl drawString
+    dl drawShape
+    dl xlibcUtility
+    dl updateLCD ; real(9)
+xlibTableEnd:
 
 cursorHook:
     db $83

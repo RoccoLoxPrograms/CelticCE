@@ -2,9 +2,9 @@
 ;
 ; Celtic CE Source Code - graphics.asm
 ; By RoccoLox Programs and TIny_Hacker
-; Copyright 2022 - 2024
+; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: January 11, 2024
+; Last Built: February 18, 2026
 ;
 ;----------------------------------------
 
@@ -140,9 +140,11 @@ drawLine: ; det(17)
     or a, a
     sbc hl, de
     ld hl, (ix + 21)
-    jr nc, $ + 5
+    jp p, .cmpXIsPositive
     inc hl
     jr $ + 3
+
+.cmpXIsPositive:
     dec hl
     ld (ix + 21), hl
     bit 7, (ix - 4)
@@ -175,9 +177,11 @@ drawLine: ; det(17)
     or a, a
     sbc hl, de
     ld hl, (ix + 18)
-    jr nc, $ + 5
+    jp p, .cmpYIsPositive
     inc hl
     jr $ + 3
+
+.cmpYIsPositive:
     dec hl
     ld (ix + 18), hl
     ld hl, (ix + 21)

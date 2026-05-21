@@ -2,9 +2,9 @@
 #
 # Celtic CE Source Code - makefile
 # By RoccoLox Programs and TIny_Hacker
-# Copyright 2022 - 2024
+# Copyright 2022 - 2026
 # License: BSD 3-Clause License
-# Last Built: January 11, 2024
+# Last Built: February 18, 2026
 #
 #----------------------------------------
 
@@ -30,7 +30,7 @@ all:
 beta:
 	$(Q)echo Building AINSTALL...
 	$(Q)fasmg $(AINST_SRC) $(AINST_NAME).8xp
-	$(Q)echo Building CelticCE...
+	$(Q)echo Building CelticCE (BETA)...
 	$(Q)fasmg $(FLAG_PREREALEASE) $(SRC) $(NAME_BETA).8xp
 
 ainstall:

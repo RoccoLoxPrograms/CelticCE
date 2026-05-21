@@ -2,9 +2,9 @@
 ;
 ; Celtic CE Source Code - main.asm
 ; By RoccoLox Programs and TIny_Hacker
-; Copyright 2022 - 2024
+; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: January 11, 2024
+; Last Built: February 18, 2026
 ;
 ;----------------------------------------
 
@@ -28,6 +28,7 @@ end if
 
 installPage:
     res ti.usePixelShadow2, (iy + ti.putMapFlags)
+    set ti.graphDraw, (iy + ti.graphFlags)
     set ti.fracDrawLFont, (iy + ti.fontFlags)
     call ti.RunIndicOff
     call ti.DisableAPD
@@ -152,19 +153,31 @@ aboutScrn:
     call FillRect
     ld hl, 41
     ld (ti.penCol), hl
-    ld a, 105
+    ld a, 85
     ld (ti.penRow), a
     ld hl, aboutScrnLine2
     call ti.VPutS
     ld hl, 71
     ld (ti.penCol), hl
-    ld a, 125
+    ld a, 105
     ld (ti.penRow), a
     ld hl, aboutScrnLine3
     call ti.VPutS
-    ld hl, 80
+    ld hl, 41
+    ld (ti.penCol), hl
+    ld a, 145
+    ld (ti.penRow), a
+    ld hl, aboutScrnLine4
+    call ti.VPutS
+    ld hl, 119
     ld (ti.penCol), hl
     ld a, 165
+    ld (ti.penRow), a
+    ld hl, creditsStr2
+    call ti.VPutS
+    ld hl, 80
+    ld (ti.penCol), hl
+    ld a, 215
     ld (ti.penRow), a
     ld hl, copyright
     call ti.VPutS
@@ -265,65 +278,78 @@ drawFullCredits:
     ld (ti.penRow), a
     ld hl, aboutScrnLine1
     call ti.VPutS
+    ld hl, ti.vRam + ((ti.lcdWidth * 2)) * 26 + (80 * 2)
+    ld (hl), $FF
+    push hl
+    pop de
+    inc de
+    ld bc, (160 * 2) - 1
+    ldir
     ld hl, 84
     ld (ti.penCol), hl
-    ld a, 45
+    ld a, 35
     ld (ti.penRow), a
     ld hl, creditsStr1
     call ti.VPutS
     ld hl, 119
     ld (ti.penCol), hl
-    ld a, 75
+    ld a, 65
     ld (ti.penRow), a
     ld hl, creditsStr2
     call ti.VPutS
-    ld hl, 143
+    ld hl, 119
     ld (ti.penCol), hl
-    ld a, 95
+    ld a, 85
     ld (ti.penRow), a
     ld hl, creditsStr3
     call ti.VPutS
-    ld hl, 89
+    ld hl, 143
     ld (ti.penCol), hl
-    ld a, 115
+    ld a, 105
     ld (ti.penRow), a
     ld hl, creditsStr4
     call ti.VPutS
-    ld hl, 125
+    ld hl, 89
     ld (ti.penCol), hl
-    ld a, 135
+    ld a, 125
     ld (ti.penRow), a
     ld hl, creditsStr5
     call ti.VPutS
-    ld hl, 119
+    ld hl, 125
     ld (ti.penCol), hl
-    ld a, 155
+    ld a, 145
     ld (ti.penRow), a
     ld hl, creditsStr6
     call ti.VPutS
-    ld hl, 137
+    ld hl, 119
     ld (ti.penCol), hl
-    ld a, 175
+    ld a, 165
     ld (ti.penRow), a
     ld hl, creditsStr7
     call ti.VPutS
-    ld hl, 131
+    ld hl, 137
     ld (ti.penCol), hl
-    ld a, 195
+    ld a, 185
     ld (ti.penRow), a
     ld hl, creditsStr8
     call ti.VPutS
-    ld hl, 125
+    ld hl, 131
     ld (ti.penCol), hl
-    ld a, 215
+    ld a, 205
     ld (ti.penRow), a
     ld hl, creditsStr9
+    call ti.VPutS
+    ld hl, 125
+    ld (ti.penCol), hl
+    ld a, 225
+    ld (ti.penRow), a
+    ld hl, creditsStr10
     call ti.VPutS
     ld hl, appName
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     call nc, ti.DelVarArc
-    ld hl, easterEggLen
+    ld hl, easterEgg.length
     push hl
     call ti.CreateAppVar
     pop bc
