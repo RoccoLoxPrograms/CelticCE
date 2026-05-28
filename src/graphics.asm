@@ -364,6 +364,13 @@ putSprite: ; det(21)
     ld (ti.OP1 + 2), a
     call _findString + 4
     ex de, hl
+    ld a, (noArgs)
+    cp 6
+    jr z, .noOffset
+    ld bc, (var6)
+    add hl, bc
+
+.noOffset:
     ld bc, (var4)
     ld a, b
     or a, c
@@ -378,7 +385,7 @@ putSprite: ; det(21)
     ld (bufSpriteXStart), de
     ld ix, 0
 
-.loopSprite: ; hl = string location; de = vram location; ix = height counter
+.loopSprite: ; hl = string location + offset; de = vram location; ix = height counter
     push bc
     ld a, (hl)
     call _convertTokenToHex
@@ -514,6 +521,13 @@ transSprite: ; det(55)
     ld (ti.OP1 + 2), a
     call _findString + 4
     ex de, hl
+    ld a, (noArgs)
+    cp 7
+    jr z, .noOffset
+    ld bc, (var7)
+    add hl, bc
+
+.noOffset:
     ld bc, (var4)
     ld a, b
     or a, c
@@ -528,7 +542,7 @@ transSprite: ; det(55)
     ld (bufSpriteXStart), de
     ld ix, 0
 
-.loopSprite: ; hl = string location; de = vram location; ix = height counter
+.loopSprite: ; hl = string location + offset; de = vram location; ix = height counter
     push bc
     ld a, (hl)
     call _convertTokenToHex
@@ -599,7 +613,16 @@ scaleSprite: ; det(56)
     dec a
     ld (ti.OP1 + 2), a
     call _findString + 4
-    push de ; address of string, ix + 12
+    ld a, (noArgs)
+    cp 8
+    jr z, .noOffset
+    ld bc, (var8)
+    ex hl, de
+    add hl, bc
+    ex de, hl
+
+.noOffset:
+    push de ; address of string + offset, ix + 12
     ld ix, var3
     ld hl, (ix)
     ld a, h
