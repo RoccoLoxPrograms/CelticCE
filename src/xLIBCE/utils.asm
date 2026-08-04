@@ -153,16 +153,16 @@ _getXlibcVRAMaddr:
     ret
 
 _setPixelxlibc: ; x = ix - 12, y = ix - 15, color = ix + 9
+    ld hl, (ix - 15)
+    ld bc, -ti.lcdHeight / 2
+    add hl, bc
+    ret c
+    ld hl, (ix - 12)
+    ld bc, -ti.lcdWidth / 2
+    add hl, bc
+    ret c
+    ld de, (ix - 12)
     ld a, (ix - 15)
-    ld b, -ti.lcdHeight / 2
-    add a, b
-    ret c
-    ld a, (ix - 12)
-    ld b, -ti.lcdWidth / 2
-    add a, b
-    ret c
-    ld a, (ix - 12)
-    ld de, (ix - 15)
     call _getXlibcVRAMaddr
     ld bc, ti.lcdWidth * 2
     bit invertPixel, (iy + celticFlags2)
@@ -194,4 +194,215 @@ _setPixelxlibc: ; x = ix - 12, y = ix - 15, color = ix + 9
     ld a, (hl)
     cpl
     ld (hl), a
+    ret
+
+_clipXlibcRect: ; x = xlibcInt2, y = xlibcInt3, width = xlibcInt4, height = xlibcInt5
+    or a, a
+    sbc hl, hl
+    ld ix, xlibcInt2
+    bit 7, (ix + 2)
+    jr z, .clipY
+    ld a, (xlibcInt2)
+    ld (xlibcInt2), hl
+    ld a, (xlibcInt4)
+    or a, a
+    ret z
+    push hl
+    ld l, a
+    pop de
+    push de
+    ld e, a
+    add hl, de
+    ld (xlibcInt4), hl
+    pop hl
+
+.clipY:
+    bit 7, (ix + 5)
+    jr z, .clipWidth
+    ld de, (xlibcInt3)
+    ld (xlibcInt3), hl
+    ld a, (xlibcInt5)
+    or a, a
+    ret z
+    ld l, a
+    add hl, de
+    ld (xlibcInt5), hl
+
+.clipWidth:
+    ex de, hl
+    ld hl, (xlibcInt2)
+    ld a, (xlibcInt4)
+    ld e, a
+    ld bc, -ti.lcdWidth / 2
+    add hl, bc
+    jr c, .return
+    add hl, de
+    jr nc, .clipHeight
+    sub a, l
+
+.clipHeight:
+    ld c, a
+    ld a, (xlibcInt5)
+    ld e, a
+    push bc
+    ld hl, (xlibcInt3)
+    ld bc, -ti.lcdHeight / 2
+    add hl, bc
+    pop bc
+    jr c, .return
+    add hl, de
+    jr nc, .clipDone
+    sub a, l
+
+.clipDone:
+    add a, a
+    ld b, a
+    ld de, (xlibcInt2)
+    ld a, (xlibcInt3)
+    push bc
+    call _getXlibcVRAMaddr
+    pop bc
+    or a, 1
+    ret ; width = c, height = b, vram = hl
+
+.return:
+    xor a, a
+    ret
+
+_drawXlibcHorizLine: ; x = de, y = a, width = bc, color = l
+    ld h, a
+    ld a, b
+    or a, c
+    ret z
+    ld a, h
+    push hl
+    call _getXlibcVRAMaddr
+    pop de
+    bit invertPixel, (iy + celticFlags2)
+    jr nz, .invert
+    ld (hl), e
+    inc hl
+    ld (hl), e
+    dec bc
+    ld a, b
+    or a, c
+    ret z
+    push hl
+    push hl
+    push bc
+    pop hl
+    add hl, hl
+    push hl
+    pop bc
+    pop de
+    pop hl
+    inc de
+    push hl
+    push bc
+    ldir
+    pop bc
+    pop hl
+    ld a, (hl)
+    ld de, ti.lcdWidth * 2
+    add hl, de
+    ex de, hl
+    push de
+    pop hl
+    inc de
+    dec hl
+    ld (hl), a
+    inc hl
+    ld (hl), a
+    ldir
+    ret
+
+.invert:
+    dec bc
+    dec bc
+    inc hl
+    inc hl
+    push hl
+    push hl
+    push bc
+
+.loopInvert:
+    ld a, (hl)
+    cpl
+    ld (hl), a
+    inc hl
+    ld a, (hl)
+    cpl
+    ld (hl), a
+    inc hl
+    dec bc
+    ld a, b
+    or a, c
+    jr nz, .loopInvert
+    pop hl
+    add hl, hl
+    push hl
+    pop bc
+    pop hl
+    ld de, ti.lcdWidth * 2
+    add hl, de
+    pop de
+    ex de, hl
+    ldir
+    ret
+
+_drawXlibcVertLine: ; x = de, y = a, height = c, color = l
+    bit 7, a
+    jr z, .clipNext
+    add a, c
+    ld c, a
+    xor a, a
+
+.clipNext:
+    push af
+    add a, c
+    sub a, ti.lcdHeight / 2
+    jr c, .clipDone
+    ld b, a
+    ld a, c
+    sub a, b
+    ld c, a
+
+.clipDone:
+    pop af
+    ld b, c
+    push bc
+    push hl
+    call _getXlibcVRAMaddr
+    pop de
+    pop af
+    ld bc, ti.lcdWidth * 2
+    add a, a
+    bit invertPixel, (iy + celticFlags2)
+    jr nz, .invert
+
+.loop:
+    ld (hl), e
+    inc hl
+    ld (hl), e
+    dec hl
+    add hl, bc
+    dec a
+    jr nz, .loop
+    ret
+
+.invert:
+    ld e, a
+
+.loopInvert:
+    ld a, (hl)
+    cpl
+    ld (hl), a
+    inc hl
+    ld a, (hl)
+    cpl
+    ld (hl), a
+    dec hl
+    add hl, bc
+    dec e
+    jr nz, .loopInvert
     ret

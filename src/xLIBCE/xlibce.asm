@@ -44,11 +44,13 @@ xlibcSetup: ; real(0)
     ret
 
 .setSpeed:
+    ret
+    ; fix this later
     ; might have to set this myself
-    ld a, (xlibcInt2)
-    or a, a
-    jp nz, ti.boot.Set48MHzMode
-    jp ti.boot.Set6MHzMode
+    ;ld a, (xlibcInt2)
+    ;or a, a
+    ;jp nz, ti.boot.Set48MHzMode
+    ;jp ti.boot.Set6MHzMode
 
 .setupColorMode:
     ld a, (xlibcInt2)
@@ -310,22 +312,22 @@ drawString: ; real(6)
     sub a, $20
     ld b, a
     ld a, (xlibcFont)
-    or a, a
-    jr z, .fontSet1
+    cp a, 1
+    jr nz, .fontSet1
     ld c, 6
 
 .fontSet1:
     mlt bc
     ld hl, largeFontData
-    or a, a
-    jr z, .fontSet2
+    cp a, 1
+    jr nz, .fontSet2
     ld hl, smallFontData
 
 .fontSet2:
     add hl, bc
     ld b, 8
-    or a, a
-    jr z, .drawChar
+    cp a, 1
+    jr nz, .drawChar
     ld b, 6
 
 .drawChar:
@@ -389,8 +391,8 @@ drawString: ; real(6)
     ld hl, (bufSpriteX)
     ld bc, 8
     ld a, (xlibcFont)
-    or a, a
-    jr z, .scaleSet1
+    cp a, 1
+    jr nz, .scaleSet1
     ld c, 4
 
 .scaleSet1:
@@ -401,8 +403,8 @@ drawString: ; real(6)
 .newLine:
     ld c, 8
     ld a, (xlibcFont)
-    or a, a
-    jr z, .scaleSet2
+    cp a, 1
+    jr nz, .scaleSet2
     ld c, 6
 
 .scaleSet2:
@@ -479,7 +481,12 @@ drawString: ; real(6)
 
 .setXlibcFont:
     ld a, (xlibcInt2)
-    and a, 1
+    cp a, 1
+    ld a, 0
+    jr nz, .setSmallFont
+    inc a
+
+.setSmallFont:
     ld (xlibcFont), a
     ret
 
@@ -538,117 +545,32 @@ drawShape: ; real(7)
     jp ti.StoAns
 
 .setPixelA:
-    ld de, (xlibcInt2)
-    ld a, (xlibcInt3)
-    call _getXlibcVRAMaddr
-    ld a, (xlibcInt6)
-    or a, a
-    ret z
-    ld c, a
-    add a, a
-    ld b, a
     ld a, (xlibcInt5)
     ld e, a
     ld a, (xlibcInt4)
     ld d, a
-
-.loopSetPixelA:
-    push hl
-    ld (hl), e
-    inc hl
-    ld (hl), d
-    dec hl
-    push bc
-    push de
-    dec c
-    jr z, .doneSPA
-    push hl
-    push hl
-    or a, a
-    sbc hl, hl
-    ld l, a
-    add hl, hl
-    push hl
-    pop bc
-    dec bc
-    pop hl
-    pop de
-    inc de
-    inc de
-    ldir
-
-.doneSPA:
-    pop de
-    pop bc
-    pop hl
     ld a, (xlibcInt6)
-    ld c, a
+    ld (xlibcInt4), a
+    ld (xlibcInt5), a
     push de
-    ld de, ti.lcdWidth * 2
-    add hl, de
+    call _clipXlibcRect
     pop de
-    djnz .loopSetPixelA
-    ld a, (xlibcInt7)
-    or a, a
-    call nz, _flipActiveDraw
-    ret
+    ret z
+    jp .loopFillRect
 
 .setPixelB:
-    ld de, (xlibcInt2)
-    ld a, (xlibcInt3)
-    call _getXlibcVRAMaddr
-    ld a, (xlibcInt5)
-    or a, a
-    ret z
-    ld c, a
-    add a, a
-    ld b, a
-    ld a, (xlibcInt4)
-    ld e, a
-
-.loopSetPixelB:
-    push hl
-    ld (hl), a
-    inc hl
-    ld (hl), a
-    dec hl
-    push bc
-    push de
-    dec c
-    jr z, .doneSPB
-    push hl
-    push hl
-    or a, a
-    sbc hl, hl
-    ld l, a
-    add hl, hl
-    push hl
-    pop bc
-    dec bc
-    pop hl
-    pop de
-    inc de
-    inc de
-    ldir
-
-.doneSPB:
-    pop de
-    pop bc
-    pop hl
-    ld a, (xlibcInt5)
-    ld c, a
-    push de
-    ld de, ti.lcdWidth * 2
-    add hl, de
-    pop de
-    djnz .loopSetPixelB
-    ld a, (xlibcInt6)
-    or a, a
-    call nz, _flipActiveDraw
-    ret
+    ld hl, xlibcInt6 + 2
+    ld de, xlibcInt7 + 2
+    ld bc, 9
+    lddr
+    jr .setPixelA
 
 .invertPixel:
-    ret
+    ld hl, xlibcInt5 + 2
+    ld de, xlibcInt6 + 2
+    ld bc, 6
+    lddr
+    jp .invertFilledRectangle
 
 .drawLine:
     res invertPixel, (iy + celticFlags2)
@@ -818,6 +740,8 @@ drawShape: ; real(7)
     ld a, (xlibcInt6)
     or a, a
     call nz, _flipActiveDraw
+    lea ix, ix + 24
+    ld sp, ix
     ret
 
 .absoluteVal: ; number = de
@@ -833,24 +757,667 @@ drawShape: ; real(7)
     jp .drawLine + 4
 
 .drawRectangle:
+    res invertPixel, (iy + celticFlags2)
+
+.drawRectangleStart:
+    ld ix, xlibcInt2
+    ld a, (xlibcInt6)
+    ld l, a
+    ld h, a
+    ld de, (xlibcInt2)
+    ld a, (xlibcInt5)
+    ld c, a
+    push de
+    push bc
+    ld a, (xlibcInt3)
+    bit 7, (ix + 2)
+    jr nz, .clipLeftDone
+    push af
+    push de
+    push hl
+    call _drawXlibcVertLine
+    pop hl
+    pop de
+    pop af
+
+.clipLeftDone:
+    bit 7, (ix + 5)
+    jr nz, .clipTopDone
+    ld bc, (xlibcInt4)
+    push af
+    push de
+    push hl
+    call _drawXlibcHorizLine
+    pop hl
+    pop de
+    pop af
+
+.clipTopDone:
+    push hl
+    ld hl, (xlibcInt4)
+    dec hl
+    add hl, de
+    push hl
+    ex de, hl
+    ld hl, -ti.lcdWidth / 2
+    add hl, de
+    pop de
+    pop hl
+    pop bc
+    push bc
+    jr c, .clipRightDone
+    push af
+    push de
+    push hl
+    call _drawXlibcVertLine
+    pop hl
+    pop de
+    pop af
+
+.clipRightDone:
+    pop bc
+    pop de
+    dec c
+    add a, c
+    cp a, ti.lcdHeight / 2
+    jr nc, .return
+    ld bc, (xlibcInt4)
+    call _drawXlibcHorizLine
+
+.return:
+    ld a, (xlibcInt7)
+    or a, a
+    call nz, _flipActiveDraw
     ret
 
 .invertRectangle:
-    ret
+    set invertPixel, (iy + celticFlags2)
+    ld hl, (xlibcInt6)
+    ld (xlibcInt7), hl
+    jp .drawRectangleStart
 
 .fillRectangle:
+    call _clipXlibcRect
+    ret z
+    ld a, (xlibcInt6)
+    ld e, a
+    ld d, a
+
+.loopFillRect:
+    push hl
+    ld (hl), e
+    inc hl
+    ld (hl), d
+    dec hl
+    push bc
+    push de
+    dec c
+    ld a, c
+    jr z, .doneFillRect
+    push hl
+    push hl
+    or a, a
+    sbc hl, hl
+    ld l, a
+    add hl, hl
+    push hl
+    pop bc
+    pop hl
+    pop de
+    inc de
+    inc de
+    ldir
+
+.doneFillRect:
+    pop de
+    pop bc
+    pop hl
+    push de
+    ld de, ti.lcdWidth * 2
+    add hl, de
+    pop de
+    djnz .loopFillRect
+    ld a, (xlibcInt7)
+    or a, a
+    call nz, _flipActiveDraw
     ret
 
 .invertFilledRectangle:
+    call _clipXlibcRect
+    ret z
+
+.loopIFRRow:
+    push hl
+    push bc
+
+.loopInvertFillRect:
+    ld a, (hl)
+    cpl
+    ld (hl), a
+    inc hl
+    ld a, (hl)
+    cpl
+    ld (hl), a
+    inc hl
+    dec c
+    jr z, .doneIFR
+    jr .loopInvertFillRect
+
+.doneIFR:
+    pop bc
+    pop hl
+    ld de, ti.lcdWidth * 2
+    add hl, de
+    djnz .loopIFRRow
+    ld a, (xlibcInt5)
+    or a, a
+    call nz, _flipActiveDraw
     ret
 
 .drawCircle:
+    res invertPixel, (iy + celticFlags2)
+    ld a, (xlibcInt5)
+    or a, a
+    sbc hl, hl
+    ld l, a
+    ld h, a
+    push hl
+    ld de, (xlibcInt2)
+    ld bc, (xlibcInt3)
+    ld hl, (xlibcInt4)
+    push de ; x center, ix + 6
+    push bc ; y center, ix + 3
+    push hl ; radius, ix + 0
+    ld ix, 0
+    add ix, sp
+    push hl ; x, ix - 3
+    ld bc, 0
+    push bc ; y, ix - 6
+    push bc ; uninitialized var
+    ld hl, (ix - 3)
+    ld bc, (ix + 6)
+    add hl, bc
+    push hl
+    ld hl, (ix - 6)
+    ld de, (ix + 3)
+    add hl, de
+    push hl
+    call _setPixelxlibc
+    pop hl
+    pop hl
+    ld hl, (ix + 6)
+    push hl
+    ld hl, (ix + 3)
+    ld de, (ix - 3)
+    ld a, d
+    or a, e
+    jp z, .exitCircle
+    sbc hl, de
+    push hl
+    call _setPixelxlibc
+    pop hl
+    pop hl
+    ld hl, (ix + 6)
+    ld de, (ix - 3)
+    or a, a
+    sbc hl, de
+    push hl
+    ld hl, (ix - 6)
+    ld de, (ix + 3)
+    add hl, de
+    push hl
+    call _setPixelxlibc
+    pop hl
+    pop hl
+    ld hl, (ix + 6)
+    ld de, (ix - 6)
+    or a, a
+    sbc hl, de
+    push hl
+    ld de, (ix - 3)
+    ld hl, (ix + 3)
+    add hl, de
+    push hl
+    call _setPixelxlibc
+    pop hl
+    pop hl
+    or a, a
+    sbc hl, hl
+    inc hl
+    ld de, (ix)
+    or a, a
+    sbc hl, de
+    pop de
+    push hl ; perimeter, ix - 9
+
+.loopCircle:
+    ld de, (ix - 6)
+    ld hl, (ix - 3)
+    or a, a
+    sbc hl, de
+    jp c, .exitCircle
+    ld hl, (ix - 6)
+    inc hl
+    ld (ix - 6), hl
+    ld de, (ix - 9)
+    or a, a
+    sbc hl, hl
+    sbc hl, de
+    jr z, .Pis0orLess
+    bit 7, (ix - 7) ; upper byte of perimeter
+    jr z, .PisMoreThan0
+
+.Pis0orLess:
+    ld hl, (ix - 6)
+    add hl, hl
+    ld de, (ix - 9)
+    add hl, de
+    inc hl
+    ld (ix - 9), hl
+    jr .continueDraw
+
+.PisMoreThan0:
+    ld hl, (ix - 3)
+    dec hl
+    ld (ix - 3), hl
+    ld hl, (ix - 6)
+    add hl, hl
+    ld de, (ix - 9)
+    add hl, de
+    push hl
+    ld hl, (ix - 3)
+    add hl, hl
+    ex de, hl
+    pop hl
+    or a, a
+    sbc hl, de
+    inc hl
+    ld (ix - 9), hl
+
+.continueDraw:
+    ld de, (ix - 6)
+    ld hl, (ix - 3)
+    or a, a
+    sbc hl, de
+    jp c, .exitCircle
+    ld hl, (ix - 3)
+    ld de, (ix + 6)
+    add hl, de
+    push hl
+    ld hl, (ix - 6)
+    ld de, (ix + 3)
+    add hl, de
+    push hl
+    call _setPixelxlibc
+    pop hl
+    pop hl
+    ld hl, (ix + 6)
+    ld de, (ix - 3)
+    or a, a
+    sbc hl, de
+    push hl
+    ld hl, (ix - 6)
+    ld de, (ix + 3)
+    add hl, de
+    push hl
+    call _setPixelxlibc
+    pop hl
+    pop hl
+    ld hl, (ix - 3)
+    ld de, (ix + 6)
+    add hl, de
+    push hl
+    ld hl, (ix + 3)
+    ld de, (ix - 6)
+    or a, a
+    sbc hl, de
+    push hl
+    call _setPixelxlibc
+    pop hl
+    pop hl
+    ld hl, (ix + 6)
+    ld de, (ix - 3)
+    or a, a
+    sbc hl, de
+    push hl
+    ld hl, (ix + 3)
+    ld de, (ix - 6)
+    or a, a
+    sbc hl, de
+    push hl
+    call _setPixelxlibc
+    pop hl
+    pop hl
+    ld hl, (ix - 6)
+    ld de, (ix - 3)
+    or a, a
+    sbc hl, de
+    jp z, .loopCircle
+    ld hl, (ix - 6)
+    ld de, (ix + 6)
+    add hl, de
+    push hl
+    ld hl, (ix + 3)
+    ld de, (ix - 3)
+    add hl, de
+    push hl
+    call _setPixelxlibc
+    pop hl
+    pop hl
+    ld hl, (ix + 6)
+    ld de, (ix - 6)
+    or a, a
+    sbc hl, de
+    push hl
+    ld hl, (ix + 3)
+    ld de, (ix - 3)
+    add hl, de
+    push hl
+    call _setPixelxlibc
+    pop hl
+    pop hl
+    ld hl, (ix - 6)
+    ld de, (ix + 6)
+    add hl, de
+    push hl
+    ld hl, (ix + 3)
+    ld de, (ix - 3)
+    or a, a
+    sbc hl, de
+    push hl
+    call _setPixelxlibc
+    pop hl
+    pop hl
+    ld hl, (ix + 6)
+    ld de, (ix - 6)
+    or a, a
+    sbc hl, de
+    push hl
+    ld hl, (ix + 3)
+    ld de, (ix - 3)
+    or a, a
+    sbc hl, de
+    push hl
+    call _setPixelxlibc
+    pop hl
+    pop hl
+    jp .loopCircle
+
+.exitCircle:
+    ld a, (xlibcInt6)
+    or a, a
+    call nz, _flipActiveDraw
+    lea ix, ix + 12
+    ld sp, ix
     ret
 
 .drawFilledCircle:
+    res invertPixel, (iy + celticFlags2)
+    ld a, (xlibcInt5)
+    or a, a
+    sbc hl, hl
+    ld l, a
+    ld h, a
+    push hl
+    ld de, (xlibcInt2)
+    ld bc, (xlibcInt3)
+    ld hl, (xlibcInt4)
+    push de ; x center, ix + 6
+    push bc ; y center, ix + 3
+    push hl ; radius, ix + 0
+    ld ix, 0
+    add ix, sp
+    push hl ; x, ix - 3
+    ld bc, 0
+    push bc ; y, ix - 6
+    push bc ; uninitialized var
+    ld hl, (ix + 6)
+    push hl
+    ld hl, (ix + 3)
+    ld de, (ix - 3)
+    or a, a
+    sbc hl, de
+    push hl
+    call _setPixelxlibc
+    pop hl
+    pop hl
+    ld hl, (ix + 6)
+    push hl
+    ld hl, (ix + 3)
+    ld de, (ix - 3)
+    ld a, d
+    or a, e
+    jp z, .exitFilledCircle
+    add hl, de
+    push hl
+    call _setPixelxlibc
+    pop hl
+    pop hl
+    ld hl, (ix + 6)
+    ld de, (ix - 3)
+    or a, a
+    sbc hl, de
+    push hl
+    ld hl, (ix + 3)
+    push hl
+    ld hl, (ix - 3)
+    add hl, hl
+    inc hl
+    push hl
+    call .drawHorizLine
+    pop hl
+    pop hl
+    pop hl
+    or a, a
+    sbc hl, hl
+    inc hl
+    ld de, (ix)
+    or a, a
+    sbc hl, de
+    pop de
+    push hl ; perimeter, ix - 9
+
+.loopFilledCircle:
+    ld de, (ix - 6)
+    ld hl, (ix - 3)
+    or a, a
+    sbc hl, de
+    jp c, .exitFilledCircle
+    ld hl, (ix - 6)
+    inc hl
+    ld (ix - 6), hl
+    ld de, (ix - 9)
+    or a, a
+    sbc hl, hl
+    sbc hl, de
+    jr z, .Pis0orLessFilled
+    bit 7, (ix - 7) ; upper byte of perimeter
+    jr z, .PisMoreThan0Filled
+
+.Pis0orLessFilled:
+    ld hl, (ix - 6)
+    add hl, hl
+    ld de, (ix - 9)
+    add hl, de
+    inc hl
+    ld (ix - 9), hl
+    jr .continueDrawFilled
+
+.PisMoreThan0Filled:
+    ld hl, (ix - 3)
+    dec hl
+    ld (ix - 3), hl
+    ld hl, (ix - 6)
+    add hl, hl
+    ld de, (ix - 9)
+    add hl, de
+    push hl
+    ld hl, (ix - 3)
+    add hl, hl
+    ex de, hl
+    pop hl
+    or a, a
+    sbc hl, de
+    inc hl
+    ld (ix - 9), hl
+
+.continueDrawFilled:
+    ld de, (ix - 6)
+    ld hl, (ix - 3)
+    or a, a
+    sbc hl, de
+    jp c, .exitFilledCircle
+    ld hl, (ix + 6)
+    ld de, (ix - 6)
+    or a, a
+    sbc hl, de
+    push hl
+    ld hl, (ix + 3)
+    ld de, (ix - 3)
+    add hl, de
+    push hl
+    ld hl, (ix - 6)
+    add hl, hl
+    inc hl
+    push hl
+    call .drawHorizLine
+    pop hl
+    pop hl
+    pop hl
+    ld hl, (ix + 6)
+    ld de, (ix - 6)
+    or a, a
+    sbc hl, de
+    push hl
+    ld hl, (ix + 3)
+    ld de, (ix - 3)
+    or a, a
+    sbc hl, de
+    push hl
+    ld hl, (ix - 6)
+    add hl, hl
+    inc hl
+    push hl
+    call .drawHorizLine
+    pop hl
+    pop hl
+    pop hl
+    ld hl, (ix + 6)
+    ld de, (ix - 3)
+    or a, a
+    sbc hl, de
+    push hl
+    ld hl, (ix + 3)
+    ld de, (ix - 6)
+    add hl, de
+    push hl
+    ld hl, (ix - 3)
+    add hl, hl
+    inc hl
+    push hl
+    call .drawHorizLine
+    pop hl
+    pop hl
+    pop hl
+    ld hl, (ix + 6)
+    ld de, (ix - 3)
+    or a, a
+    sbc hl, de
+    push hl
+    ld hl, (ix + 3)
+    ld de, (ix - 6)
+    or a, a
+    sbc hl, de
+    push hl
+    ld hl, (ix - 3)
+    add hl, hl
+    inc hl
+    push hl
+    call .drawHorizLine
+    pop hl
+    pop hl
+    pop hl
+    jp .loopFilledCircle
+
+.exitFilledCircle:
+    ld a, (xlibcInt6)
+    or a, a
+    call nz, _flipActiveDraw
+    lea ix, ix + 12
+    ld sp, ix
     ret
 
+.drawHorizLine: ; x = ix - 12, y = ix - 15, length = ix - 18, color = ix + 9
+    ld de, (ix - 15)
+    ld hl, -ti.lcdHeight / 2
+    add hl, de
+    ret c
+    ld hl, (ix - 12)
+    ld bc, (ix - 18)
+    add hl, bc
+    ex de, hl
+    ld hl, -ti.lcdWidth / 2
+    add hl, de
+    jr nc, .clipLineStart
+    ld (ix - 18), de
+    bit 7, (ix - 16)
+    ret nz
+    ld de, ti.lcdWidth / 2
+
+.clipLineStart:
+    ld (ix - 18), de
+    ld de, (ix - 12)
+    ld hl, -ti.lcdWidth / 2
+    add hl, de
+    jr nc, .drawLineFC
+    bit 7, (ix - 10)
+    ret z
+    ld de, 0
+
+.drawLineFC:
+    or a, a
+    ld (ix - 12), de
+    ld hl, (ix - 18)
+    sbc hl, de
+    push hl
+    pop bc
+    ld a, (ix - 15)
+    ld hl, (ix + 9)
+    jp _drawXlibcHorizLine
+
 .drawFilledColorRotateRectangle:
+    call _clipXlibcRect
+    ret z
+    ld a, (xlibColorOffset)
+    ld e, a
+
+.rowFCRRect:
+    push bc
+    push hl
+
+.loopFCRRect:
+    ld a, (hl)
+    add a, e
+    ld (hl), a
+    inc hl
+    ld a, (hl)
+    add a, e
+    ld (hl), a
+    inc hl
+    dec c
+    jr nz, .loopFCRRect
+
+.doneFCRRect:
+    pop hl
+    pop bc
+    push de
+    ld de, ti.lcdWidth * 2
+    add hl, de
+    pop de
+    djnz .rowFCRRect
+    ld a, (xlibcInt6)
+    or a, a
+    call nz, _flipActiveDraw
     ret
 
 xlibcUtility: ; real(8)
