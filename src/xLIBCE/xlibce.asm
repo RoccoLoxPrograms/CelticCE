@@ -909,7 +909,7 @@ drawShape: ; real(7)
     ld de, ti.lcdWidth * 2
     add hl, de
     djnz .loopIFRRow
-    ld a, (xlibcInt5)
+    ld a, (xlibcInt6)
     or a, a
     call nz, _flipActiveDraw
     ret

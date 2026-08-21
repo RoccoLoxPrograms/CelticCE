@@ -43,7 +43,9 @@ installApp:
     jr .clearScreen
 
 .printMessage:
+    push hl
     call .clearScreen
+    pop hl
     call ti.PutS
     call ti.GetKey
 
