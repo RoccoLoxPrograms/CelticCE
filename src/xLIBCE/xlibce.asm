@@ -1449,9 +1449,7 @@ xlibcUtility: ; real(8)
     ld a, (xlibcInt2)
     and a, 1
     ld (currentGram), a
-    or a, a
-    jp z, _showRightBuffer
-    jp _showLeftBuffer
+    ret
 
 .setGramOffset:
     ; figure this out later
