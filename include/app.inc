@@ -145,9 +145,9 @@ macro app_private
 		push	de
 		ld	hl,app.start
 		ld	bc,app.size+3
-		call	installer.port_unlock
+		call	installer.portUnlock
 		call	$02e0
-		call	installer.port_lock
+		call	installer.portLock
 		pop	hl
 		push	hl
 		ld	de,app.code_offset
@@ -174,9 +174,9 @@ macro app_private
 		ld	($d0062f),hl
 		ld	hl,$d0062f
 		ld	bc,3
-		call	installer.port_unlock
+		call	installer.portUnlock
 		call	$02e0
-		call	installer.port_lock
+		call	installer.portLock
 		pop	de
 		pop	hl
 		inc	hl

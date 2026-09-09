@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: February 18, 2026
+; Last Built: September 9, 2026
 ;
 ;----------------------------------------
 
@@ -369,7 +369,7 @@ putSprite: ; det(21)
     call _findString + 4
     ex de, hl
     ld a, (noArgs)
-    cp 6
+    cp a, 6
     jr z, .noOffset
     ld bc, (var6)
     add hl, bc
@@ -526,7 +526,7 @@ transSprite: ; det(55)
     call _findString + 4
     ex de, hl
     ld a, (noArgs)
-    cp 7
+    cp a, 7
     jr z, .noOffset
     ld bc, (var7)
     add hl, bc
@@ -618,7 +618,7 @@ scaleSprite: ; det(56)
     ld (ti.OP1 + 2), a
     call _findString + 4
     ld a, (noArgs)
-    cp 8
+    cp a, 8
     jr z, .noOffset
     ld bc, (var8)
     ex hl, de
@@ -765,7 +765,16 @@ scaleTSprite: ; det(57)
     dec a
     ld (ti.OP1 + 2), a
     call _findString + 4
-    push de ; address of string, ix + 12
+    ld a, (noArgs)
+    cp a, 9
+    jr z, .noOffset
+    ld bc, (var9)
+    ex hl, de
+    add hl, bc
+    ex de, hl
+
+.noOffset:
+    push de ; address of string + offset, ix + 12
     ld ix, var3
     ld hl, (ix)
     ld a, h

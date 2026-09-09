@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: February 18, 2026
+; Last Built: September 9, 2026
 ;
 ;----------------------------------------
 
@@ -264,13 +264,10 @@ _convertChars:
     pop de
     push bc
     push hl
-    ld b, a
+    ld bc, 0
+    ld c, a
     ld hl, ti.OP3
-
-.loopDispText:
-    ldi
-    inc bc
-    djnz .loopDispText
+    ldir
     pop hl
     pop bc
     ret
@@ -631,26 +628,15 @@ _checkValidOSColor: ; checks if a valid OS color was entered and returns the RGB
     jp ti.GetColorValue
 
 _storeThetaA:
-    push af
-    ld hl, Theta
-    call ti.Mov9ToOP1
-    call ti.ChkFindSym
-    call nc, ti.DelVar
-    call ti.CreateReal
-    pop af
-    push de
-    call ti.SetxxOP1
-    pop de
-    ld hl, ti.OP1
-    ld bc, 9
-    ldir
-    ret
+    or a, a
+    sbc hl, hl
+    ld l, a
 
 _storeThetaHL:
     push hl
     ld hl, Theta
     call ti.Mov9ToOP1
-    call ti.ChkFindSym
+    call ti.FindSym
     call nc, ti.DelVar
     call ti.CreateReal
     pop hl

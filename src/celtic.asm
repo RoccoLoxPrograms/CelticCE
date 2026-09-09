@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: February 18, 2026
+; Last Built: September 9, 2026
 ;
 ;----------------------------------------
 
@@ -127,3 +127,12 @@ warningMsg:
     db "proceed with caution.", 0
 
 end if
+
+macro print_size msg, offset
+    display msg
+    repeat 1, x:offset
+        display `x, 10
+    end repeat
+end macro
+
+print_size "CelticMain.length: ", celticMain.length

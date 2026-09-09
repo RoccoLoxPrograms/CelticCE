@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: February 18, 2026
+; Last Built: September 9, 2026
 ;
 ;----------------------------------------
 
@@ -84,13 +84,13 @@ readLine: ; det(0)
     pop bc
     add hl, bc
     lea bc, ix
-
-.copyLine:
     ld a, b
     or a, c
-    jp z, return
-    ldi
-    jr .copyLine
+    jr z, .return
+    ldir
+
+.return:
+    jp return
 
 .getNumOfLines:
     pop bc
@@ -225,13 +225,10 @@ insertLine: ; det(2)
     pop bc
     dec bc
     pop de
-
-.copyLineData:
     ld a, b
     or a, c
     jr z, .copyDone
-    ldi
-    jr .copyLineData
+    ldir
 
 .copyDone:
     ex de, hl
@@ -833,26 +830,14 @@ execArcPrgm: ; det(11)
     inc de
     pop hl
     pop bc
-    push hl
-    ld hl, 1
-    or a, a
-    sbc hl, bc
-    jr nc, .zeroOrOneByte
-    pop hl
+    ld a, b
+    or a, c
+    jr z, .return
     ex de, hl
     ldir
 
 .return:
     jp return
-
-.zeroOrOneByte:
-    ld a, b
-    or a, c
-    pop hl
-    jr z, .return
-    ex de, hl
-    ldi
-    jr .return
 
 dispColor: ; det(12)
     ld a, (noArgs)

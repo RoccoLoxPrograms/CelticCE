@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: February 18, 2026
+; Last Built: September 9, 2026
 ;
 ;----------------------------------------
 
@@ -222,12 +222,7 @@ renameVar: ; det(23)
     ld a, b
     or a, c
     jr z, .deleteProg
-
-.copyDataLoop:
-    ldi
-    ld a, b
-    or a, c
-    jr nz, .copyDataLoop
+    ldir
 
 .deleteProg:
     pop bc
@@ -392,20 +387,8 @@ prgmToStr: ; det(26)
     inc de
     ex de, hl
     pop de
-    dec bc
-    ld a, b
-    or a, c
-    jr z, .copyOneByte
-    inc bc
     ldir
-
-.return:
     jp return
-
-.copyOneByte:
-    inc bc
-    ldi
-    jr .return
 
 getPrgmType: ; det(27)
     ld hl, Str0
@@ -642,13 +625,13 @@ runAsmPrgm: ; det(70)
     inc hl
     pop bc
     ld de, ti.userMem
-
-.load:
     ld a, b
     or a, c
-    jp z, errorHandle.runHex
-    ldi
-    jr .load
+    jr z, .doneLoading
+    ldir
+
+.doneLoading:
+    jp errorHandle.runHex
 
 lineToOffset: ; det(71)
     ld a, (noArgs)
@@ -839,13 +822,13 @@ backupString: ; det(75)
     ld (stringLen), a
     ex de, hl
     ld de, stringBackup
-
-.storeLoop:
     ld a, b
     or a, c
-    jp z, return
-    ldi
-    jr .storeLoop
+    jr z, .storeDone
+    ldir
+
+.storeDone:
+    jp return
 
 restoreString: ; det(76)
     ld a, (noArgs)
@@ -879,13 +862,13 @@ restoreString: ; det(76)
     inc de
     pop bc
     ld hl, stringBackup
-
-.storeLoop:
     ld a, b
     or a, c
-    jp z, return
-    ldi
-    jr .storeLoop
+    jr z, .storeDone
+    ldir
+
+.storeDone:
+    jp return
 
 backupReal: ; det(77)
     ld a, (noArgs)

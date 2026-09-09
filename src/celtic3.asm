@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: February 18, 2026
+; Last Built: September 9, 2026
 ;
 ;----------------------------------------
 
@@ -55,12 +55,12 @@ getListElem: ; det(30)
     pop bc
     pop de
     pop hl
-
-.loopName:
-    ldi
     ld a, b
     or a, c
-    jr nz, .loopName
+    jr z, .nameStored
+    ldir
+
+.nameStored:
     xor a, a
     ld (de), a
     call ti.ChkFindSym
@@ -219,13 +219,11 @@ chkStats: ; det(32)
     add hl, de
     ex de, hl
     ld hl, ti.OP3
-
-.loadLoop:
     ld a, b
     or a, c
     ret z
-    ldi
-    jr .loadLoop
+    ldir
+    ret
 
 .checkROM:
     ld hl, Str9
@@ -258,13 +256,11 @@ chkStats: ; det(32)
     add hl, de
     ex de, hl
     ld hl, ti.OP3
-
-.loop:
     ld a, b
     or a, c
     ret z
-    ldi
-    jr .loop
+    ldir
+    ret
 
 .checkBoot:
     ld hl, Str9
@@ -336,13 +332,11 @@ chkStats: ; det(32)
     add hl, de
     ex de, hl
     ld hl, ti.OP3
-
-.loop2:
     ld a, b
     or a, c
     ret z
-    ldi
-    jr .loop2
+    ldir
+    ret
 
 .checkOS:
     ld hl, Str9
@@ -697,13 +691,10 @@ ungroupFile: ; det(34)
     inc de
     pop bc
     pop hl
-
-.write:
     ld a, b
     or a, c
     jr z, .writeEnd
-    ldi
-    jr .write
+    ldir
 
 .writeEnd:
     pop de
@@ -906,13 +897,13 @@ extGroup: ; det(36)
     inc de
     pop bc
     pop hl
-
-.write:
     ld a, b
     or a, c
-    jp z, return
-    ldi
-    jr .write
+    jr z, .writeDone
+    ldir
+
+.writeDone:
+    jp return
 
 groupMem: ; det(37)
     ld a, (noArgs)
@@ -1090,13 +1081,10 @@ binWrite: ; det(39)
     ld hl, execHexLoc
     pop bc
     push bc
-
-.writeLoop:
     ld a, b
     or a, c
     jr z, .changeSize
-    ldi
-    jr .writeLoop
+    ldir
 
 .changeSize:
     pop bc
@@ -1235,13 +1223,13 @@ hexToBin: ; det(41)
     inc de
     pop bc
     ld hl, execHexLoc
-
-.storeLoop:
     ld a, b
     or a, c
-    jp z, return
-    ldi
-    jr .storeLoop
+    jr z, .storeDone
+    ldir
+
+.storeDone:
+    jp return
 
 binToHex: ; det(42)
     call _findAnsStr
@@ -1414,13 +1402,10 @@ errorHandle: ; det(45)
     ex de, hl
     pop de
     pop bc
-
-.load:
     ld a, b
     or a, c
     jr z, .loadComplete
-    ldi
-    jr .load
+    ldir
 
 .loadComplete:
     ld de, (ti.begPC)

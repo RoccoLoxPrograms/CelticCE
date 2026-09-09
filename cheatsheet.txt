@@ -306,5 +306,5 @@ SwapFileType            det(81)
 |   Str0 – Variable name
 |   Swaps variable between program and appvar
 
-PrgmCleanUp             det(82)
+ResetScreen             det(82)
 |   Clears screen, fixes status bar

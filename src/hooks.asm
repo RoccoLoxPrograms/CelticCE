@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: February 18, 2026
+; Last Built: September 9, 2026
 ;
 ;----------------------------------------
 
@@ -85,7 +85,7 @@ hookTriggeredDet:
     or a, a
     jr nz, $ + 5
     ld a, l
-    cp a, 10
+    cp a, 11
     jp nc, PrgmErr.2MARG
     ld a, (ti.OP1)
     cp a, ti.MatObj
@@ -149,10 +149,10 @@ removeAllArgs:
     jp PrgmErr.INVALA
 
 hookTriggeredReal:
-    push hl
-    ld hl, -1
-    ld (hl), 2
-    pop hl
+    ; push hl
+    ; ld hl, -1
+    ; ld (hl), 2
+    ; pop hl
     ld (noArgs), hl
     dec l
     jp z, .oneArg
@@ -369,8 +369,8 @@ xlibTableStart:
     dl managePic
     dl drawString
     dl drawShape
-    dl xlibcUtility
-    dl updateLCD ; real(9)
+    dl xlibcUtility ; real(8)
+    dl 0 ; placeholder because UpdateLCD is called directly
 xlibTableEnd:
 
 cursorHook:

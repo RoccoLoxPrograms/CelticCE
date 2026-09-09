@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: February 18, 2026
+; Last Built: September 9, 2026
 ;
 ;----------------------------------------
 
@@ -82,24 +82,26 @@ var4            equ ti.pixelShadow2 + 112 ;
 var5            equ ti.pixelShadow2 + 115 ; 
 var6            equ ti.pixelShadow2 + 118 ; 
 var7            equ ti.pixelShadow2 + 121 ;
-var8            equ ti.pixelShadow2 + 124 ; max of 9 arguments can be passed
-noArgs          equ ti.pixelShadow2 + 127 ; number of arguments
-ans             equ ti.pixelShadow2 + 130 ; temp storage for Ans (and other 3 byte values)
-EOF             equ ti.pixelShadow2 + 133 ; end of file address
-bufSpriteX      equ ti.pixelShadow2 + 136 ; reserved for BufSprite, BufSpriteSelect, and PutSprite (and variants)
-bufSpriteY      equ ti.pixelShadow2 + 139 ; ""
-bufSpriteXStart equ ti.pixelShadow2 + 140 ; ""
-currentWidth    equ ti.pixelShadow2 + 143 ; ""
-xtempName       equ ti.pixelShadow2 + 146 ; XTEMP000 name
-prgmName        equ ti.pixelShadow2 + 156 ; used to store a variable name
-stackPtr        equ ti.pixelShadow2 + 167 ; used to preserve the stack pointer
-xlibColorOffset equ ti.pixelShadow2 + 170 ; color offset stored for xlibc
-currentGram     equ ti.pixelShadow2 + 171 ; current GRAM buffer to draw at
-halfresOn       equ ti.pixelShadow2 + 172 ; 1 if half-res is turned on
-realBackup      equ ti.pixelShadow2 + 173 ; location for Real var backup
-stringLen       equ ti.pixelShadow2 + 182 ; length byte for backup string
-stringBackup    equ ti.pixelShadow2 + 183 ; loaction for string var backup (max of 256 bytes)
-execHexLoc      equ ti.pixelShadow2 + 439 ; location for storing ExecHex code (max size of 4096 bytes) (used for undefined, temp storage size in various commands)
+var8            equ ti.pixelShadow2 + 124 ; 
+var9            equ ti.pixelShadow2 + 127 ; max of 10 arguments can be passed
+noArgs          equ ti.pixelShadow2 + 130 ; number of arguments
+ans             equ ti.pixelShadow2 + 133 ; temp storage for Ans (and other 3 byte values)
+EOF             equ ti.pixelShadow2 + 136 ; end of file address
+bufSpriteX      equ ti.pixelShadow2 + 139 ; reserved for BufSprite, BufSpriteSelect, and PutSprite (and variants)
+bufSpriteY      equ ti.pixelShadow2 + 142 ; ""
+bufSpriteXStart equ ti.pixelShadow2 + 143 ; ""
+currentWidth    equ ti.pixelShadow2 + 146 ; ""
+xtempName       equ ti.pixelShadow2 + 149 ; XTEMP000 name
+prgmName        equ ti.pixelShadow2 + 159 ; used to store a variable name
+stackPtr        equ ti.pixelShadow2 + 170 ; used to preserve the stack pointer
+xlibColorOffset equ ti.pixelShadow2 + 173 ; color offset stored for xlibc
+currentGram     equ ti.pixelShadow2 + 174 ; current GRAM buffer to draw at
+halfresOn       equ ti.pixelShadow2 + 175 ; 1 if half-res is turned on
+invertOn        equ ti.pixelShadow2 + 176 ; 1 if screen is inverted
+realBackup      equ ti.pixelShadow2 + 177 ; location for Real var backup
+stringLen       equ ti.pixelShadow2 + 186 ; length byte for backup string
+stringBackup    equ ti.pixelShadow2 + 187 ; loaction for string var backup (max of 256 bytes)
+execHexLoc      equ ti.pixelShadow2 + 443 ; location for storing ExecHex code (max size of 4096 bytes) (used for undefined, temp storage size in various commands)
 
 xlibc0          equ ti.pixelShadow2 + 500 ; start storing xlibc vars here
 xlibc1          equ ti.pixelShadow2 + 509 ; 
@@ -143,7 +145,8 @@ xlibcInt18      equ ti.pixelShadow2 + 734 ;
 xlibcInt19      equ ti.pixelShadow2 + 737 ; max of 20 args
 xlibcFont       equ ti.pixelShadow2 + 740 ; which font is selected
 randSeed        equ ti.pixelShadow2 + 741 ; holds temp random seed
-drawStringTemp  equ ti.pixelShadow2 + 742 ; temp storage for string conversion
+yShiftSPI       equ ti.pixelShadow2 + 741 ; 8-bit value for y-value for shifting
+drawStringTemp  equ ti.pixelShadow2 + 745 ; temp storage for string conversion
 
 ;------------------------------------------------------------------------------------
 

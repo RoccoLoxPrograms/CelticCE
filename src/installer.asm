@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: February 18, 2026
+; Last Built: September 9, 2026
 ;
 ;----------------------------------------
 
@@ -24,7 +24,7 @@ installApp:
 
     installerPorts.copy
 
-    call installer.port_setup
+    call installer.portSetup
     or a, a
     ld hl, osInvalidStr
     jp nz, .printMessage
@@ -109,7 +109,7 @@ installingStr:
     db "Installing app...", 0
 
 osInvalidStr:
-    db "Cannot use this OS.", 0
+    db "Cannot use this boot code", 0
 
 celticInstalledStr:
     db " Celtic CE app installed. Open app to enable Celtic.", 0

@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: February 18, 2026
+; Last Built: September 9, 2026
 ;
 ;----------------------------------------
 
@@ -73,13 +73,10 @@ _setupSPI:
 
 _setHalfRes:
     call ti.RunIndicOff
-    xor a, a
-    ld (xlibcFont), a
-    ld (xlibColorOffset), a
-    inc a ; start on right side
+    ld a, 1
     ld (halfresOn), a
-    ld (currentGram), a
     call _setupSPI
+    call _resetShift
     spi $2A, 0, 0, 1, $40
     spi $2B, 0, 0, 0, 239
     spi $3A, $56
@@ -92,6 +89,7 @@ _setNormalRes:
     xor a, a
     ld (halfresOn), a
     call _setupSPI
+    call _resetShift
     spi $2A, 0, 0, 1, $40
     spi $2B, 0, 0, 0, 239
     spi $3A, $66
@@ -102,20 +100,24 @@ _setNormalRes:
 
 _showRightBuffer:
     ld a, (halfresOn)
-    or a, a
-    ret z
-    call _setupSPI
+    dec a
+    ret nz
+    ; call _setupSPI
     spi $33, 0, 0, 0, 160, 0, 160
     spi $37, 1, $40
     ret
 
 _showLeftBuffer:
     ld a, (halfresOn)
-    or a, a
-    ret z
-    call _setupSPI
+    dec a
+    ret nz
+    ; call _setupSPI
     spi $33, 0, 160, 0, 160, 0, 0
     spi $37, 0, 0
+    ret
+
+_resetShift:
+    spi $B0, $11, $F0
     ret
 
 _getVRAMaddrStart:
@@ -127,11 +129,15 @@ _getVRAMaddrStart:
     ret
 
 _flipActiveDraw:
+    ld a, (halfresOn)
+    dec a
+    ret nz
+    call _resetShift
     ld a, (currentGram)
     xor a, 1
     ld (currentGram), a
     jp z, _showRightBuffer
-    jr _showLeftBuffer
+    jp _showLeftBuffer
 
 _convertArg:
     call ti.Mov9ToOP1

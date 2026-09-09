@@ -4,7 +4,7 @@
 ; By RoccoLox Programs and TIny_Hacker
 ; Copyright 2022 - 2026
 ; License: BSD 3-Clause License
-; Last Built: February 18, 2026
+; Last Built: September 9, 2026
 ;
 ;----------------------------------------
 
@@ -34,6 +34,15 @@ xlibcSetup: ; real(0)
     jp ti.StoAns
 
 .setupGraphics:
+    xor a, a
+    ld (xlibcFont), a
+    ld (xlibColorOffset), a
+    ld (invertOn), a
+    ld (halfresOn), a
+    inc a ; start on right side
+    ld (currentGram), a
+    ld hl, ($F30044) ; set the random seed with rtc_time
+    ld (randSeed), hl
     ld a, (xlibcInt2)
     or a, a
     jp nz, _setHalfRes
@@ -44,13 +53,8 @@ xlibcSetup: ; real(0)
     ret
 
 .setSpeed:
+    ; this command will be left blank as it is not needed on the CE
     ret
-    ; fix this later
-    ; might have to set this myself
-    ;ld a, (xlibcInt2)
-    ;or a, a
-    ;jp nz, ti.boot.Set48MHzMode
-    ;jp ti.boot.Set6MHzMode
 
 .setupColorMode:
     ld a, (xlibcInt2)
@@ -83,6 +87,12 @@ xlibcSetup: ; real(0)
     ret
 
 .invert:
+    ld a, (invertOn)
+    dec a
+    ld (invertOn), a
+    jr z, .invertOff
+    ld a, 1
+    ld (invertOn), a
     ld a, $21
     jr .invertOff + 2
 
@@ -174,7 +184,11 @@ userVariables: ; real(1)
     ld bc, 9
     ldir
     pop af
-    call ti.SetxxOP1
+    or a, a
+    sbc hl, hl
+    ld l, a
+    call ti.SetxxxxOP2
+    call ti.OP2ToOP1
     jp ti.StoAns
 
 .addToUservar:
@@ -541,7 +555,11 @@ drawShape: ; real(7)
     ld a, (xlibcInt3)
     call _getXlibcVRAMaddr
     ld a, (hl)
-    call ti.SetxxOP1
+    or a, a
+    sbc hl, hl
+    ld l, a
+    call ti.SetxxxxOP2
+    call ti.OP2ToOP1
     jp ti.StoAns
 
 .setPixelA:
@@ -1452,33 +1470,175 @@ xlibcUtility: ; real(8)
     ret
 
 .setGramOffset:
-    ; figure this out later
+    ld a, (halfresOn)
+    dec a
+    ret nz
+    ld a, (currentGram)
+    or a, a
+    jr nz, .showRight
+    call _showLeftBuffer
+    jr $ + 6
+
+.showRight:
+    call _showRightBuffer
+    ld hl, (xlibcInt2)
+    ld a, h
+    or a, l
+    ret z
+    ld de, ti.lcdWatermark + ti.lcdIntFront + ti.lcdPwr + ti.lcdBgr + ti.lcdBpp16
+    ld hl, ti.mpLcdBase
+    ld bc, ti.vRam
+    ld (hl), bc
+    ld l, ti.lcdCtrl
+    ld (hl), de
+    ld a, ti.lcdIntVcomp
+    ld (ti.mpLcdIcr), a
+
+.gOfsLoop1:
+    ld a, (ti.mpLcdCurr + 2)
+    ld hl, (ti.mpLcdCurr + 1)
+    sub a, h
+    jr nz, .gOfsLoop1
+    ld de, ti.vRamEnd shr 8
+    or a, a
+    sbc hl, de
+    jr z, .shift
+
+.gOfsLoop2:
+    ld a, (ti.mpLcdRis)
+    bit ti.bLcdIntVcomp, a
+    jr z, .gOfsLoop2
+
+.shift:
+    spi $B0, $01, $70 ; RM = 0, WEMODE1 = 0
+    ld a, $2A
+    call _spiCmd
+    call .handleShift
+    ld a, h
+    push hl
+    call _spiParam
+    pop hl
+    ld a, l
+    call _spiParam
+    ld a, $2B
+    call _spiCmd
+    xor a, a
+    call _spiParam
+    ld a, (yShiftSPI)
+    call _spiParam
+    spi $B0, $11
+    spi $2A, $00, $00
+    spi $2B, $00, $00
     ret
 
-.getRand:
-    ld a, ($F30044) ; rtc_time
-    ld (randSeed), a
+.handleShift:
+    ld de, (xlibcInt2)
+    bit 7, d
+    jr nz, .negativeShift
+    ex de, hl
+    ld de, 320
+    push de
 
-.loopRand:
-    ld a, (randSeed)
-    ld c, a
-    add a, a
-    add a, c
-    add a, a
-    add a, a
-    add a, c
-    add a, 83
-    ld (randSeed), a
+.clipPos:
+    or a, a
+    sbc hl, de
+    jr nc, .clipPos
+    add hl, de
+    ld a, h
+    or a, l
+    jr z, .zeroScroll - 1
+    ex de, hl
+    pop hl
+    or a, a
+    sbc hl, de
+    jr .calcY
+
+.negativeShift:
+    or a, a
+    sbc hl, hl
+    ld a, d
+    cpl
+    ld h, a
+    ld a, e
+    cpl
+    ld l, a
+    inc hl
+    ld de, 320
+
+.clipNeg:
+    or a, a
+    sbc hl, de
+    jr nc, .clipNeg
+    add hl, de
+    ld a, h
+    or a, l
+    jr z, .zeroScroll
+
+.calcY:
+    push hl
+    ld a, (currentGram)
+    or a, a
+    ld a, 239
+    jr nz, .scrollRight
+    ld de, 80
+    or a, a
+    sbc hl, de
+    jr nc, .setY
+    xor a, a
+    jr .setY
+
+.scrollRight:
+    ld de, 240
+    or a, a
+    sbc hl, de
+    jr nc, .setY
+    xor a, a
+
+.setY:
+    ld (yShiftSPI), a
+    pop hl
+    ret
+
+    pop hl
+.zeroScroll:
+    or a, a
+    sbc hl, hl
+    push hl
+    xor a, a
+    jr .setY
+
+.getRand:
+    ld hl, (randSeed)
+    ld a, h
+    rra
+    ld a, l
+    rra
+    xor a, h
+    ld h, a
+    ld a, l
+    rra
+    ld a, h
+    rra
+    xor a, l
+    ld l, a
+    xor a, h
+    ld h, a
+    ld (randSeed),hl
+    ld a, l
     ld b, a
     ld a, (xlibcInt2)
+    cp a, b
+    jr c, .getRand
     or a, a
     jr z, .storeRand
-    cp a, b
-    jr c, .loopRand
     ld a, b
 
 .storeRand:
-    call ti.SetxxOP1
+    or a, a
+    sbc hl, hl
+    ld l, a
+    call ti.SetxxxxOP2
+    call ti.OP2ToOP1
     jp ti.StoAns
 
 updateLCD: ; real(9)
