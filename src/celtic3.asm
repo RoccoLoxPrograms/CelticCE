@@ -1437,6 +1437,12 @@ errorHandle: ; det(45)
     xor a, a
 
 .endQuit:
+    push af
+    ld hl, ti.mpTmrCtrl + 1
+    ld a, (hl)
+    and a, l
+    ld (hl), a
+    pop af
     ld iy, ti.flags
     and a, $7F ; start error codes at 1
     pop hl
@@ -1665,6 +1671,10 @@ errorHandle: ; det(45)
     ld iy, ti.flags
     and a, $7F ; start error codes at 1
     push af
+    ld hl, ti.mpTmrCtrl + 1
+    ld a, (hl)
+    and a, l
+    ld (hl), a
     ld de, (ti.asm_prgm_size)
     or a, a
     sbc hl, hl
